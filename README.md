@@ -1,305 +1,473 @@
-# Command Center X
+# OpsGuardian™
 
-High-visibility Salesforce operations console that surfaces governor limit consumption, Flow execution health, CI/CD deployment status, and real-time performance alerts in one admin-only workspace.
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Salesforce API](https://img.shields.io/badge/API-62.0+-blue.svg)](#1-overview)
+[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-yellow.svg)](.github/workflows)
 
-**Status:** Reference implementation. Deploy to scratch, sandbox, or production orgs. **Last Updated:** 4 Sep 2025 (PT).
+OpsGuardian™ is a Salesforce-native monitoring and compliance framework that goes beyond Event Monitoring and Shield. It delivers real-time observability, AI diagnostics, and automation to help regulated organizations (finance, healthcare, government) maintain compliance, prevent failures, and scale securely.
 
 ---
 
 ## Table of Contents
-
-* [1. Why Command Center X Exists](#1-why-command-center-x-exists)
-* [2. Core Features](#2-core-features)
-* [3. Architecture Overview](#3-architecture-overview)
-* [4. Component Map](#4-component-map)
-* [5. Quick Start (Scratch Org)](#5-quick-start-scratch-org)
-* [6. Install to Sandbox or Production](#6-install-to-sandbox-or-production)
-* [7. Post-Install Configuration Checklist](#7-post-install-configuration-checklist)
-* [8. Dashboards & Components Usage](#8-dashboards--components-usage)
-
-  * [8.1 Apex Governor Limits Dashboard](#81-apex-governor-limits-dashboard)
-  * [8.2 Flow Execution Monitor](#82-flow-execution-monitor)
-  * [8.3 Deployment Monitor Dashboard](#83-deployment-monitor-dashboard)
-  * [8.4 Performance Alert Panel](#84-performance-alert-panel)
-* [9. Problem → Feature → Business Value Table](#9-problem--feature--business-value-table)
-* [10. DAT-Specific Callouts (Sales Tech Use Case)](#10-dat-specific-callouts-sales-tech-use-case)
-* [11. Configuration: Thresholds, Auto-Refresh, Alert Routing](#11-configuration-thresholds-auto-refresh-alert-routing)
-* [12. Security & Access Control](#12-security--access-control)
-* [13. CI/CD Integration (DevOps Center + GitHub Actions)](#13-cicd-integration-devops-center--github-actions)
-* [14. Data Model & Metadata Assets](#14-data-model--metadata-assets)
-* [15. Extensibility Patterns](#15-extensibility-patterns)
-
-
-## 1. Why Command Center X Exists
-
-Salesforce orgs accumulate technical debt fast: unmanaged Flows, ad-hoc Apex, growing data volume, and unclear deployment health lead to slow delivery and incidents that surface too late. Command Center X centralizes real-time operational signals so administrators see issues before users do. It reduces blind spots, accelerates troubleshooting, and provides quantifiable performance metrics that leadership understands.
-
----
-
-## 2. Core Features
-
-* Apex governor limit telemetry with visual CPU-over-threshold alerting (default CPU threshold 9,500 ms vs 10,000 limit).
-* Flow execution logging to custom object for run counts, fault rate, and top offenders.
-* CI/CD deployment result feeds from DevOps Center or custom Deployment records.
-* Platform Event based real-time alerting for high CPU, SOQL, DML breaches, or Flow faults.
-* Auto-refresh (default 60s) plus manual refresh control.
-* Admin-only visibility via dedicated permission set.
-* Chart.js powered visualizations (doughnut, gauge, bar).
+1. [Overview](#1-overview)
+2. [What It Does](#2-what-it-does)
+3. [Use Cases & Personas](#3-use-cases--personas)
+4. [Core Features](#4-core-features)
+5. [Tech Stack](#5-tech-stack)
+6. [Architecture](#6-architecture)
+7. [Security Model and Data Access](#7-security-model-and-data-access)
+8. [Data Privacy, Retention, and Erasure](#8-data-privacy-retention-and-erasure)
+9. [Configuration Guide](#9-configuration-guide)
+10. [Ingest API (Hub-and-Spoke)](#10-ingest-api-hub-and-spoke)
+11. [Telemetry Schema Reference](#11-telemetry-schema-reference)
+12. [Threat Model & Trust Boundaries](#12-threat-model--trust-boundaries)
+13. [Performance & Scalability](#13-performance--scalability)
+14. [Performance Benchmarks](#14-performance-benchmarks)
+15. [Operations Runbook](#15-operations-runbook)
+16. [Advanced Integration Scenarios](#16-advanced-integration-scenarios)
+17. [Security Testing & Audit](#17-security-testing--audit)
+18. [Localization & Internationalization](#18-localization--internationalization)
+19. [Documentation & Support](#19-documentation--support)
+20. [Installation](#20-installation)
+21. [Usage](#21-usage)
+22. [Plugin SDK](#22-plugin-sdk)
+23. [Release Management & Rollback](#23-release-management--rollback)
+24. [Upgrade & Migration](#24-upgrade--migration)
+25. [Troubleshooting & FAQ](#25-troubleshooting--faq)
+26. [Quality Gates](#26-quality-gates)
+27. [License](#27-license)
+28. [Appendix](#28-appendix)
 
 ---
 
-## 3. Architecture Overview
+## 1. Overview
+- Distribution: Second-Generation Managed Package (2GP) targeted for AppExchange  
+- API Version: 62.0+  
+- Supported Orgs: Scratch, Sandbox, Developer Edition, Production  
+- Status: Production-ready; AppExchange submission in progress
 
-```
-External Data Layer (Mockaroo, CSV Imports)
-        ↓
-Salesforce Core (Accounts, Contacts, Opportunities, Freight Lane, Carrier)
-        ↓
-Automation Layer (Flows, Auto-Convert, Discount Approval Apex, Platform Event Triggers)
-        ↓
-Analytics Layer (CRM Analytics Dashboards, Tableau CRM Recipes)
-        ↓
-Logging Layer (Flow_Execution__c, Performance_Alert__e)
-        ↓
-DevOps Layer (DevOps Center Pipelines, GitHub Actions)
-```
-
-Color Legend used in diagrams:
-
-* Blue = Data
-* Green = Automation
-* Yellow = Analytics
-* Red = Logging
-* Gray = DevOps
+OpsGuardian provides:
+- Real-time monitoring of governor limits, Flows, transactions, and API calls
+- AI-assisted diagnostics (Einstein + external LLM)
+- Policy-driven rules via Custom Metadata (CMDT)
+- Event-driven alerts to Slack, Jira, and webhooks
 
 ---
 
-## 4. Component Map
-
-Directory layout as deployed via SFDX.
-
-```
-command-center-x/
-├── README.md
-├── sfdx-project.json
-├── config/project-scratch-def.json
-├── scripts/
-│   └── orgInit.sh
-└── force-app/main/default/
-    ├── lwc/
-    │   ├── systemMonitorDashboard/
-    │   ├── flowExecutionMonitor/
-    │   ├── deploymentMonitorDashboard/
-    │   └── performanceAlertPanel/
-    ├── classes/
-    │   ├── LimitMetrics.cls
-    │   ├── FlowExecutionLogger.cls
-    │   └── PerformanceAlertPublisher.cls
-    ├── objects/Flow_Execution__c/
-    ├── events/Performance_Alert__e/
-    ├── permissionsets/Command_Center_Admin.permissionset-meta.xml
-    └── dashboards/ (CRM Analytics JSON configs)
-```
+## 2. What It Does
+- Captures operational events in `OpsGuardian_History__c`
+- Analyzes performance and compliance risks in real time
+- Publishes alerts via Platform Events for downstream actions
+- Surfaces dashboards and LWC tiles for live operations visibility
+- Automates remediation via Flows and Invocable Apex
 
 ---
 
-## 5. Quick Start (Scratch Org)
+## 3. Use Cases & Personas
 
-> Assumes Node + npm installed.
+### Personas
+- Salesforce Admin (Ops): needs live limits, failing flows, rapid remediation
+- Security/Compliance: needs tamper-evident logs, retention, audits
+- Engineering/DevOps: needs multi-org telemetry, CI gates, APIs
 
-```bash
-# 1. Clone
-git clone https://github.com/YOUR-ORG/command-center-x.git
-cd command-center-x
-
-# 2. Auth to DevHub (once)
-sfdx auth:web:login -d -a DevHub
-
-# 3. Create scratch org
-sfdx force:org:create -f config/project-scratch-def.json -a CCX -s -d 7
-
-# 4. Push source
-sfdx force:source:push -u CCX
-
-# 5. Assign permission set
-sfdx force:user:permset:assign -n Command_Center_Admin -u CCX
-
-# 6. Import sample data (optional)
-sfdx force:data:tree:import -f data/sample-plan.json -u CCX
-
-# 7. Open org
-sfdx force:org:open -u CCX -p /lightning/n/Command_Center_X
-```
+### Representative Use Cases
+- Prevent Flow outages: detect spike in Flow faults, auto-create Jira, trigger rollback Flow
+- Prove compliance: export encrypted `OpsGuardian_History__c` for audit in minutes
+- Centralize telemetry: aggregate many orgs into one hub; alert teams by severity
 
 ---
 
-## 6. Install to Sandbox or Production
-
-Minimal commands for a direct metadata deploy (no scratch).
-
-```bash
-# 1. Authorize target org
-echo "Browser opens; login to target org"
-sfdx auth:web:login -a TargetOrg
-
-# 2. Deploy metadata
-sfdx project deploy start -o TargetOrg
-# or classic mdapi
-# sfdx force:mdapi:deploy -d mdapi_out -u TargetOrg -w -1
-
-# 3. Assign permission set
-sfdx force:user:permset:assign -n Command_Center_Admin -o TargetOrg
-
-# 4. Upload Chart.js static resource (Setup > Static Resources > New > ChartJS411.zip)
-
-# 5. Add Command Center tab to Admin App.
-```
+## 4. Core Features
+- Governance: detects Flow faults, governor overages, API misuse
+- Compliance: Shield Platform Encryption plus full CRUD/FLS enforcement
+- AI Diagnostics: GPT + Einstein hybrid scoring with remediation guidance
+- Plugins: extensible connectors for Slack, Jira, webhooks
+- Multi-Org: hub-and-spoke REST ingest for enterprise telemetry
+- Offline Resilience: LDS and LocalStorage caching for LWC tiles
+- DevOps Ready: GitHub Actions, PMD/sf-scanner, Jest unit testing
 
 ---
 
-## 7. Post-Install Configuration Checklist
+## 5. Tech Stack
 
-| Step                                            | Required | Description                               | Location                 |
-| ----------------------------------------------- | -------- | ----------------------------------------- | ------------------------ |
-| Upload Chart.js static resource                 | Yes      | Required for charts to render             | Setup > Static Resources |
-| Verify Platform Event "Performance\_Alert\_\_e" | Yes      | Ensure event exists & fields deployed     | Setup > Platform Events  |
-| Confirm Flow\_Execution\_\_c object             | Yes      | Add to Nav + grant field perms            | Object Manager           |
-| Add LWC to Lightning App Page                   | Yes      | Build a Command Center Lightning App page | Lightning App Builder    |
-| Assign Command\_Center\_Admin perm set          | Yes      | Controls visibility                       | Setup > Permission Sets  |
-| Configure alert subscriptions (email/Slack)     | Optional | Use Flow or Apex Trigger on event         | Automation Studio        |
-| Adjust thresholds (if using Custom Metadata)    | Optional | CCX\_Threshold\_\_mdt                     | Custom Metadata Types    |
+**Salesforce Platform**
+- Apex, Lightning Web Components (LWC), Platform Events
+- Custom Metadata Types (CMDT) for policies (`OG_Policy__mdt`)
+- Shield Platform Encryption
 
----
+**AI Integration**
+- Einstein Prediction Builder / Next Best Action
+- External LLM via OAuth Named Credentials (JWT/Client Credentials)
 
-## 8. Dashboards & Components Usage
+**DevOps**
+- Salesforce DX (SFDX), GitHub Actions CI
+- PMD + `sf-scanner` for static analysis
+- Jest for LWC tests; Apex coverage via CLI
 
-Each LWC reads from an Apex controller and refreshes on interval (default 60s). All LWCs include manual Refresh buttons.
+**Integrations**
+- MuleSoft (multi-cloud ingestion)
+- Plugin framework: Slack, Jira, webhooks
 
-### 8.1 Apex Governor Limits Dashboard
-
-Component: `systemMonitorDashboard` Source Apex: `LimitMetrics.fetchGovernorStats()` Displays CPU time, heap, SOQL count, DML count. Highlights red if CPU > 9,500 ms.
-
-### 8.2 Flow Execution Monitor
-
-Component: `flowExecutionMonitor` Source Apex: query `Flow_Execution__c` aggregated by Flow name, fault count, last run. Instrument Flows by inserting an Apex Action call to `FlowExecutionLogger.log`.
-
-### 8.3 Deployment Monitor Dashboard
-
-Component: `deploymentMonitorDashboard` Source Apex: query DevOps Center Deployment records or custom object `Deployment__c` (map to stage, duration, success/fail count). Surfaces promotion velocity.
-
-### 8.4 Performance Alert Panel
-
-Component: `performanceAlertPanel` Listens to Platform Event `Performance_Alert__e`. Shows live scrolling feed of events above configured thresholds (CPU, SOQL, DML, Flow faults). Optional subscribe-to-Slack automation.
+**Compliance**
+- GDPR, SOC 2, HIPAA-ready implementation patterns
 
 ---
 
-## 9. Problem → Feature → Business Value Table
+## 6. Architecture
+```mermaid
+flowchart TD
+  subgraph Salesforce Org
+    A[OpsGuardian LWC Tiles] --> B[Lightning App Page]
+    B --> C[OpsGuardian Apex Services]
+    C --> D[OpsGuardian_History__c Object]
+    C --> E[Platform Events]
+    C --> F[CMDT: OG_Policy__mdt]
+  end
 
-| Problem                                            | CCX Feature                                    | Value (Time / Risk / Adoption)                               |
-| -------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------ |
-| CPU spikes crash user transactions without warning | Red threshold alert + real-time Platform Event | Faster incident response; protects revenue workflows         |
-| Unknown Flow fault rate                            | Flow Execution logging + fault %               | Targeted remediation; reduces user-report volume             |
-| Slow release cadence; failed deployments           | Deployment Monitor pipeline telemetry          | Shorter lead time for change; fewer rollback hours           |
-| Admins lack unified signal                         | Single Lightning App page with 4 dashboards    | Shared situational awareness; better cross-team coordination |
+  C -->|Named Credential (JWT)| G[(External AI Service)]
+  C -->|REST API Hub| H[Other Salesforce Orgs]
+  C -->|Plugins| I[(Slack/Jira/Webhooks)]
 
----
 
-## 10. DAT-Specific Callouts (Sales Tech Use Case)
+⸻
 
-DAT cares about: sales velocity, data quality across carriers/lanes, and reliable release throughput. Map CCX capabilities to these outcomes.
+7. Security Model and Data Access
+	•	Record Security: WITH SECURITY_ENFORCED on SOQL; Security.stripInaccessible() on all DML
+	•	Sharing: with sharing classes; row-level security respected
+	•	Permissions: least-privilege via OpsGuardian_Admin and dedicated field/object perms
+	•	Segregation: multi-org ingestion keyed by org/business unit; no cross-org leakage
+	•	Transport: TLS 1.3; OAuth 2.0 JWT/Client-Credentials; no secrets in source
 
-| DAT Pain                                                  | CCX Alignment                                                                 | Talking Point                                                   |
-| --------------------------------------------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| Sales org slows when automation errors block lead routing | Flow Execution Monitor pinpoints bottleneck Flows; alert before routing fails | Keeps opportunities flowing to reps; protects top-line bookings |
-| Freight & carrier data quality drifts after acquisitions  | Add validation + logging Flows; track fault rate by carrier onboarding Flow   | Data trust accelerates analytics & pricing accuracy             |
-| Release risk across multiple teams                        | Deployment Monitor shows pipeline health & failure trend                      | Predictable releases; compresses downtime windows               |
+⸻
 
----
+8. Data Privacy, Retention, and Erasure
+	•	Retention: default 180 days, configurable in CMDT; policy-driven purge windows per object/severity
+	•	Erasure: admin-initiated deletion via Flow; batch jobs purge data and anonymize residual logs
+	•	Encryption: Shield at rest; TLS 1.3 in transit; KMS key rotation per Salesforce policy
+	•	See /docs/compliance/ for encryption, deletion, and data-flow artifacts
 
-## 11. Configuration: Thresholds, Auto-Refresh, Alert Routing
+⸻
 
-### 11.1 Thresholds
+9. Configuration Guide
 
-Default CPU critical: 9,500 ms. Modify in JS or externalize:
+A. Policies (CMDT)
+	1.	Setup → Custom Metadata Types → OG_Policy__mdt
+	2.	Create records for CPU/SOQL/DML thresholds per environment
+	3.	Commit CMDT records to VCS for code review
 
-* Custom Metadata Type: `CCX_Threshold__mdt` fields CPU\_\_c, Heap\_\_c, SOQL\_\_c, DML\_\_c.
-* Retrieve via Apex utility `CCX_Config.getThreshold('CPU')`.
+B. OAuth Named Credential (JWT)
+	1.	Setup → External Credentials → create OG_AI (JWT Bearer)
+	2.	Setup → Named Credentials → create OG_AI with the AI endpoint
+	3.	Assign the principal to the OpsGuardian_Admin permission set
 
-### 11.2 Auto-Refresh Interval
+C. Platform Events
+	1.	Verify Performance_Alert__e
+	2.	Subscribe via Flow or Apex Trigger to route alerts to Slack/Jira
 
-Default 60s. Change `setInterval()` value in each component or expose in Custom Metadata.
+D. Permission Sets
+	•	Assign OpsGuardian_Admin to admins only
+	•	Verify field-level perms on OpsGuardian_History__c
 
-### 11.3 Alert Routing
+⸻
 
-Subscribe to Platform Event `Performance_Alert__e` using:
+10. Ingest API (Hub-and-Spoke)
 
-* Flow (Record-Triggered on Event Bus)
-* Apex Trigger to send email, Slack webhook, Teams, PagerDuty
-* Mulesoft or external listener via CometD
+OpenAPI (excerpt)
 
----
+openapi: 3.0.3
+info: { title: OpsGuardian Ingest, version: 1.0.0 }
+paths:
+  /services/apexrest/og/v1/ingest:
+    post:
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [type, severity, timestamp]
+              properties:
+                type: { type: string, maxLength: 40 }
+                message: { type: string, maxLength: 255 }
+                severity: { type: string, enum: [Info, Warning, Critical] }
+                timestamp: { type: string, format: date-time }
+      responses:
+        "201": { description: Created }
+        "400": { description: Invalid payload }
+        "401": { description: Unauthorized }
+        "429": { description: Rate limited }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 
-## 12. Security & Access Control
+Request example
 
-* Permission Set: `Command_Center_Admin` grants object, field, and event access plus LWC visibility.
-* Lightning App visibility filtered to users with perm set.
-* Shield Event Monitoring customers can extend CCX by ingesting EventLogFile metrics.
-* Restrict Platform Event subscription tokens in external middleware.
+curl -X POST "$SF_URL/services/apexrest/og/v1/ingest" \
+ -H "Authorization: Bearer $JWT" -H "Content-Type: application/json" \
+ -d '{"type":"CPU","message":"after-insert breach","severity":"Critical","timestamp":"2025-09-22T17:00:00Z"}'
 
----
 
-## 13. CI/CD Integration (DevOps Center + GitHub Actions)
+⸻
 
-### 13.1 DevOps Center Flow
+11. Telemetry Schema Reference
 
-1. Project in DevOps Center mapped to GitHub repo.
-2. Work items track metadata changes; promote through Environments (Dev, UAT, Prod).
-3. Deployment Monitor queries DevOps Center records (or custom mirror object) to render pass/fail by stage and average cycle time.
+OpsGuardian_History__c
 
-### 13.2 GitHub Actions Sample
+Field API Name	Type	Purpose	FLS
+Event_Type__c	Text(40)	CPU, SOQL, DML, Flow, API	R/W
+Severity__c	Picklist	Info, Warning, Critical	R/W
+Message__c	Text(255)	Human-readable context	R/W
+Timestamp__c	DateTime	Event time (UTC)	R
+Correlation_Id__c	Text(64)	Trace across systems	R/W
+Source_Org_Id__c	Text(18)	Hub ingestion key	R
 
-```yaml
-name: Deploy-to-Sandbox
-on:
-  push:
-    branches: [ main ]
+Flow_Execution__c
+
+Field API Name	Type	Purpose	FLS
+Flow_Api_Name__c	Text(80)	Flow identifier	R/W
+InterviewId__c	Text(40)	Run instance	R
+Faulted__c	Checkbox	True if failed	R
+DurationMs__c	Number(9,0)	Execution time	R
+RunAt__c	DateTime	Start time	R
+
+
+⸻
+
+12. Threat Model & Trust Boundaries
+
+Goals
+	•	Prevent unauthorized read/write of telemetry
+	•	Prevent privilege escalation via API and UI paths
+	•	Ensure logs are tamper-evident and retained per policy
+
+Diagram
+
+flowchart LR
+  ext[External Clients] -->|JWT| API[/Apex REST Ingest/]
+  subgraph Salesforce Org
+    API --> S[(Named Credential, AuthZ)]
+    S --> SVC[OpsGuardian Services]
+    SVC --> LOG[OpsGuardian_History__c (Shield)]
+    SVC --> EVT[(Platform Events)]
+    SVC --> POL[CMDT Policies]
+  end
+  SVC --> PLG[Plugins Slack/Jira]
+  classDef boundary stroke-width:2px,stroke:#555,fill:#f9f9f9;
+  class S,LOG,EVT,POL boundary;
+
+STRIDE summary
+	•	Spoofing: JWT validation + audience checks
+	•	Tampering: WITH SECURITY_ENFORCED, stripInaccessible, Shield
+	•	Repudiation: append-only logs with correlation IDs
+	•	Information Disclosure: FLS/CRUD, field-level encryption
+	•	DoS: Platform Cache rate limiting (429 + Retry-After)
+	•	Elevation of Privilege: least-privilege perm sets; with sharing
+
+⸻
+
+13. Performance & Scalability
+	•	Async: Queueable/Batch Apex for logging and heavy processing
+	•	Rate Limiting: Platform Cache-backed sliding windows with HTTP 429 Retry-After
+	•	Bulk Safety: governor-aware queries; selective indexes; LDS for UI caching
+	•	Load Controls: configurable telemetry granularity; dashboard refresh intervals
+
+⸻
+
+14. Performance Benchmarks
+
+Methodology
+	•	Dataset: ~1M history records; ~10K events/hour
+	•	Org: Enterprise Edition; API v62.0
+	•	Tests: bulk ingest, dashboard refresh, risk scoring
+
+Targets
+
+Scenario	P50	P95	Notes
+Ingest API (per request)	90ms	180ms	Queueable insert
+Dashboard refresh	600ms	1200ms	Indexed + LDS
+Risk scoring (1k recs)	120ms	250ms	Heuristic baseline
+
+Tuning: set dashboard refresh 60–120s; batch compaction nightly; env-specific CMDT thresholds.
+
+⸻
+
+15. Operations Runbook
+
+Alert taxonomy
+
+Severity	Example	Action
+Critical	CPU breach persists 5 minutes	Auto-open Jira P1, page on-call
+High	Flow fault rate > 5%	Triage within 4h, create task
+Normal	Event delivery retry	Monitor, no ticket
+
+First response
+	1.	Confirm impact (org/business unit)
+	2.	Check recent deploys; correlate with Correlation_Id__c
+	3.	Execute remediation Flow (rollback, throttle)
+
+Escalation
+	•	If not resolved in 30 minutes for Critical, engage Security & App Owner
+	•	Post-mortem due within 5 business days
+
+⸻
+
+16. Advanced Integration Scenarios
+	•	SIEM: stream Platform Events to Splunk/ELK/Datadog
+	•	ITSM: Jira/ServiceNow ticketing from remediation flows
+	•	Multi-Cloud: MuleSoft pipelines; hub-and-spoke org aggregation
+
+⸻
+
+17. Security Testing & Audit
+	•	Static Analysis: PMD + sf-scanner on PRs; OWASP rulesets
+	•	Unit/Integration: Apex and Jest with coverage reports; target ≥95%
+	•	DAST: authenticated API smoke tests against scratch/sandbox
+	•	Audit Trails: admin actions, policy edits, package updates logged
+
+⸻
+
+18. Localization & Internationalization
+	•	Labels: all UI strings externalized to Custom Labels
+	•	Translations: Translation Workbench support; date/number formats localized
+	•	Accessibility: ARIA attributes; keyboard navigation; SLDS contrast
+
+⸻
+
+19. Documentation & Support
+	•	Docs: /docs/ for architecture, compliance, and operations
+	•	Troubleshooting: common errors and remediation steps in /docs
+	•	Support: contact in SUPPORT.md; incident SLAs in /docs/compliance/incident-response.md
+
+⸻
+
+20. Installation
+
+Scratch Org (developer testing)
+
+sfdx force:auth:web:login -d -a DevHub
+sfdx force:org:create -f config/project-scratch-def.json -a OGCCX -d 7
+sfdx force:source:push
+sfdx force:user:permset:assign -n OpsGuardian_Admin
+sfdx force:org:open -p /lightning/app/OpsGuardian
+
+Sandbox (UAT)
+	1.	Install package: https://test.salesforce.com/packaging/installPackage.apexp?p0=XXXXXXXX
+	2.	Assign OpsGuardian_Admin permission set
+	3.	Upload Chart.js static resource if dashboards are blank
+
+Production (AppExchange)
+	•	AppExchange link (when published)
+	•	Supports upgrade via 2GP; CMDT/data preserved
+
+⸻
+
+21. Usage
+	•	Open the OpsGuardian Lightning app for dashboards and tiles
+	•	Review events in OpsGuardian_History__c and Platform Event subscriptions
+	•	Configure thresholds/policies in OG_Policy__mdt
+	•	Enable remediation flows and optional Slack/Jira plugins
+
+⸻
+
+22. Plugin SDK
+
+Interface
+
+public interface OG_Plugin {
+  void send(OpsGuardian_History__c eventRec);
+  Boolean supports(String eventType, String severity);
+}
+
+Registration
+	•	Implement OG_Plugin in a namespaced class
+	•	Add CMDT record OG_Plugin_Config__mdt with class name and filters
+	•	Service factory discovers enabled plugins and invokes send(...)
+
+⸻
+
+23. Release Management & Rollback
+	•	Versioning: SemVer; package release notes and change logs
+	•	Upgrades: 2GP managed package; CMDT and data preserved; perms auto-updated
+	•	Rollback: tagged package versions; uninstall/restore procedures documented
+
+⸻
+
+24. Upgrade & Migration
+	•	Breaking changes are versioned; deprecations maintained for two minor releases
+	•	Rollback: uninstall latest package, reinstall N-1; re-assign perm sets
+	•	Post-upgrade: run /scripts/post-upgrade.apex to backfill new fields
+
+⸻
+
+25. Troubleshooting & FAQ
+	•	Charts are blank
+Upload Chart.js static resource; clear app cache.
+	•	FLS/DML exceptions during ingest
+Verify OpsGuardian_Admin field-level perms; confirm stripInaccessible is deployed.
+	•	429 responses from ingest
+Org is rate-limited; inspect Platform Cache keys rl:*; lower event volume or increase quota.
+	•	Einstein scoring not showing
+Enable Prediction Builder model and grant user permission set license.
+
+⸻
+
+26. Quality Gates
+
+(Enable these when your pipeline emits artifacts.)
+	•	Build: 
+
+	•	Coverage: 
+
+	•	Security Scan: 
+
+
+⸻
+
+27. License
+
+MIT License. See LICENSE.
+
+⸻
+
+28. Appendix
+
+Demo Data
+
+sfdx force:data:tree:import -p data/OG_History-plan.json
+sfdx force:data:tree:import -p data/OG_Flow-plan.json
+
+CI/CD example: .github/workflows/deploy.yml
+
+name: Validate & Deploy
+on: [push]
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: sfdx-actions/setup-sfdx@v2
-      - name: Auth Sandbox JWT
-        run: sfdx auth:jwt:grant --clientid ${{ secrets.CONSUMER_KEY }} --jwtkeyfile server.key --username ${{ secrets.SF_USERNAME }} --instanceurl https://test.salesforce.com -a SANDBOX
-      - name: Deploy Metadata
-        run: sfdx project deploy start -o SANDBOX
-```
+      - uses: actions/checkout@v3
+      - name: Install Salesforce CLI
+        run: npm install sfdx-cli --global
+      - name: Auth Dev Hub
+        run: sfdx force:auth:sfdxurl:store -f ./auth/devhub.json -a DevHub
+      - name: Push
+        run: sfdx force:source:push -u DevHub
+      - name: Apex Tests
+        run: sfdx force:apex:test:run --codecoverage --resultformat human --wait 10
+      - name: Static Scan
+        run: sfdx scanner:run --target force-app --format table
 
----
+Compliance artifacts
+	•	/docs/compliance/encryption.md
+	•	/docs/compliance/incident-response.md
+	•	/docs/compliance/deletion-policy.md
+	•	/docs/compliance/data-flow.md
+	•	COMPLIANCE.md (consolidated)
 
-## 14. Data Model & Metadata Assets
-
-### 14.1 Custom Object: Flow\_Execution\_\_c
-
-Fields: Flow\_Name\_\_c (Text), Primary\_Record\_\_c (Lookup), Run\_Time\_\_c (DateTime), Status\_\_c (Picklist Success|Fault), CPU\_\_c (Number), SOQL\_\_c (Number), DML\_\_c (Number).
-
-### 14.2 Platform Event: Performance\_Alert\_\_e
-
-Fields: Metric\_\_c, Value\_\_c, Threshold\_\_c, Severity\_\_c (Formula), Context\_Record\_\_c (Text 18), Stack\_\_c (Long Text 131k optional).
-
-### 14.3 Optional Custom Object: Deployment\_\_c (if not using DevOps Center API)
-
-Fields: Stage\_\_c, Result\_\_c, Duration\_Seconds\_\_c, Components\_\_c, Timestamp\_\_c.
-
----
-
-## 15. Extensibility Patterns
-
-* Add Health Check ingestion: nightly batch reads Setup Health Check scores into CCX.
-* Einstein GPT summarizer: weekly digest of top 5 CPU offenders.
-* Data Cloud integration: correlate high-limit usage with segments or data spikes.
-* Shield Event Monitoring: feed API transaction counts into charts.
-* Installable AppExchange packaging: convert to unlocked package for upgrade paths.
-
----
-
+References
+	•	Salesforce Shield: https://www.salesforce.com/platform/shield/
+	•	Security best practices: https://security.salesforce.com/security-best-practices
+	•	Event Monitoring overview: https://help.salesforce.com/s/articleView?id=xcloud.real_time_event_monitoring_overview.htm&type=
