@@ -14,9 +14,7 @@ jobs:
         with:
           node-version: "20"
       - name: Install tooling
-        run: |
-          npm init -y >/dev/null 2>&1 || true
-          npm i -D prettier eslint @lwc/eslint-plugin-lwc eslint-config-prettier
+        run: npm install
       - name: Prettier check
         run: npx prettier -c "**/*.{js,ts,html,md,json,yml,yaml,xml}"
       - name: Lint (if src exists)
