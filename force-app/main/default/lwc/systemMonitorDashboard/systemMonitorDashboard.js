@@ -1,7 +1,7 @@
 import { LightningElement, track } from 'lwc';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import fetchGovernorStats from '@salesforce/apex/LimitMetrics.fetchGovernorStats';
 import evaluateAndPublish from '@salesforce/apex/PerformanceRuleEngine.evaluateAndPublish';
+import { showErrorToast } from 'c/utils/toastNotifications';
 
 export default class SystemMonitorDashboard extends LightningElement {
   @track stats;
@@ -34,21 +34,11 @@ export default class SystemMonitorDashboard extends LightningElement {
     } catch (e) {
       /* eslint-disable no-console */
       console.error(e);
-      this.showError('Failed to load governor stats', e.body?.message || e.message);
+      showErrorToast(this, 'Failed to load governor stats', e.body?.message || e.message);
     }
   }
 
   refresh() {
     this.load();
-  }
-
-  showError(title, message) {
-    this.dispatchEvent(
-      new ShowToastEvent({
-        title: title,
-        message: message,
-        variant: 'error'
-      })
-    );
   }
 }
