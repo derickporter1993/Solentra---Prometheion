@@ -47,15 +47,15 @@
                     </div>
                   </div>
                   <div class="slds-col slds-size_1-of-3 slds-text-align_right">
-                    <div class={getSeverityClass}>
+                    <div class={flow.severityClass}>
                       <div class="slds-text-heading_medium">{flow.avgValue}ms</div>
                       <div class="slds-text-body_small">
                         {flow.percentOfLimit}% of limit
                       </div>
                     </div>
-                    <div class={getTrendClass}>
+                    <div class={flow.trendClass}>
                       <lightning-icon
-                        icon-name={getTrendIcon}
+                        icon-name={flow.trendIcon}
                         size="x-small"
                         class="slds-m-right_xx-small"
                       ></lightning-icon>
@@ -92,7 +92,7 @@
                     </div>
                   </div>
                   <div class="slds-col slds-size_1-of-3 slds-text-align_right">
-                    <div class={getSeverityClass}>
+                    <div class={cpuClass.severityClass}>
                       <div class="slds-text-heading_medium">{cpuClass.avgValue}ms</div>
                       <div class="slds-text-body_small">
                         {cpuClass.percentOfLimit}% of limit
@@ -126,13 +126,13 @@
                     </div>
                   </div>
                   <div class="slds-col slds-size_1-of-3 slds-text-align_right">
-                    <div class={getSeverityClass}>
+                    <div class={api.severityClass}>
                       <div class="slds-text-heading_medium">{api.avgValue}</div>
                       <div class="slds-text-body_small">{api.percentOfLimit}% used</div>
                     </div>
-                    <div class={getTrendClass}>
+                    <div class={api.trendClass}>
                       <lightning-icon
-                        icon-name={getTrendIcon}
+                        icon-name={api.trendIcon}
                         size="x-small"
                         class="slds-m-right_xx-small"
                       ></lightning-icon>

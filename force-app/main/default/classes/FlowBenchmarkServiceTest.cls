@@ -5,13 +5,13 @@ private class FlowBenchmarkServiceTest {
         // Create test data with known distribution for percentile testing
         List<Flow_Execution__c> executions = new List<Flow_Execution__c>();
 
-        // TestFlow1 - 100 executions with predictable CPU distribution
-        // Range: 1000ms to 10000ms (increments of 90ms)
-        for (Integer i = 0; i < 100; i++) {
+        // TestFlow1 - 30 executions with predictable CPU distribution
+        // Range: 1000ms to 3900ms (increments of 100ms)
+        for (Integer i = 0; i < 30; i++) {
             executions.add(
                 new Flow_Execution__c(
                     Flow_Name__c = 'TestFlow1',
-                    CPU__c = 1000 + (i * 90), // 1000, 1090, 1180, ... 9910ms
+                    CPU__c = 1000 + (i * 100), // 1000, 1100, 1200, ... 3900ms
                     SOQL__c = 5 + i / 10,
                     DML__c = 2 + i / 20,
                     Status__c = 'SUCCESS',

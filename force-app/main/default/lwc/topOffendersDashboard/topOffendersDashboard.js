@@ -51,40 +51,6 @@ export default class TopOffendersDashboard extends LightningElement {
     return new Date(this.topOffendersData.lastUpdated).toLocaleString();
   }
 
-  // Helper methods for formatting
-  getSeverityClass(severity) {
-    switch (severity) {
-      case "Critical":
-        return "slds-text-color_error slds-text-title_bold";
-      case "Warning":
-        return "slds-text-color_warning slds-text-title_bold";
-      default:
-        return "slds-text-color_success";
-    }
-  }
-
-  getTrendIcon(trend) {
-    switch (trend) {
-      case "Improving":
-        return "utility:trending";
-      case "Degrading":
-        return "utility:warning";
-      default:
-        return "utility:right";
-    }
-  }
-
-  getTrendClass(trend) {
-    switch (trend) {
-      case "Improving":
-        return "slds-text-color_success";
-      case "Degrading":
-        return "slds-text-color_error";
-      default:
-        return "";
-    }
-  }
-
   handleRefresh() {
     this.loadTopOffenders();
   }

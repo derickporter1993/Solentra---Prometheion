@@ -16,6 +16,12 @@ public with sharing class TopOffendersController {
         public Decimal percentOfLimit;
         @AuraEnabled
         public String trend; // 'Improving', 'Stable', 'Degrading'
+        @AuraEnabled
+        public String severityClass;
+        @AuraEnabled
+        public String trendClass;
+        @AuraEnabled
+        public String trendIcon;
     }
 
     public class TopOffendersData {
@@ -77,6 +83,9 @@ public with sharing class TopOffendersController {
             metric.percentOfLimit = (metric.avgValue / 10000) * 100; // CPU limit is 10,000ms
             metric.severity = calculateSeverity(metric.percentOfLimit);
             metric.trend = calculateTrend(metric.name, 'Flow', startDate);
+            metric.severityClass = getSeverityClass(metric.severity);
+            metric.trendClass = getTrendClass(metric.trend);
+            metric.trendIcon = getTrendIcon(metric.trend);
             results.add(metric);
         }
 
@@ -116,6 +125,9 @@ public with sharing class TopOffendersController {
             metric.percentOfLimit = (metric.avgValue / 10000) * 100;
             metric.severity = calculateSeverity(metric.percentOfLimit);
             metric.trend = 'Stable'; // Simplified for now
+            metric.severityClass = getSeverityClass(metric.severity);
+            metric.trendClass = getTrendClass(metric.trend);
+            metric.trendIcon = getTrendIcon(metric.trend);
             results.add(metric);
         }
 
@@ -153,6 +165,9 @@ public with sharing class TopOffendersController {
             metric.percentOfLimit = (metric.avgValue / (totalLimit / snapshots.size())) * 100;
             metric.severity = calculateSeverity(metric.percentOfLimit);
             metric.trend = calculateApiTrend(snapshots);
+            metric.severityClass = getSeverityClass(metric.severity);
+            metric.trendClass = getTrendClass(metric.trend);
+            metric.trendIcon = getTrendIcon(metric.trend);
             results.add(metric);
         }
 
@@ -233,6 +248,48 @@ public with sharing class TopOffendersController {
             return 'Degrading';
         } else {
             return 'Stable';
+        }
+    }
+
+    private static String getSeverityClass(String severity) {
+        switch on severity {
+            when 'Critical' {
+                return 'slds-text-color_error slds-text-title_bold';
+            }
+            when 'Warning' {
+                return 'slds-text-color_warning slds-text-title_bold';
+            }
+            when else {
+                return 'slds-text-color_success';
+            }
+        }
+    }
+
+    private static String getTrendIcon(String trend) {
+        switch on trend {
+            when 'Improving' {
+                return 'utility:trending';
+            }
+            when 'Degrading' {
+                return 'utility:warning';
+            }
+            when else {
+                return 'utility:right';
+            }
+        }
+    }
+
+    private static String getTrendClass(String trend) {
+        switch on trend {
+            when 'Improving' {
+                return 'slds-text-color_success';
+            }
+            when 'Degrading' {
+                return 'slds-text-color_error';
+            }
+            when else {
+                return '';
+            }
         }
     }
 }
