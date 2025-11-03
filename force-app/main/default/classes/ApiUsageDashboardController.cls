@@ -40,25 +40,4 @@ public with sharing class ApiUsageDashboardController {
         }
         return out;
     }
-    
-    private class Row {
-        @AuraEnabled
-        public Datetime takenOn;
-        @AuraEnabled
-        public Integer used;
-        @AuraEnabled
-        public Integer limit;
-        @AuraEnabled
-        public Decimal percent;
-        @AuraEnabled
-        public Datetime projected;
-        
-        public Row(API_Usage_Snapshot__c snapshot) {
-            this.takenOn = snapshot.Taken_On__c;
-            this.used = (Integer) snapshot.Daily_Used__c;
-            this.limit = (Integer) snapshot.Daily_Limit__c;
-            this.percent = snapshot.Percent_Used__c;
-            this.projected = snapshot.Projected_Exhaustion__c;
-        }
-    }
 }
