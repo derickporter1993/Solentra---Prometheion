@@ -31,6 +31,8 @@ export class PollingManager {
 
   /**
    * Starts the polling timer if not already running and tab is visible
+   * Note: This method checks document visibility to avoid polling on hidden tabs.
+   * If called while tab is hidden, the timer will not start until visibility changes.
    */
   start() {
     if (!this.timer && document.visibilityState === "visible") {
