@@ -29,6 +29,18 @@ public with sharing class FlowBenchmarkService {
         public BenchmarkStats benchmarks;
     }
 
+    public class ExecutionWithRating {
+        @AuraEnabled
+        public Flow_Execution__c execution;
+        @AuraEnabled
+        public PerformanceRating rating;
+        
+        public ExecutionWithRating(Flow_Execution__c execution, PerformanceRating rating) {
+            this.execution = execution;
+            this.rating = rating;
+        }
+    }
+
     /**
      * Calculate benchmark statistics for a specific Flow
      */
@@ -123,7 +135,7 @@ public with sharing class FlowBenchmarkService {
      * Get performance rating for recent executions of a Flow
      */
     @AuraEnabled(cacheable=true)
-    public static List<Map<String, Object>> getRecentExecutionsWithRatings(
+    public static List<ExecutionWithRating> getRecentExecutionsWithRatings(
         String flowName,
         Integer limitSize,
         Integer daysBack
@@ -147,22 +159,20 @@ public with sharing class FlowBenchmarkService {
             LIMIT :Math.max(1, limitSize)
         ];
 
-        List<Map<String, Object>> results = new List<Map<String, Object>>();
+        List<ExecutionWithRating> results = new List<ExecutionWithRating>();
 
         for (Flow_Execution__c exec : executions) {
-            Map<String, Object> record = new Map<String, Object>();
-            record.put('execution', exec);
-
+            PerformanceRating execRating = new PerformanceRating();
+            
             if (benchmarks != null && exec.CPU__c != null) {
-                String execRating = getRating(exec.CPU__c, benchmarks);
-                record.put('rating', execRating);
-                record.put('percentileRank', calculatePercentileRank(exec.CPU__c, flowName, startDate));
+                execRating.rating = getRating(exec.CPU__c, benchmarks);
+                execRating.percentileRank = calculatePercentileRank(exec.CPU__c, flowName, startDate);
             } else {
-                record.put('rating', 'Unknown');
-                record.put('percentileRank', null);
+                execRating.rating = 'Unknown';
+                execRating.percentileRank = null;
             }
 
-            results.add(record);
+            results.add(new ExecutionWithRating(exec, execRating));
         }
 
         return results;
