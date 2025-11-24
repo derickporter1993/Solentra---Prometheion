@@ -247,12 +247,10 @@ Test org: Enterprise Edition, ~1M history rows, ~10k events/hour.
 
 ## Development
 
-If your repository is still named Ops-Gurdian, adjust the URL below.
-
 ```bash
 # Clone
-git clone https://github.com/derickporter1993/Ops-Guardian.git
-cd Ops-Guardian
+git clone https://github.com/derickporter1993/Ops-Gurdian.git
+cd Ops-Gurdian
 
 # Node deps (LWC/Jest/Eslint)
 npm install
