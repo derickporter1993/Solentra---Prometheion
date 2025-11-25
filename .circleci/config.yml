@@ -1,9 +1,6 @@
 version: 2.1
 
 # Define orbs for easier configuration
-orbs:
-  node: circleci/node@5.1.0
-
 # Define reusable executors with configurable resource classes
 executors:
   node-executor:
