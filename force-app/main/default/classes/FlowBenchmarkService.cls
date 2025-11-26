@@ -160,15 +160,17 @@ public with sharing class FlowBenchmarkService {
             ExecutionWithRating record = new ExecutionWithRating();
             record.execution = exec;
 
-            PerformanceRating perfRating = new PerformanceRating();
-            if (benchmarks != null && exec.CPU__c != null) {
-                perfRating.rating = getRating(exec.CPU__c, benchmarks);
-                perfRating.percentileRank = calculatePercentileRank(exec.CPU__c, flowName, startDate);
+            if (exec.CPU__c != null) {
+                record.rating = rateFlowExecution(flowName, exec.CPU__c, daysBack);
             } else {
+                PerformanceRating perfRating = new PerformanceRating();
                 perfRating.rating = 'Unknown';
+                perfRating.message = 'CPU time not available';
+                perfRating.trend = 'Unknown';
                 perfRating.percentileRank = null;
+                perfRating.benchmarks = benchmarks;
+                record.rating = perfRating;
             }
-            record.rating = perfRating;
 
             results.add(record);
         }
