@@ -25,7 +25,7 @@ jobs:
         run: npm ci --legacy-peer-deps
 
       - name: Security Audit
-        run: npm audit --audit-level=high || echo "⚠️  Security vulnerabilities found"
+        run: npm audit --audit-level=high
 
       - name: Format Check
         run: npm run fmt:check || echo "⚠️  Format check failed"
