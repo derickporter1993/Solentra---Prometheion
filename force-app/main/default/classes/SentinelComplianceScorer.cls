@@ -32,8 +32,12 @@ public with sharing class SentinelComplianceScorer {
     }
 
     private static Decimal calculateAutomationSafetyScore() {
-        // Simplified scoring logic - check for triggers with proper error handling
-        return 80.0; // Default for now
+        // Scoring logic: Use number of active triggers and number with descriptions as a proxy for safety
+        Integer totalTriggers = [SELECT COUNT() FROM ApexTrigger WHERE Status = 'Active'];
+        Integer describedTriggers = [SELECT COUNT() FROM ApexTrigger WHERE Status = 'Active' AND Description != null];
+
+        if (totalTriggers == 0) return 50.0;
+        return (Decimal.valueOf(describedTriggers) / Decimal.valueOf(totalTriggers)) * 100;
     }
 
     private static Decimal calculateEvidenceScore() {
