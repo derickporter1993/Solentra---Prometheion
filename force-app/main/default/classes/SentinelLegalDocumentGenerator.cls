@@ -1,60 +1,78 @@
+/**
+ * SentinelLegalDocumentGenerator - Legal Document Generator (Stub)
+ * 
+ * Generates compliance and legal documents for audit purposes.
+ * Stub implementation - full version requires Big Object.
+ * 
+ * @author Solentra
+ * @version 1.0 (Stub)
+ */
 public with sharing class SentinelLegalDocumentGenerator {
-    @AuraEnabled
-    public static String generateLegalAttestation(String framework, Date startDate, Date endDate) {
-        try {
-            // Generate compliance evidence pack
-            String documentContent = generateEvidencePackContent(framework, startDate, endDate);
-
-            // Create ContentVersion
-            ContentVersion cv = new ContentVersion();
-            cv.Title = framework + '_Evidence_Pack_' + System.today().format();
-            cv.PathOnClient = cv.Title + '.txt';
-            cv.VersionData = Blob.valueOf(documentContent);
-            cv.IsMajorVersion = true;
-            insert cv;
-
-            // Get ContentDocumentId
-            cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id];
-            return cv.ContentDocumentId;
-        } catch (Exception e) {
-            throw new AuraHandledException('Error generating evidence pack: ' + e.getMessage());
-        }
+    
+    /**
+     * Generate a compliance report
+     * Stub implementation
+     */
+    public static String generateComplianceReport(String framework, Date startDate, Date endDate) {
+        List<String> content = new List<String>();
+        content.add('COMPLIANCE REPORT');
+        content.add('Framework: ' + framework);
+        content.add('Period: ' + startDate.format() + ' to ' + endDate.format());
+        content.add('Generated: ' + Datetime.now().format());
+        content.add('');
+        content.add('Note: Full compliance reporting requires Solentra Big Object deployment.');
+        content.add('');
+        content.add('Current Status: Setup Audit Trail Active');
+        
+        // Get basic audit trail stats
+        Integer auditCount = [SELECT COUNT() FROM SetupAuditTrail WHERE CreatedDate >= :startDate AND CreatedDate <= :endDate];
+        content.add('Configuration Changes: ' + auditCount);
+        
+        return String.join(content, '\n');
     }
-
-    private static String generateEvidencePackContent(String framework, Date startDate, Date endDate) {
-        StringBuilder content = new StringBuilder();
-        content.append('COMPLIANCE EVIDENCE PACK\n');
-        content.append('========================\n\n');
-        content.append('Framework: ' + framework + '\n');
-        content.append('Generated: ' + System.now() + '\n');
-        content.append('Period: ' + startDate + ' to ' + endDate + '\n\n');
-
-        // Query compliance graph entries
-        List<Sentinel_Compliance_Graph__b> entries = [
-            SELECT Graph_Node_Id__c, Entity_Type__c, Risk_Score__c, Drift_Category__c,
-                   Timestamp__c, Human_Adjudicated__c
-            FROM Sentinel_Compliance_Graph__b
-            WHERE Compliance_Framework__c = :framework
-            AND Timestamp__c >= :startDate
-            AND Timestamp__c <= :endDate
-            ORDER BY Timestamp__c DESC
-            LIMIT 1000
-        ];
-
-        content.append('Total Events: ' + entries.size() + '\n\n');
-        content.append('DETAILED AUDIT LOG\n');
-        content.append('==================\n\n');
-
-        for (Sentinel_Compliance_Graph__b entry : entries) {
-            content.append('Node: ' + entry.Graph_Node_Id__c + '\n');
-            content.append('Type: ' + entry.Entity_Type__c + '\n');
-            content.append('Risk: ' + entry.Risk_Score__c + '/10\n');
-            content.append('Category: ' + entry.Drift_Category__c + '\n');
-            content.append('Timestamp: ' + entry.Timestamp__c + '\n');
-            content.append('Human Reviewed: ' + entry.Human_Adjudicated__c + '\n');
-            content.append('---\n\n');
-        }
-
-        return content.toString();
+    
+    /**
+     * Generate an audit evidence package
+     * Stub implementation
+     */
+    public static String generateAuditEvidence(String framework, String quarter) {
+        List<String> content = new List<String>();
+        content.add('AUDIT EVIDENCE PACKAGE');
+        content.add('Framework: ' + framework);
+        content.add('Quarter: ' + quarter);
+        content.add('Generated: ' + Datetime.now().format());
+        content.add('');
+        content.add('Evidence Categories:');
+        content.add('- Access Control Logs: Available via Setup Audit Trail');
+        content.add('- Configuration Changes: Available via Setup Audit Trail');
+        content.add('- User Activity: Available via Login History');
+        content.add('');
+        content.add('Note: Enhanced evidence collection requires Solentra Big Object deployment.');
+        
+        return String.join(content, '\n');
+    }
+    
+    /**
+     * Generate a risk assessment document
+     * Stub implementation
+     */
+    public static String generateRiskAssessment() {
+        Map<String, Object> scoreData = SolentraComplianceScorer.calculateComplianceScore();
+        
+        List<String> content = new List<String>();
+        content.add('RISK ASSESSMENT');
+        content.add('Generated: ' + Datetime.now().format());
+        content.add('');
+        content.add('Overall Compliance Score: ' + scoreData.get('overallScore'));
+        content.add('Risk Level: ' + scoreData.get('riskLevel'));
+        content.add('');
+        content.add('Framework Scores:');
+        content.add('- HIPAA: ' + scoreData.get('hipaaScore'));
+        content.add('- SOC2: ' + scoreData.get('soc2Score'));
+        content.add('- NIST: ' + scoreData.get('nistScore'));
+        content.add('- FedRAMP: ' + scoreData.get('fedrampScore'));
+        content.add('- GDPR: ' + scoreData.get('gdprScore'));
+        
+        return String.join(content, '\n');
     }
 }
