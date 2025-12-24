@@ -866,13 +866,21 @@ The `force-app/main/default/lwc/jsconfig.json` file is tracked in version contro
 - Enables experimental decorators for LWC
 - Configures path mappings for component imports (`c/*`)
 - Includes LWC type definitions from `.sfdx/typings/`
-- Uses `"types": []` to prevent TypeScript from auto-scanning `node_modules/@types/` (avoids missing type definition errors)
+- Uses `"types": ["jest"]` to explicitly include Jest types while preventing TypeScript from auto-scanning other `node_modules/@types/` packages (avoids missing type definition errors for packages like `babel__core`, `estree`, etc.)
 
-If you encounter TypeScript errors related to missing type definitions (e.g., `babel__core`, `estree`), ensure you're using the committed `jsconfig.json` and run:
+**Why this configuration?**
+- Explicitly including `["jest"]` ensures Jest types are available for test files
+- Prevents TypeScript from auto-scanning all `@types/*` packages, which can cause errors for partially installed or conflicting type definitions (e.g., `babel__core`, `estree`, `jsdom`)
+- LWC type definitions are still loaded via the `include` path
+- Requires `@types/jest` to be installed (included in `package.json` devDependencies)
+
+**Note**: The `@types/jest` package is required for this configuration. If you encounter TypeScript errors about missing Jest types, ensure dependencies are installed:
 
 ```bash
 npm install
 ```
+
+This will install `@types/jest` along with other project dependencies.
 
 ### Running Tests
 

@@ -31,6 +31,7 @@
     "@salesforce/eslint-plugin-aura": "^3.0.0",
     "@salesforce/eslint-plugin-lightning": "^2.0.0",
     "@salesforce/sfdx-lwc-jest": "^7.1.2",
+    "@types/jest": "^30.0.0",
     "eslint": "^9.29.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.31.0",
@@ -56,7 +57,14 @@
     "type": "git",
     "url": "git+https://github.com/derickporter1993/Solentra.git"
   },
-  "keywords": ["salesforce", "compliance", "ai-governance", "audit", "security", "solentra"],
+  "keywords": [
+    "salesforce",
+    "compliance",
+    "ai-governance",
+    "audit",
+    "security",
+    "solentra"
+  ],
   "author": "Solentra Team",
   "license": "MIT",
   "engines": {
