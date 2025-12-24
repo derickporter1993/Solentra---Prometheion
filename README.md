@@ -158,6 +158,21 @@ Solentra/
 
 ## Development
 
+### TypeScript/IDE Configuration
+
+The `force-app/main/default/lwc/jsconfig.json` file is tracked in version control to ensure consistent IDE behavior across all developers. This file:
+
+- Enables experimental decorators for LWC
+- Configures path mappings for component imports (`c/*`)
+- Includes LWC type definitions from `.sfdx/typings/`
+- Uses `"types": []` to prevent TypeScript from auto-scanning `node_modules/@types/` (avoids missing type definition errors)
+
+If you encounter TypeScript errors related to missing type definitions (e.g., `babel__core`, `estree`), ensure you're using the committed `jsconfig.json` and run:
+
+```bash
+npm install
+```
+
 ### Running Tests
 ```bash
 # Run all LWC tests
