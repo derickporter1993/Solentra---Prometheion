@@ -1,6 +1,6 @@
 // Execute via: sf apex run -f scripts/migrate-from-opsguardian.apex -o target-org
 
-System.debug('🔄 Starting migration from OpsGuardian to Sentinel...');
+System.debug('🔄 Starting migration from OpsGuardian to Prometheion...');
 
 // Check if OpsGuardian_History__c exists
 Schema.DescribeSObjectResult[] describeResults = Schema.describeSObjects(new String[]{'OpsGuardian_History__c'});
@@ -18,14 +18,14 @@ List<SObject> oldRecords = Database.query(
 );
 
 Integer migratedCount = 0;
-List<Sentinel_Compliance_Graph__b> allNewNodes = new List<Sentinel_Compliance_Graph__b>();
+List<Prometheion_Compliance_Graph__b> allNewNodes = new List<Prometheion_Compliance_Graph__b>();
 
 for (SObject old : oldRecords) {
     String eventType = String.valueOf(old.get('Event_Type__c'));
     String recordId = String.valueOf(old.get('Id'));
     String severity = String.valueOf(old.get('Severity__c'));
 
-    String nodeHash = SentinelGraphIndexer.generateDeterministicHash(
+    String nodeHash = PrometheionGraphIndexer.generateDeterministicHash(
         eventType != null ? eventType : 'UNKNOWN',
         recordId,
         'SOC2'
@@ -36,7 +36,7 @@ for (SObject old : oldRecords) {
     else if (severity == 'Warning') riskScore = 6.0;
     else if (severity == 'Info') riskScore = 3.0;
 
-    allNewNodes.add(new Sentinel_Compliance_Graph__b(
+    allNewNodes.add(new Prometheion_Compliance_Graph__b(
         Graph_Node_Id__c = nodeHash,
         Timestamp__c = (DateTime)old.get('Timestamp__c'),
         Entity_Type__c = eventType,
@@ -63,4 +63,4 @@ if (!allNewNodes.isEmpty()) {
 }
 
 System.debug('🎉 Migration complete! Total records migrated: ' + migratedCount);
-System.debug('📋 Next: Verify data in Sentinel Compliance Graph Big Object');
+System.debug('📋 Next: Verify data in Prometheion Compliance Graph Big Object');

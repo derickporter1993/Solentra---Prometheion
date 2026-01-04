@@ -1,12 +1,12 @@
 public with sharing class DeploymentMetrics {
-    private class DeployRow {
+    public class DeployRow {
         @AuraEnabled public String name;
         @AuraEnabled public String status;
         @AuraEnabled public Datetime startedOn;
         @AuraEnabled public Datetime finishedOn;
         @AuraEnabled public Integer testsPassed;
         @AuraEnabled public Integer testsFailed;
-        
+
         public DeployRow(Deployment_Job__c record) {
             this.name = record.Name;
             this.status = record.Status__c;
@@ -16,7 +16,7 @@ public with sharing class DeploymentMetrics {
             this.testsFailed = (Integer)record.Tests_Failed__c;
         }
     }
-    
+
     @AuraEnabled(cacheable=true)
     public static List<DeployRow> recent(Integer limitSize) {
         Integer maxRecords = Math.max(1, limitSize);

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <deploymentStatus>Deployed</deploymentStatus>
+    <sharingModel>ReadWrite</sharingModel>
     <label>Alert</label>
     <pluralLabel>Alerts</pluralLabel>
     <nameField>
@@ -74,13 +75,15 @@
         <fullName>Description__c</fullName>
         <label>Description</label>
         <type>LongTextArea</type>
-        <length>32768</length>
+        <length>
+        32768</length>
         <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>Acknowledged__c</fullName>
         <label>Acknowledged</label>
         <type>Checkbox</type>
-        <defaultValue>false</defaultValue>
+        <defaultValue>
+        false</defaultValue>
     </fields>
 </CustomObject>

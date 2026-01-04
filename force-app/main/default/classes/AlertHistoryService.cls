@@ -1,11 +1,11 @@
 public with sharing class AlertHistoryService {
-    private class AlertRow {
+    public class AlertRow {
         @AuraEnabled public String metric;
         @AuraEnabled public Decimal value;
         @AuraEnabled public Decimal threshold;
         @AuraEnabled public String contextRecordId;
         @AuraEnabled public Datetime createdDate;
-        
+
         public AlertRow(Performance_Alert_History__c record) {
             this.metric = record.Metric__c;
             this.value = record.Value__c;
@@ -14,7 +14,7 @@ public with sharing class AlertHistoryService {
             this.createdDate = record.CreatedDate;
         }
     }
-    
+
     @AuraEnabled(cacheable=true)
     public static List<AlertRow> recent(Integer limitSize) {
         Integer maxRecords = Math.max(1, limitSize);

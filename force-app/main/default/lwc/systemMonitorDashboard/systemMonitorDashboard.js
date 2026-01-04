@@ -9,11 +9,19 @@ export default class SystemMonitorDashboard extends LightningElement {
   pollingManager = null;
 
   get cpuPct() {
-    return Math.min(100, Math.round((this.stats?.cpuMs || 0) / 100));
+    return this.stats?.cpuPercentUsed || 0;
   }
 
   get heapPct() {
-    return Math.min(100, Math.round((this.stats?.heapKb || 0) / 50));
+    return this.stats?.heapPercentUsed || 0;
+  }
+
+  get soqlPct() {
+    return this.stats?.soqlPercentUsed || 0;
+  }
+
+  get dmlPct() {
+    return this.stats?.dmlPercentUsed || 0;
   }
 
   connectedCallback() {

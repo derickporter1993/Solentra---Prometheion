@@ -1,57 +1,74 @@
 public with sharing class SlackNotifier {
+    /**
+     * @deprecated Use notifyAsyncQueueable instead for better error handling and retry logic
+     */
     @future(callout=true)
+    @Deprecated
     public static void notifyAsync(String text) {
+        // Maintain backward compatibility, delegate to Queueable
+        notifyAsyncQueueable(text);
+    }
+
+    /**
+     * Send Slack notification using Queueable (recommended approach)
+     * Provides retry logic, error handling, and better monitoring
+     */
+    public static void notifyAsyncQueueable(String text) {
+        if (String.isBlank(text)) {
+            System.debug(LoggingLevel.WARN, 'SlackNotifier: Empty text provided, skipping notification');
+            return;
+        }
+
         try {
-            HttpRequest req = new HttpRequest();
-            req.setEndpoint('callout:Slack_Webhook');
-            req.setMethod('POST');
-            req.setHeader('Content-Type', 'application/json');
-            req.setBody(JSON.serialize(new Map<String, Object>{ 'text' => text }));
-            HttpResponse res = new Http().send(req);
-            if (res.getStatusCode() < 200 || res.getStatusCode() >= 300) {
-                System.debug(
-                    LoggingLevel.ERROR,
-                    'Slack notify failed with status ' +
-                        res.getStatusCode() +
-                        ': ' +
-                        res.getStatus()
-                );
-            }
+            Map<String, Object> payload = new Map<String, Object>{ 'text' => text };
+            String jsonPayload = JSON.serialize(payload);
+            String correlationId = 'TEXT-' + System.now().getTime() + '-' + Crypto.getRandomInteger();
+
+            PrometheionSlackNotifierQueueable job = new PrometheionSlackNotifierQueueable(jsonPayload, correlationId);
+            System.enqueueJob(job);
         } catch (Exception e) {
-            System.debug(LoggingLevel.ERROR, 'Slack notify exception: ' + e.getMessage());
+            System.debug(LoggingLevel.ERROR, 'SlackNotifier: Failed to enqueue notification. Error: ' + e.getMessage());
         }
     }
 
+    /**
+     * @deprecated Use notifyRichAsyncQueueable instead for better error handling and retry logic
+     */
     @future(callout=true)
+    @Deprecated
     public static void notifyRichAsync(String jsonPayload) {
+        // Maintain backward compatibility, delegate to Queueable
+        notifyRichAsyncQueueable(jsonPayload);
+    }
+
+    /**
+     * Send rich Slack notification using Queueable (recommended approach)
+     * Provides retry logic, payload validation, and better error handling
+     */
+    public static void notifyRichAsyncQueueable(String jsonPayload) {
+        if (String.isBlank(jsonPayload)) {
+            System.debug(LoggingLevel.WARN, 'SlackNotifier: Empty payload provided, skipping notification');
+            return;
+        }
+
         try {
-            HttpRequest req = new HttpRequest();
-            req.setEndpoint('callout:Slack_Webhook');
-            req.setMethod('POST');
-            req.setHeader('Content-Type', 'application/json');
-            req.setBody(jsonPayload);
-            HttpResponse res = new Http().send(req);
-            if (res.getStatusCode() < 200 || res.getStatusCode() >= 300) {
-                System.debug(
-                    LoggingLevel.ERROR,
-                    'Slack rich notify failed with status ' +
-                        res.getStatusCode() +
-                        ': ' +
-                        res.getStatus()
-                );
-            }
+            // Validate JSON format
+            JSON.deserializeUntyped(jsonPayload);
+
+            String correlationId = 'RICH-' + System.now().getTime() + '-' + Crypto.getRandomInteger();
+            PrometheionSlackNotifierQueueable job = new PrometheionSlackNotifierQueueable(jsonPayload, correlationId);
+            System.enqueueJob(job);
+        } catch (JSONException e) {
+            System.debug(LoggingLevel.ERROR, 'SlackNotifier: Invalid JSON payload. Error: ' + e.getMessage());
         } catch (Exception e) {
-            System.debug(
-                LoggingLevel.ERROR,
-                'Slack rich notify exception: ' + e.getMessage()
-            );
+            System.debug(LoggingLevel.ERROR, 'SlackNotifier: Failed to enqueue rich notification. Error: ' + e.getMessage());
         }
     }
 
     public static void notifyPerformanceEvent(Performance_Alert__e evt) {
         // Use rich formatting for performance alerts
         String jsonPayload = buildPerformanceAlertBlocks(evt);
-        notifyRichAsync(jsonPayload);
+        notifyRichAsyncQueueable(jsonPayload);
     }
 
     // Build Slack Block Kit JSON for performance alerts
@@ -77,7 +94,7 @@ public with sharing class SlackNotifier {
         payload.put(
             'text',
             emoji +
-            ' Sentinel Alert: ' +
+            ' Prometheion Alert: ' +
             evt.Metric__c +
             ' at ' +
             percentOfLimit.setScale(1) +
@@ -192,7 +209,7 @@ public with sharing class SlackNotifier {
         attachment.put('color', color);
         attachment.put(
             'footer',
-            'Sentinel | ' +
+            'Prometheion | ' +
             Datetime.now().format('yyyy-MM-dd HH:mm:ss')
         );
         attachments.add(attachment);
@@ -208,6 +225,18 @@ public with sharing class SlackNotifier {
         String rating,
         Decimal percentileRank
     ) {
+        // Validate inputs
+        if (String.isBlank(flowName)) {
+            System.debug(LoggingLevel.WARN, 'SlackNotifier: Empty flowName provided, skipping notification');
+            return;
+        }
+        if (cpuTime == null || cpuTime < 0) {
+            System.debug(LoggingLevel.WARN, 'SlackNotifier: Invalid cpuTime provided, skipping notification');
+            return;
+        }
+        if (String.isBlank(rating)) {
+            rating = 'Unknown';
+        }
         Map<String, Object> payload = new Map<String, Object>();
 
         String emoji = rating == 'Critical' ? '🔴' : rating == 'Slow' ? '🟡' : 'ℹ️';
@@ -259,6 +288,6 @@ public with sharing class SlackNotifier {
 
         payload.put('blocks', blocks);
 
-        notifyRichAsync(JSON.serialize(payload));
+        notifyRichAsyncQueueable(JSON.serialize(payload));
     }
 }

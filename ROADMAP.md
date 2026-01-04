@@ -1,8 +1,8 @@
-# Sentinel Product Roadmap
+# Prometheion Product Roadmap
 
-**Last Updated**: 2025-01-24
+**Last Updated**: 2025-12-25
 
-This roadmap outlines Sentinel's evolution from a compliance drift detector to a comprehensive Salesforce governance platform.
+This roadmap outlines Prometheion's evolution from a compliance drift detector to a comprehensive Salesforce governance platform.
 
 ---
 
@@ -10,7 +10,7 @@ This roadmap outlines Sentinel's evolution from a compliance drift detector to a
 
 **Make every Salesforce org audit-ready by default** — no matter the size, industry, or compliance requirements.
 
-Sentinel starts as a **compliance drift guardrail** for regulated organizations, then expands to automated remediation, multi-org governance, and policy-as-code enforcement.
+Prometheion starts as a **compliance drift guardrail** for regulated organizations, then expands to automated remediation, multi-org governance, and policy-as-code enforcement.
 
 ---
 
@@ -25,7 +25,7 @@ Sentinel starts as a **compliance drift guardrail** for regulated organizations,
 
 ## ✅ v1.0 — Compliance Drift Baseline (CURRENT)
 
-**Released**: 2025-01-15
+**Released**: 2025-12-25
 **Status**: ✅ Complete
 
 ### Goals
@@ -49,7 +49,7 @@ Sentinel starts as a **compliance drift guardrail** for regulated organizations,
 
 ### User Feedback Themes (Expected)
 - ❓ "Can I customize the Audit Readiness Score?" → v2.0
-- ❓ "Can Sentinel prevent changes, not just detect them?" → v3.0
+- ❓ "Can Prometheion prevent changes, not just detect them?" → v3.0
 - ❓ "Can I monitor multiple orgs from one dashboard?" → v2.0
 - ❓ "Can you explain WHY a change is risky?" → v1.5
 
@@ -156,19 +156,19 @@ Compliance Impact: Reduces risk score by 20 points
 ---
 
 #### 3. **Jira Integration** 🎫
-**Problem**: Compliance teams work in Jira, but Sentinel alerts live in Salesforce/Slack.
+**Problem**: Compliance teams work in Jira, but Prometheion alerts live in Salesforce/Slack.
 **Solution**: Auto-create Jira tickets for high-risk changes, with bidirectional sync.
 
 **Features**:
 - Create Jira ticket when drift event detected
 - Attach compliance evidence (audit logs, metadata exports)
-- Update Sentinel when Jira ticket is resolved
-- Link Sentinel dashboard to Jira issues
+- Update Prometheion when Jira ticket is resolved
+- Link Prometheion dashboard to Jira issues
 
 **Configuration**:
 ```apex
 // Jira Named Credential setup
-Sentinel_Settings__c settings = Sentinel_Settings__c.getInstance();
+Prometheion_Settings__c settings = Prometheion_Settings__c.getInstance();
 settings.Jira_Integration_Enabled__c = true;
 settings.Jira_Project_Key__c = 'COMPLIANCE';
 settings.Jira_Issue_Type__c = 'Compliance Violation';
@@ -193,7 +193,7 @@ upsert settings;
 ```apex
 // Schedule weekly report every Monday at 8 AM
 System.schedule(
-    'Sentinel_Weekly_Report',
+    'Prometheion_Weekly_Report',
     '0 0 8 ? * MON *',
     new ComplianceReportScheduler('weekly', 'compliance@acme.org')
 );
@@ -209,7 +209,7 @@ System.schedule(
 
 **Features**:
 - Push notifications for Critical/High-risk changes
-- Deep links to Sentinel dashboard
+- Deep links to Prometheion dashboard
 - Snooze/acknowledge alerts
 - Escalation if not acknowledged in 30 minutes
 
@@ -231,7 +231,7 @@ System.schedule(
 **Status**: 🔮 Future
 
 ### Goals
-- Scale Sentinel to enterprise customers with 10+ Salesforce orgs
+- Scale Prometheion to enterprise customers with 10+ Salesforce orgs
 - Centralize compliance evidence across prod, sandboxes, dev orgs
 - Add AI governance (track Einstein/AI feature usage)
 
@@ -250,17 +250,17 @@ System.schedule(
 **UI Mockup**:
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│ Sentinel Multi-Org Dashboard                                │
+│ Prometheion Multi-Org Dashboard                                │
 ├─────────────────────────────────────────────────────────────┤
 │ Overall Readiness: 74/100 🟡                                │
 │ Critical Issues: 12    High: 34    Medium: 67              │
 ├─────────────────────────────────────────────────────────────┤
 │ Org                     Score    Status    Last Scan        │
 │ ─────────────────────────────────────────────────────────   │
-│ 🟢 Production          82/100   ✅ Pass   2025-01-24 08:15  │
-│ 🟡 Staging             68/100   ⚠️ Warn   2025-01-24 08:12  │
-│ 🔴 Dev-Team-A          34/100   🔴 Fail   2025-01-23 14:30  │
-│ 🟢 Sandbox-QA          91/100   ✅ Pass   2025-01-24 07:45  │
+│ 🟢 Production          82/100   ✅ Pass   2025-12-25 08:15  │
+│ 🟡 Staging             68/100   ⚠️ Warn   2025-12-25 08:12  │
+│ 🔴 Dev-Team-A          34/100   🔴 Fail   2025-12-24 14:30  │
+│ 🟢 Sandbox-QA          91/100   ✅ Pass   2025-12-25 07:45  │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -339,11 +339,11 @@ Compliance Status: ✅ GDPR Article 22 Compliant
 ---
 
 #### 4. **SIEM Export** 📤
-**Problem**: Security teams want Sentinel events in their SIEM (Splunk, Datadog, etc.).
+**Problem**: Security teams want Prometheion events in their SIEM (Splunk, Datadog, etc.).
 **Solution**: Real-time event streaming to SIEM tools.
 
 **Features**:
-- Push Sentinel events to SIEM via REST API
+- Push Prometheion events to SIEM via REST API
 - Support for Splunk, Datadog, Sumo Logic, AWS Security Hub
 - Event normalization (map Salesforce events to SIEM schema)
 - Configurable event filtering (only send Critical/High events)
@@ -457,7 +457,7 @@ Approvers:
 
 Comments:
 - j.smith: "Need this to debug production issue"
-- Sentinel AI: "This change affects 45 users and increases risk score by 15 points"
+- Prometheion AI: "This change affects 45 users and increases risk score by 15 points"
 ```
 
 **Estimated Effort**: 12 weeks
@@ -474,7 +474,7 @@ Comments:
 
 policy_name: "Acme Healthcare HIPAA Compliance Policy"
 version: "1.2"
-effective_date: "2025-01-01"
+effective_date: "2025-12-25"
 
 rules:
   - id: "AC-01"
@@ -507,7 +507,7 @@ enforcement:
 # GitHub Actions workflow
 - name: Sentinel Policy Check
   run: |
-    sf sentinel policy validate \
+    sf prometheion policy validate \
       --policy acme-healthcare-compliance-policy.yml \
       --target-org production \
       --fail-on-violation
@@ -519,7 +519,7 @@ enforcement:
 
 #### 4. **AppExchange Listing** 🏪
 **Problem**: Installation is complex (git clone, deploy, configure).
-**Solution**: Publish Sentinel as a managed package on AppExchange.
+**Solution**: Publish Prometheion as a managed package on AppExchange.
 
 **Features**:
 - One-click installation from AppExchange
@@ -571,7 +571,7 @@ enforcement:
 We welcome community input on this roadmap!
 
 **How to suggest features**:
-1. Open a GitHub Discussion: [Feature Requests](https://github.com/YOUR_USERNAME/sentinel/discussions/categories/feature-requests)
+1. Open a GitHub Discussion: [Feature Requests](https://github.com/YOUR_USERNAME/prometheion/discussions/categories/feature-requests)
 2. Describe the problem you're solving (not just the solution)
 3. Explain who benefits (compliance teams, auditors, developers?)
 4. Vote on existing feature requests
@@ -586,7 +586,7 @@ We welcome community input on this roadmap!
 
 ## Changelog
 
-### v1.0 (2025-01-15)
+### v1.0 (2025-12-25)
 - Initial release
 - Compliance Baseline Scan
 - Configuration Drift Detection
@@ -611,4 +611,4 @@ We welcome community input on this roadmap!
 
 *This roadmap is a living document and subject to change based on user feedback, market needs, and technical feasibility.*
 
-**Last Updated**: 2025-01-24
+**Last Updated**: 2025-12-25

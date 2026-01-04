@@ -1,18 +1,18 @@
 # GitHub Repository Setup Instructions
 
-This document explains how to properly configure your GitHub repository to reflect Sentinel's new positioning as a **compliance-first Salesforce configuration drift guardrail**.
+This document explains how to properly configure your GitHub repository to reflect Prometheion's new positioning as a **compliance-first Salesforce configuration drift guardrail**.
 
 ---
 
 ## 1. Rename the Repository
 
 **Current Name**: `Ops-Gurdian` (or `Sentinel`)
-**Recommended Name**: `sentinel-salesforce-compliance-drift-guard`
+**Recommended Name**: `prometheion-salesforce-compliance-drift-guard`
 
 ### Why This Name?
 
 The new name immediately tells visitors:
-1. **What it is**: Sentinel (product name)
+1. **What it is**: Prometheion (product name)
 2. **What platform**: Salesforce
 3. **What it does**: Compliance + drift detection
 4. **What category**: Guardrail (not a full GRC platform)
@@ -22,12 +22,12 @@ The new name immediately tells visitors:
 1. Go to your GitHub repository
 2. Click **Settings** (top right)
 3. Scroll to **General** → **Repository name**
-4. Change to: `sentinel-salesforce-compliance-drift-guard`
+4. Change to: `prometheion-salesforce-compliance-drift-guard`
 5. Click **Rename**
 
 **⚠️ Important**: After renaming, update your local git remote:
 ```bash
-git remote set-url origin https://github.com/YOUR_USERNAME/sentinel-salesforce-compliance-drift-guard.git
+git remote set-url origin https://github.com/YOUR_USERNAME/prometheion-salesforce-compliance-drift-guard.git
 ```
 
 ---
@@ -89,9 +89,9 @@ A good social preview image makes your repo stand out when shared on Twitter, Li
 
 Create a 1280x640px image with:
 - **Background**: Professional gradient (blue/purple)
-- **Logo**: Sentinel logo (if available)
+- **Logo**: Prometheion logo (if available)
 - **Tagline**: "Compliance-first Salesforce drift guardrail"
-- **Visual**: Simple diagram showing Salesforce → Sentinel → Audit Report
+- **Visual**: Simple diagram showing Salesforce → Prometheion → Audit Report
 
 ### How to Add
 
@@ -199,7 +199,7 @@ Help users report bugs and request features with templates.
 
 ### Bug Report Template
 
-Already exists at `.github/ISSUE_TEMPLATE/bug_report.md` (updated to reference Sentinel).
+Already exists at `.github/ISSUE_TEMPLATE/bug_report.md` (updated to reference Prometheion).
 
 ### Feature Request Template
 
@@ -208,7 +208,7 @@ Create `.github/ISSUE_TEMPLATE/feature_request.md`:
 ```markdown
 ---
 name: Feature Request
-about: Suggest a feature for Sentinel
+about: Suggest a feature for Prometheion
 labels: enhancement
 ---
 
@@ -248,9 +248,9 @@ Help contributors understand how to contribute.
 Create `CONTRIBUTING.md` at repository root:
 
 ```markdown
-# Contributing to Sentinel
+# Contributing to Prometheion
 
-Thank you for your interest in contributing to Sentinel!
+Thank you for your interest in contributing to Prometheion!
 
 ## Ways to Contribute
 
@@ -326,7 +326,7 @@ Create `SECURITY.md` at repository root:
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in Sentinel, please **DO NOT** open a public GitHub issue.
+If you discover a security vulnerability in Prometheion, please **DO NOT** open a public GitHub issue.
 
 Instead, email: **security@sentinel.dev** (or your email)
 
@@ -347,11 +347,11 @@ We will respond within **48 hours** and provide a timeline for a fix.
 
 ## Security Best Practices
 
-When deploying Sentinel:
+When deploying Prometheion:
 - Use Named Credentials for API keys (never hardcode)
 - Enable Shield Platform Encryption for sensitive data
-- Restrict Sentinel_Admin permission set to authorized users only
-- Review Sentinel's audit trail regularly
+- Restrict Prometheion_Admin permission set to authorized users only
+- Review Prometheion's audit trail regularly
 ```
 
 ---
@@ -377,7 +377,7 @@ Pin 3-5 key issues/discussions to the top of your Issues/Discussions page.
 
 ### Recommended Pins
 
-1. **"Welcome! Start here"** — Introduction to Sentinel
+1. **"Welcome! Start here"** — Introduction to Prometheion
 2. **"v1 Roadmap"** — Link to ROADMAP.md
 3. **"Feature Requests"** — Link to Discussions
 4. **"Known Issues"** — List of current bugs/limitations
@@ -438,7 +438,7 @@ Use this checklist to ensure everything is configured:
 Once everything is configured:
 
 1. **Share on social media**:
-   - Twitter: "Just repositioned Sentinel as a Salesforce compliance drift guardrail! [link]"
+   - Twitter: "Just repositioned Prometheion as a Salesforce compliance drift guardrail! [link]"
    - LinkedIn: Post about solving audit readiness for regulated orgs
    - Reddit: r/salesforce, r/compliance
 
@@ -455,11 +455,11 @@ Once everything is configured:
    - Add to README
 
 4. **Write launch blog post**:
-   - "How Sentinel Makes Your Salesforce Org Audit-Ready in 24 Hours"
+   - "How Prometheion Makes Your Salesforce Org Audit-Ready in 24 Hours"
    - Include sample report, installation guide, and roadmap
 
 ---
 
 **Questions?** Open a GitHub Discussion or contact the maintainers.
 
-*Last Updated: 2025-01-24*
+*Last Updated: 2025-12-25*

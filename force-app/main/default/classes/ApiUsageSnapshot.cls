@@ -1,7 +1,7 @@
 public with sharing class ApiUsageSnapshot implements Schedulable, Queueable {
-    public class LimitsResponse {
-        public class DailyLimit { public Integer Max; public Integer Remaining; }
-        public DailyLimit DailyApiRequests;
+    public class DailyLimit {
+        public Integer Max;
+        public Integer Remaining;
     }
 
     public void execute(QueueableContext qc) { run(); }
@@ -16,9 +16,13 @@ public with sharing class ApiUsageSnapshot implements Schedulable, Queueable {
         req.setHeader('Accept','application/json');
         HttpResponse res = new Http().send(req);
         if (res.getStatusCode() >= 300) throw new CalloutException('Limits callout failed: ' + res.getStatus());
-        LimitsResponse lr = (LimitsResponse) JSON.deserialize(res.getBody(), LimitsResponse.class);
-        Integer max = lr.DailyApiRequests != null ? lr.DailyApiRequests.Max : null;
-        Integer remaining = lr.DailyApiRequests != null ? lr.DailyApiRequests.Remaining : null;
+
+        // Parse JSON response - use Map to avoid nested inner class issue
+        Map<String, Object> jsonResponse = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
+        Map<String, Object> dailyApiRequests = (Map<String, Object>) jsonResponse.get('DailyApiRequests');
+
+        Integer max = dailyApiRequests != null ? (Integer)dailyApiRequests.get('Max') : null;
+        Integer remaining = dailyApiRequests != null ? (Integer)dailyApiRequests.get('Remaining') : null;
         if (max == null || remaining == null) return;
         Integer used = max - remaining;
         Decimal pct = (max == 0) ? 0 : (Decimal.valueOf(used) / Decimal.valueOf(max))*100;
@@ -31,7 +35,7 @@ public with sharing class ApiUsageSnapshot implements Schedulable, Queueable {
             Decimal pctPerSec = (pct / Math.max(1, secs));
             Decimal remainingPct = 100 - pct;
             Long secsToExhaust = (Long) (remainingPct / Math.max(0.0001, pctPerSec));
-            projected = now.addSeconds((Integer)Math.min(Integer.MAX_VALUE, secsToExhaust));
+            projected = now.addSeconds((Integer)Math.min(2147483647, secsToExhaust));
         }
 
         insert new API_Usage_Snapshot__c(

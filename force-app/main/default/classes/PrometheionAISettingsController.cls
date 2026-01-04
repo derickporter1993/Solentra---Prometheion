@@ -1,0 +1,111 @@
+/**
+ * AI Settings Controller with proper default persistence
+ * Best Practice: Persists org defaults instead of in-memory objects
+ * Security: Enforces CRUD/FLS with Security.stripInaccessible
+ */
+public with sharing class PrometheionAISettingsController {
+    private static final Boolean DEFAULT_ENABLE_AI_REASONING = true;
+    private static final Decimal DEFAULT_CONFIDENCE_THRESHOLD = 0.85;
+    private static final Boolean DEFAULT_REQUIRE_HUMAN_APPROVAL = true;
+    private static final Boolean DEFAULT_AUTO_REMEDIATION_ENABLED = false;
+    private static final String DEFAULT_BLACKLISTED_USERS = '';
+
+    @AuraEnabled(cacheable=true)
+    public static Prometheion_AI_Settings__c getSettings() {
+        Prometheion_AI_Settings__c settings = Prometheion_AI_Settings__c.getInstance();
+
+        // If no org default exists, create and persist one
+        if (settings == null) {
+            settings = createAndPersistDefaults();
+        }
+
+        return settings;
+    }
+
+    /**
+     * Create and persist org default settings
+     * This ensures settings are always persisted, not just in-memory
+     */
+    private static Prometheion_AI_Settings__c createAndPersistDefaults() {
+        try {
+            Prometheion_AI_Settings__c settings = new Prometheion_AI_Settings__c(
+                SetupOwnerId = UserInfo.getOrganizationId(),
+                Enable_AI_Reasoning__c = DEFAULT_ENABLE_AI_REASONING,
+                Confidence_Threshold__c = DEFAULT_CONFIDENCE_THRESHOLD,
+                Require_Human_Approval__c = DEFAULT_REQUIRE_HUMAN_APPROVAL,
+                Auto_Remediation_Enabled__c = DEFAULT_AUTO_REMEDIATION_ENABLED,
+                Blacklisted_Users__c = DEFAULT_BLACKLISTED_USERS
+            );
+
+            // Check if we have permission to insert
+            SObjectAccessDecision decision = Security.stripInaccessible(
+                AccessType.CREATABLE,
+                new List<Prometheion_AI_Settings__c>{ settings }
+            );
+
+            List<Prometheion_AI_Settings__c> sanitizedSettings = decision.getRecords();
+            if (!sanitizedSettings.isEmpty()) {
+                insert sanitizedSettings[0];
+                System.debug(LoggingLevel.INFO, 'PrometheionAISettingsController: Created org default settings');
+                return sanitizedSettings[0];
+            } else {
+                System.debug(LoggingLevel.WARN, 'PrometheionAISettingsController: No accessible fields to create settings');
+                // Return in-memory object as fallback (should not happen in normal operation)
+                return settings;
+            }
+        } catch (DmlException e) {
+            System.debug(LoggingLevel.ERROR, 'PrometheionAISettingsController: Failed to create default settings: ' + e.getMessage());
+            // Return in-memory object as fallback
+            return new Prometheion_AI_Settings__c(
+                Enable_AI_Reasoning__c = DEFAULT_ENABLE_AI_REASONING,
+                Confidence_Threshold__c = DEFAULT_CONFIDENCE_THRESHOLD,
+                Require_Human_Approval__c = DEFAULT_REQUIRE_HUMAN_APPROVAL,
+                Auto_Remediation_Enabled__c = DEFAULT_AUTO_REMEDIATION_ENABLED,
+                Blacklisted_Users__c = DEFAULT_BLACKLISTED_USERS
+            );
+        } catch (Exception e) {
+            System.debug(LoggingLevel.ERROR, 'PrometheionAISettingsController: Unexpected error creating default settings: ' + e.getMessage());
+            // Return in-memory object as fallback
+            return new Prometheion_AI_Settings__c(
+                Enable_AI_Reasoning__c = DEFAULT_ENABLE_AI_REASONING,
+                Confidence_Threshold__c = DEFAULT_CONFIDENCE_THRESHOLD,
+                Require_Human_Approval__c = DEFAULT_REQUIRE_HUMAN_APPROVAL,
+                Auto_Remediation_Enabled__c = DEFAULT_AUTO_REMEDIATION_ENABLED,
+                Blacklisted_Users__c = DEFAULT_BLACKLISTED_USERS
+            );
+        }
+    }
+
+    @AuraEnabled
+    public static void saveSettings(Prometheion_AI_Settings__c settings) {
+        if (settings == null) {
+            throw new AuraHandledException('Settings cannot be null');
+        }
+
+        try {
+            // Ensure SetupOwnerId is set to org level
+            if (settings.SetupOwnerId == null) {
+                settings.SetupOwnerId = UserInfo.getOrganizationId();
+            }
+
+            // Strip inaccessible fields for security
+            SObjectAccessDecision decision = Security.stripInaccessible(
+                AccessType.UPDATABLE,
+                new List<Prometheion_AI_Settings__c>{ settings }
+            );
+            List<Prometheion_AI_Settings__c> sanitizedSettings = decision.getRecords();
+
+            if (sanitizedSettings.isEmpty()) {
+                throw new AuraHandledException('No accessible fields to update');
+            }
+
+            upsert sanitizedSettings[0];
+        } catch (DmlException e) {
+            System.debug(LoggingLevel.ERROR, 'DML error saving settings: ' + e.getMessage());
+            throw new AuraHandledException('Error saving settings: ' + e.getDmlMessage(0));
+        } catch (Exception e) {
+            System.debug(LoggingLevel.ERROR, 'Error saving settings: ' + e.getMessage());
+            throw new AuraHandledException('Error saving settings: ' + e.getMessage());
+        }
+    }
+}
