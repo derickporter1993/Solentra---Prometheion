@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
     <label>Prometheion Raw Event</label>
     <pluralLabel>Prometheion Raw Events</pluralLabel>
     <publishBehavior>PublishAfterCommit</publishBehavior>
@@ -13,29 +14,9 @@
     <fields>
         <fullName>Event_Type__c</fullName>
         <label>Event Type</label>
-        <type>Picklist</type>
+        <type>Text</type>
+        <length>50</length>
         <required>true</required>
-        <valueSet>
-            <restrictedPicklist>true</restrictedPicklist>
-            <valueSetDefinition>
-                <sorted>false</sorted>
-                <value>
-                    <fullName>ConfigChange</fullName>
-                    <default>false</default>
-                    <label>Configuration Change</label>
-                </value>
-                <value>
-                    <fullName>AuditTrail</fullName>
-                    <default>false</default>
-                    <label>Audit Trail</label>
-                </value>
-                <value>
-                    <fullName>PermissionChange</fullName>
-                    <default>false</default>
-                    <label>Permission Change</label>
-                </value>
-            </valueSetDefinition>
-        </valueSet>
     </fields>
     <fields>
         <fullName>Entity_Type__c</fullName>
@@ -54,6 +35,7 @@
         <label>Event Data</label>
         <type>LongTextArea</type>
         <length>131072</length>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>Timestamp__c</fullName>

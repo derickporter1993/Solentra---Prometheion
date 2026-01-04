@@ -12,7 +12,7 @@
  * @author Prometheion
  * @version 1.0
  */
-public with sharing class PCIDataMaskingService {
+public with sharing class PrometheionPCIDataMaskingService {
 
     private static final String MASK_CHAR = '*';
     private static final Integer VISIBLE_DIGITS = 4;
