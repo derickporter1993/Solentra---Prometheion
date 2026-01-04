@@ -2,7 +2,9 @@
 
 **The AI Compliance Brain for Salesforce — Configuration drift detection, audit evidence automation, and intelligent compliance analysis for regulated organizations.**
 
-_Current: v3.0 — Compliance Drift Guardrail | Evolving: AI Compliance Intelligence Platform_
+_Current: v3.0 — Unified Enterprise Platform | Combining best of Sentinel + Solentra_
+
+> **🎉 Unified Platform:** Prometheion now combines the advanced analytics of Sentinel with the AI-powered compliance features of Solentra. [View merge details →](SOLENTRA_SENTINEL_MERGE_SUMMARY.md)
 
 <div align="center">
 

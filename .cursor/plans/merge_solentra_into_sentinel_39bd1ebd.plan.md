@@ -36,32 +36,32 @@ todos:
       - rename-branding
   - id: update-api-version
     content: Update all metadata to API version 65.0
-    status: in_progress
+    status: completed
     dependencies:
       - consolidate-package-json
   - id: deploy-test
     content: Deploy to scratch org and run all Apex tests
-    status: pending
+    status: completed
     dependencies:
       - update-api-version
   - id: verify-test-coverage
     content: Verify all Apex classes have 80%+ test coverage
-    status: pending
+    status: completed
     dependencies:
       - deploy-test
   - id: validate-security-practices
     content: Validate all code follows security best practices (WITH SECURITY_ENFORCED, with sharing, etc.)
-    status: pending
+    status: completed
     dependencies:
       - verify-test-coverage
   - id: code-quality-review
     content: Review code quality and developer best practices compliance
-    status: pending
+    status: completed
     dependencies:
       - validate-security-practices
   - id: update-docs
     content: Update README with combined documentation
-    status: pending
+    status: in_progress
     dependencies:
       - code-quality-review
 ---
