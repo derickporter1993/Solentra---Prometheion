@@ -13,10 +13,10 @@
  */
 public with sharing class WeeklyScorecardScheduler implements Schedulable {
     
-    // Channel constants (using SolentraConstants for consistency)
-    public static final String SLACK = SolentraConstants.CHANNEL_SLACK;
-    public static final String TEAMS = SolentraConstants.CHANNEL_TEAMS;
-    public static final String BOTH = SolentraConstants.CHANNEL_BOTH;
+    // Channel constants (using PrometheionConstants for consistency)
+    public static final String SLACK = PrometheionConstants.CHANNEL_SLACK;
+    public static final String TEAMS = PrometheionConstants.CHANNEL_TEAMS;
+    public static final String BOTH = PrometheionConstants.CHANNEL_BOTH;
     
     // Logging prefix for easy log filtering
     private static final String LOG_PREFIX = '[WeeklyScorecardScheduler] ';
@@ -38,7 +38,7 @@ public with sharing class WeeklyScorecardScheduler implements Schedulable {
         try {
             // Calculate current compliance score
             Long startTime = System.currentTimeMillis();
-            SolentraComplianceScorer.ScoreResult scoreResult = SolentraComplianceScorer.calculateReadinessScore();
+            PrometheionComplianceScorer.ScoreResult scoreResult = PrometheionComplianceScorer.calculateReadinessScore();
             Long duration = System.currentTimeMillis() - startTime;
             
             System.debug(LoggingLevel.INFO, LOG_PREFIX + 'Score calculation completed in ' + duration + 'ms. Score: ' + scoreResult.overallScore);
@@ -65,7 +65,7 @@ public with sharing class WeeklyScorecardScheduler implements Schedulable {
             System.debug(LoggingLevel.INFO, LOG_PREFIX + 'Weekly scorecard sent successfully');
             
         } catch (Exception e) {
-            // Safely handle null error messages (consistent with SolentraComplianceCopilot)
+            // Safely handle null error messages (consistent with PrometheionComplianceCopilot)
             String errorMsg = String.isNotBlank(e.getMessage()) ? e.getMessage() : 'Unknown error';
             System.debug(LoggingLevel.ERROR, LOG_PREFIX + 'Error: ' + errorMsg + '\n' + e.getStackTraceString());
             

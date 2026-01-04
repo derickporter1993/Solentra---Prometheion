@@ -375,7 +375,7 @@ public with sharing class PrometheionComplianceCopilot {
         String framework = classification.framework != null ? classification.framework : PrometheionConstants.FRAMEWORK_HIPAA;
         
         // Get compliance score
-        Map<String, Object> scoreData = SolentraComplianceScorer.calculateComplianceScore();
+        Map<String, Object> scoreData = PrometheionComplianceScorer.calculateComplianceScore();
         Decimal overallScore = (Decimal)scoreData.get('overallScore');
         
         String emoji = overallScore >= 90 ? '🟢' : overallScore >= 70 ? '🟡' : '🔴';
