@@ -1,18 +1,18 @@
 /**
  * SentinelRemediationEngine - Auto-Remediation Engine (Stub)
- * 
+ *
  * This is a stub implementation that provides the interface for auto-remediation
  * without requiring the Big Object or custom objects to be deployed.
- * 
+ *
  * Full implementation requires:
  * - Prometheion_Compliance_Graph__b (Big Object)
  * - Prometheion_AI_Settings__c (Custom Settings)
- * 
+ *
  * @author Solentra
  * @version 1.0 (Stub)
  */
 public with sharing class PrometheionRemediationEngine {
-    
+
     /**
      * Result of a remediation action
      */
@@ -24,13 +24,13 @@ public with sharing class PrometheionRemediationEngine {
         @AuraEnabled public Datetime reviewDeadline;
         @AuraEnabled public String nodeId;
         @AuraEnabled public String rollbackData;
-        
+
         public RemediationResult() {
             this.success = false;
             this.reviewDeadline = Datetime.now().addDays(7);
         }
     }
-    
+
     /**
      * Evaluate and potentially remediate a compliance violation
      * Stub implementation - returns a pending review result
@@ -44,7 +44,7 @@ public with sharing class PrometheionRemediationEngine {
         result.remediationId = 'stub-' + String.valueOf(Datetime.now().getTime());
         return result;
     }
-    
+
     /**
      * Rollback a previous remediation
      * Stub implementation
@@ -57,7 +57,7 @@ public with sharing class PrometheionRemediationEngine {
         result.remediationId = remediationId;
         return result;
     }
-    
+
     /**
      * Get pending remediations for review
      * Stub implementation - returns empty list
@@ -65,7 +65,7 @@ public with sharing class PrometheionRemediationEngine {
     public static List<RemediationResult> getPendingRemediations() {
         return new List<RemediationResult>();
     }
-    
+
     /**
      * Approve a remediation
      * Stub implementation

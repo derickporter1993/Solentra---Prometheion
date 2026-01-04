@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Full administrative access to all Solentra compliance platform features including AI Copilot, dashboards, scoring, and notifications.</description>
+    <description>Full administrative access to all Prometheion compliance platform features including AI Copilot, dashboards, scoring, and notifications.</description>
     <hasActivationRequired>false</hasActivationRequired>
     <label>Prometheion Admin Extended</label>
     
     <!-- Apex Class Access - Only classes deployed to org -->
     <classAccesses>
-        <apexClass>SolentraConstants</apexClass>
+        <apexClass>PrometheionConstants</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>SolentraComplianceCopilot</apexClass>
+        <apexClass>PrometheionComplianceCopilot</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>SolentraComplianceScorer</apexClass>
+        <apexClass>PrometheionComplianceScorer</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>

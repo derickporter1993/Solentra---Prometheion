@@ -4,14 +4,14 @@
     <flexiPageRegions>
         <itemInstances>
             <componentInstance>
-                <componentName>c:solentraDashboard</componentName>
-                <identifier>solentraDashboard1</identifier>
+                <componentName>c:prometheionDashboard</componentName>
+                <identifier>prometheionDashboard1</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>
             <componentInstance>
-                <componentName>c:solentraCopilot</componentName>
-                <identifier>solentraCopilot1</identifier>
+                <componentName>c:prometheionCopilot</componentName>
+                <identifier>prometheionCopilot1</identifier>
             </componentInstance>
         </itemInstances>
         <itemInstances>

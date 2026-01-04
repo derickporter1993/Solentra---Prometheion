@@ -6,7 +6,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Copilot Welcome Message</shortDescription>
-        <value>Welcome to Solentra Copilot</value>
+        <value>Welcome to Prometheion Copilot</value>
     </labels>
     <labels>
         <fullName>Copilot_Welcome_Subtitle</fullName>
@@ -199,7 +199,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Scorecard Title</shortDescription>
-        <value>Solentra Weekly Compliance Report</value>
+        <value>Prometheion Weekly Compliance Report</value>
     </labels>
     <labels>
         <fullName>Scorecard_Overall_Score</fullName>

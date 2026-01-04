@@ -61,7 +61,7 @@ todos:
       - validate-security-practices
   - id: update-docs
     content: Update README with combined documentation
-    status: in_progress
+    status: completed
     dependencies:
       - code-quality-review
 ---
