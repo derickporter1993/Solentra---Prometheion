@@ -1,5 +1,5 @@
 import { LightningElement, track, wire } from 'lwc';
-import calculateReadinessScore from '@salesforce/apex/SolentraComplianceScorer.calculateReadinessScore';
+import calculateReadinessScore from '@salesforce/apex/PrometheionComplianceScorer.calculateReadinessScore';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class PrometheionDashboard extends LightningElement {

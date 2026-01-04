@@ -221,7 +221,7 @@ public with sharing class TeamsNotifier {
      * Send weekly compliance scorecard
      */
     public static void sendWeeklyScorecard() {
-        SolentraComplianceScorer.ScoreResult score = SolentraComplianceScorer.calculateReadinessScore();
+        PrometheionComplianceScorer.ScoreResult score = PrometheionComplianceScorer.calculateReadinessScore();
         
         String emoji = score.overallScore >= 80 ? '🟢' : score.overallScore >= 60 ? '🟡' : '🔴';
         String orgUrl = URL.getOrgDomainUrl().toExternalForm();

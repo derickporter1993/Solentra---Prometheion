@@ -89,7 +89,7 @@ public with sharing class WeeklyScorecardScheduler implements Schedulable {
     /**
      * Send scorecard to Slack
      */
-    private static void sendSlackScorecard(SolentraComplianceScorer.ScoreResult scoreResult) {
+    private static void sendSlackScorecard(PrometheionComplianceScorer.ScoreResult scoreResult) {
         String emoji = getScoreEmoji(scoreResult.overallScore);
         String color = getScoreColor(scoreResult.overallScore);
         
@@ -154,7 +154,7 @@ public with sharing class WeeklyScorecardScheduler implements Schedulable {
             });
             List<Map<String, Object>> factorFields = new List<Map<String, Object>>();
             
-            for (SolentraComplianceScorer.ScoreFactor factor : scoreResult.factors) {
+            for (PrometheionComplianceScorer.ScoreFactor factor : scoreResult.factors) {
                 Map<String, Object> field = new Map<String, Object>();
                 field.put('type', 'mrkdwn');
                 field.put('text', '*' + factor.name + '*\n' + factor.score.setScale(0) + '/100 (' + factor.status + ')');
@@ -177,7 +177,7 @@ public with sharing class WeeklyScorecardScheduler implements Schedulable {
             });
             blocks.add(risksSection);
             
-            for (SolentraComplianceScorer.Risk risk : scoreResult.topRisks) {
+            for (PrometheionComplianceScorer.Risk risk : scoreResult.topRisks) {
                 Map<String, Object> riskSection = new Map<String, Object>();
                 riskSection.put('type', 'section');
                 Map<String, Object> riskText = new Map<String, Object>();
@@ -225,7 +225,7 @@ public with sharing class WeeklyScorecardScheduler implements Schedulable {
     /**
      * Send scorecard to Teams
      */
-    private static void sendTeamsScorecard(SolentraComplianceScorer.ScoreResult scoreResult) {
+    private static void sendTeamsScorecard(PrometheionComplianceScorer.ScoreResult scoreResult) {
         // Use existing TeamsNotifier method
         TeamsNotifier.sendWeeklyScorecard();
     }

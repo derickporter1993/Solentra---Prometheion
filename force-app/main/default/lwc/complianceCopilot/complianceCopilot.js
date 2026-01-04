@@ -1,6 +1,6 @@
 import { LightningElement, track, wire } from 'lwc';
-import askCopilot from '@salesforce/apex/SolentraComplianceCopilot.askCopilot';
-import getQuickCommands from '@salesforce/apex/SolentraComplianceCopilot.getQuickCommands';
+import askCopilot from '@salesforce/apex/PrometheionComplianceCopilot.askCopilot';
+import getQuickCommands from '@salesforce/apex/PrometheionComplianceCopilot.getQuickCommands';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 // Custom Labels
