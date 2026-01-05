@@ -1,8 +1,8 @@
-# Sentinel
+# Prometheion
 
 **The AI Compliance Brain for Salesforce — Configuration drift detection, audit evidence automation, and intelligent compliance analysis for regulated organizations.**
 
-*Current: v1.0 — Compliance Drift Guardrail | Evolving: AI Compliance Intelligence Platform*
+*Current: v3.0 — Unified Enterprise Platform | Combining best of Sentinel + Solentra*
 
 <div align="center">
 
@@ -16,7 +16,7 @@
 
 ---
 
-## What is Sentinel?
+## What is Prometheion?
 
 Sentinel makes your Salesforce org **audit-ready and protected from configuration drift** in 24 hours.
 
