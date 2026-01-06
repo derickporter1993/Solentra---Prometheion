@@ -253,4 +253,23 @@ private class PrometheionISO27001AccessReviewServiceTest {
             }
         }
     }
+    
+    // Helper method to create limited user for permission testing
+    private static User createLimitedUser() {
+        Profile standardProfile = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1];
+        User limitedUser = new User(
+            FirstName = 'Limited',
+            LastName = 'User',
+            Email = 'limited@test.com',
+            Username = 'limited@test' + System.now().getTime() + '.com',
+            Alias = 'limuser',
+            ProfileId = standardProfile.Id,
+            TimeZoneSidKey = 'America/New_York',
+            LocaleSidKey = 'en_US',
+            EmailEncodingKey = 'UTF-8',
+            LanguageLocaleKey = 'en_US'
+        );
+        insert limitedUser;
+        return limitedUser;
+    }
 }
