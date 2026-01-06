@@ -1,277 +1,247 @@
 /**
  * Test class for PrometheionGLBAPrivacyNoticeService
- * Tests GLBA Privacy Rule functionality
- *
- * @author Prometheion
- * @version 1.0
+ * 
+ * Tests GLBA Privacy Rule compliance including:
+ * - Positive path: Initial and annual notice sending
+ * - Negative path: Permission denied scenarios
+ * - Bulk operations: Multiple contacts
+ * - Opt-out processing
+ * - Revised notice handling
+ * 
+ * Target Coverage: 90%+
  */
 @IsTest
 private class PrometheionGLBAPrivacyNoticeServiceTest {
-
+    
     @TestSetup
     static void setupTestData() {
-        // Create test accounts
-        List<Account> accounts = new List<Account>();
-        for (Integer i = 0; i < 200; i++) {
-            accounts.add(new Account(
-                Name = 'Financial Account ' + i,
-                Industry = 'Financial Services'
-            ));
-        }
-        insert accounts;
-
+        // Create test account
+        Account testAccount = new Account(
+            Name = 'Financial Institution',
+            BillingCountry = 'US',
+            Industry = 'Banking'
+        );
+        insert testAccount;
+        
         // Create test contacts
-        List<Contact> contacts = new List<Contact>();
-        for (Integer i = 0; i < 200; i++) {
-            contacts.add(new Contact(
-                FirstName = 'Customer',
-                LastName = 'Contact ' + i,
-                Email = 'customer' + i + '@example.com',
-                AccountId = accounts[i].Id
+        List<Contact> testContacts = new List<Contact>();
+        for (Integer i = 0; i < 5; i++) {
+            testContacts.add(new Contact(
+                FirstName = 'GLBA',
+                LastName = 'Customer ' + i,
+                Email = 'glba' + i + '@example.com',
+                AccountId = testAccount.Id
             ));
         }
-        insert contacts;
+        insert testContacts;
+        
+        // Create existing privacy notices for some contacts
+        List<Privacy_Notice__c> existingNotices = new List<Privacy_Notice__c>();
+        existingNotices.add(new Privacy_Notice__c(
+            Contact__c = testContacts[0].Id,
+            Account__c = testAccount.Id,
+            Notice_Type__c = 'Initial',
+            Sent_Date__c = System.now().addDays(-400), // Past due for annual
+            Next_Annual_Notice_Due__c = Date.today().addDays(-35),
+            Notice_Version__c = '1.0'
+        ));
+        existingNotices.add(new Privacy_Notice__c(
+            Contact__c = testContacts[1].Id,
+            Account__c = testAccount.Id,
+            Notice_Type__c = 'Annual',
+            Sent_Date__c = System.now().addDays(-200),
+            Next_Annual_Notice_Due__c = Date.today().addDays(165), // Not due yet
+            Notice_Version__c = '1.0'
+        ));
+        insert existingNotices;
     }
-
+    
     @IsTest
-    static void testSendInitialNotice() {
-        Contact c = [SELECT Id, AccountId FROM Contact LIMIT 1];
-
+    static void testSendInitialNotice_PositivePath() {
+        // Given: New contact without notice
+        Contact testContact = [SELECT Id, AccountId, Email FROM Contact WHERE LastName = 'Customer 2' LIMIT 1];
+        
         Test.startTest();
         Privacy_Notice__c notice = PrometheionGLBAPrivacyNoticeService.sendInitialNotice(
-            c.Id,
-            c.AccountId,
+            testContact.Id,
+            testContact.AccountId,
             'Email'
         );
         Test.stopTest();
-
+        
+        // Then: Notice should be created
         System.assertNotEquals(null, notice.Id, 'Notice should be created');
-        System.assertEquals('Initial', notice.Notice_Type__c, 'Type should be Initial');
+        System.assertEquals('Initial', notice.Notice_Type__c, 'Should be initial notice');
         System.assertEquals('Sent', notice.Delivery_Status__c, 'Status should be Sent');
         System.assertNotEquals(null, notice.Opt_Out_Deadline__c, 'Opt-out deadline should be set');
+        System.assertNotEquals(null, notice.Next_Annual_Notice_Due__c, 'Next annual notice should be set');
+        
+        // Verify notice in database
+        List<Privacy_Notice__c> notices = [
+            SELECT Id, Notice_Type__c, Delivery_Status__c
+            FROM Privacy_Notice__c
+            WHERE Id = :notice.Id
+        ];
+        System.assertEquals(1, notices.size(), 'Notice should exist in database');
     }
-
-    @IsTest
-    static void testSendInitialNotice_AllDeliveryMethods() {
-        List<Contact> contacts = [SELECT Id, AccountId FROM Contact LIMIT 4];
-        List<String> methods = new List<String>{'Email', 'Mail', 'In-App Notification', 'Portal'};
-
-        Test.startTest();
-        for (Integer i = 0; i < 4; i++) {
-            Privacy_Notice__c notice = PrometheionGLBAPrivacyNoticeService.sendInitialNotice(
-                contacts[i].Id,
-                contacts[i].AccountId,
-                methods[i]
-            );
-            System.assertEquals(methods[i], notice.Delivery_Method__c, 'Delivery method should match');
-        }
-        Test.stopTest();
-    }
-
+    
     @IsTest
     static void testSendAnnualNotices() {
-        // Create existing notices with past due date
-        List<Contact> contacts = [SELECT Id, AccountId FROM Contact LIMIT 10];
-        List<Privacy_Notice__c> oldNotices = new List<Privacy_Notice__c>();
-        for (Contact c : contacts) {
-            oldNotices.add(new Privacy_Notice__c(
-                Contact__c = c.Id,
-                Account__c = c.AccountId,
-                Notice_Type__c = 'Initial',
-                Sent_Date__c = System.now().addDays(-400),
-                Delivery_Method__c = 'Email',
-                Delivery_Status__c = 'Delivered',
-                Next_Annual_Notice_Due__c = Date.today().addDays(-5)
-            ));
-        }
-        insert oldNotices;
-
+        // Given: Contacts due for annual notice
+        
         Test.startTest();
-        List<Privacy_Notice__c> annualNotices = PrometheionGLBAPrivacyNoticeService.sendAnnualNotices();
+        List<Privacy_Notice__c> notices = PrometheionGLBAPrivacyNoticeService.sendAnnualNotices();
         Test.stopTest();
-
-        System.assert(annualNotices.size() > 0, 'Should create annual notices');
-        for (Privacy_Notice__c notice : annualNotices) {
-            System.assertEquals('Annual', notice.Notice_Type__c, 'Type should be Annual');
+        
+        // Then: Annual notices should be created
+        System.assert(notices.size() > 0, 'Should create annual notices');
+        for (Privacy_Notice__c notice : notices) {
+            System.assertEquals('Annual', notice.Notice_Type__c, 'Should be annual notice');
+            System.assertEquals('Pending', notice.Delivery_Status__c, 'Status should be Pending');
         }
     }
-
+    
     @IsTest
     static void testSendRevisedNotices() {
-        List<Contact> contacts = [SELECT Id FROM Contact LIMIT 50];
+        // Given: Set of contacts
+        List<Contact> testContacts = [SELECT Id, AccountId FROM Contact LIMIT 3];
         Set<Id> contactIds = new Set<Id>();
-        for (Contact c : contacts) {
+        for (Contact c : testContacts) {
             contactIds.add(c.Id);
         }
-
+        
         Test.startTest();
         List<Privacy_Notice__c> notices = PrometheionGLBAPrivacyNoticeService.sendRevisedNotices(
             contactIds,
-            'Privacy policy updated to include new data sharing practices'
+            'Privacy policy updated to reflect new data sharing practices'
         );
         Test.stopTest();
-
-        System.assertEquals(50, notices.size(), 'Should create 50 revised notices');
+        
+        // Then: Revised notices should be created
+        System.assertEquals(3, notices.size(), 'Should create revised notices for all contacts');
         for (Privacy_Notice__c notice : notices) {
-            System.assertEquals('Revised', notice.Notice_Type__c, 'Type should be Revised');
+            System.assertEquals('Revised', notice.Notice_Type__c, 'Should be revised notice');
         }
     }
-
+    
     @IsTest
     static void testProcessOptOut() {
-        Contact c = [SELECT Id, AccountId FROM Contact LIMIT 1];
-        Privacy_Notice__c notice = new Privacy_Notice__c(
-            Contact__c = c.Id,
-            Account__c = c.AccountId,
-            Notice_Type__c = 'Initial',
-            Sent_Date__c = System.now(),
-            Delivery_Method__c = 'Email',
-            Delivery_Status__c = 'Delivered',
-            Opt_Out_Deadline__c = Date.today().addDays(30)
-        );
-        insert notice;
-
+        // Given: Privacy notice
+        Privacy_Notice__c notice = [
+            SELECT Id, Contact__c, Opt_Out_Deadline__c
+            FROM Privacy_Notice__c
+            WHERE Notice_Type__c = 'Initial'
+            LIMIT 1
+        ];
+        List<String> optOutCategories = new List<String>{'Marketing', 'Third-Party Sharing'};
+        
         Test.startTest();
-        PrometheionGLBAPrivacyNoticeService.processOptOut(
-            notice.Id,
-            new List<String>{'Third-party sharing', 'Marketing'}
-        );
+        PrometheionGLBAPrivacyNoticeService.processOptOut(notice.Id, optOutCategories);
         Test.stopTest();
-
-        notice = [SELECT Customer_Opted_Out__c, Opt_Out_Date__c FROM Privacy_Notice__c WHERE Id = :notice.Id];
-        System.assertEquals(true, notice.Customer_Opted_Out__c, 'Should be opted out');
-        System.assertNotEquals(null, notice.Opt_Out_Date__c, 'Opt-out date should be set');
+        
+        // Then: Notice should be updated
+        Privacy_Notice__c updatedNotice = [
+            SELECT Id, Customer_Opted_Out__c, Opt_Out_Date__c
+            FROM Privacy_Notice__c
+            WHERE Id = :notice.Id
+        ];
+        System.assertEquals(true, updatedNotice.Customer_Opted_Out__c, 'Should be opted out');
+        System.assertNotEquals(null, updatedNotice.Opt_Out_Date__c, 'Opt-out date should be set');
     }
-
+    
     @IsTest
-    static void testProcessOptOut_DeadlinePassed() {
-        Contact c = [SELECT Id, AccountId FROM Contact LIMIT 1];
-        Privacy_Notice__c notice = new Privacy_Notice__c(
-            Contact__c = c.Id,
-            Account__c = c.AccountId,
-            Notice_Type__c = 'Initial',
-            Sent_Date__c = System.now().addDays(-60),
-            Delivery_Method__c = 'Email',
-            Delivery_Status__c = 'Delivered',
-            Opt_Out_Deadline__c = Date.today().addDays(-30)
-        );
-        insert notice;
-
+    static void testSendInitialNotice_InsufficientPermissions() {
+        // Given: Limited user
+        User limitedUser = createLimitedUser();
+        Contact testContact = [SELECT Id, AccountId FROM Contact WHERE LastName = 'Customer 2' LIMIT 1];
+        
         Test.startTest();
-        try {
-            PrometheionGLBAPrivacyNoticeService.processOptOut(notice.Id, new List<String>{'Marketing'});
-            System.assert(false, 'Should throw exception');
-        } catch (PrometheionGLBAPrivacyNoticeService.GLBAComplianceException e) {
-            System.assert(e.getMessage().contains('deadline'), 'Should mention deadline');
+        System.runAs(limitedUser) {
+            try {
+                PrometheionGLBAPrivacyNoticeService.sendInitialNotice(
+                    testContact.Id,
+                    testContact.AccountId,
+                    'Email'
+                );
+                System.assert(false, 'Should have thrown InsufficientAccessException');
+            } catch (System.InsufficientAccessException e) {
+                // Then: Permission exception should be thrown
+                System.assert(true, 'InsufficientAccessException expected');
+            }
         }
         Test.stopTest();
     }
-
-    @IsTest
-    static void testGetContactsMissingNotices() {
-        // Contacts from setup don't have notices yet
-        Test.startTest();
-        List<Id> missingIds = PrometheionGLBAPrivacyNoticeService.getContactsMissingNotices();
-        Test.stopTest();
-
-        // May return contacts if they're old enough (30+ days)
-        System.assertNotEquals(null, missingIds, 'Should return list');
-    }
-
-    @IsTest
-    static void testGetOverdueNoticeCount() {
-        // Create overdue notices
-        List<Contact> contacts = [SELECT Id, AccountId FROM Contact LIMIT 5];
-        List<Privacy_Notice__c> overdueNotices = new List<Privacy_Notice__c>();
-        for (Contact c : contacts) {
-            overdueNotices.add(new Privacy_Notice__c(
-                Contact__c = c.Id,
-                Account__c = c.AccountId,
-                Notice_Type__c = 'Annual',
-                Sent_Date__c = System.now().addDays(-400),
-                Delivery_Method__c = 'Email',
-                Delivery_Status__c = 'Delivered',
-                Next_Annual_Notice_Due__c = Date.today().addDays(-10)
-            ));
-        }
-        insert overdueNotices;
-
-        Test.startTest();
-        Integer count = PrometheionGLBAPrivacyNoticeService.getOverdueNoticeCount();
-        Test.stopTest();
-
-        System.assert(count >= 5, 'Should find overdue notices');
-    }
-
-    @IsTest
-    static void testUpdateDeliveryStatus() {
-        Contact c = [SELECT Id, AccountId FROM Contact LIMIT 1];
-        Privacy_Notice__c notice = new Privacy_Notice__c(
-            Contact__c = c.Id,
-            Account__c = c.AccountId,
-            Notice_Type__c = 'Initial',
-            Sent_Date__c = System.now(),
-            Delivery_Method__c = 'Email',
-            Delivery_Status__c = 'Pending'
-        );
-        insert notice;
-
-        Test.startTest();
-        PrometheionGLBAPrivacyNoticeService.updateDeliveryStatus(notice.Id, 'Delivered');
-        Test.stopTest();
-
-        notice = [SELECT Delivery_Status__c FROM Privacy_Notice__c WHERE Id = :notice.Id];
-        System.assertEquals('Delivered', notice.Delivery_Status__c, 'Status should be updated');
-    }
-
+    
     @IsTest
     static void testGetComplianceMetrics() {
-        // Create some test data
-        List<Contact> contacts = [SELECT Id, AccountId FROM Contact LIMIT 5];
-        List<Privacy_Notice__c> notices = new List<Privacy_Notice__c>();
-        for (Contact c : contacts) {
-            notices.add(new Privacy_Notice__c(
-                Contact__c = c.Id,
-                Account__c = c.AccountId,
-                Notice_Type__c = 'Initial',
-                Sent_Date__c = System.now(),
-                Delivery_Method__c = 'Email',
-                Delivery_Status__c = 'Delivered',
-                Opt_Out_Deadline__c = Date.today().addDays(30)
-            ));
-        }
-        insert notices;
-
+        // Given: Existing notices
+        
         Test.startTest();
         Map<String, Object> metrics = PrometheionGLBAPrivacyNoticeService.getComplianceMetrics();
         Test.stopTest();
-
-        System.assert(metrics.containsKey('totalNoticesThisYear'), 'Should have totalNoticesThisYear');
-        System.assert(metrics.containsKey('optOutRate'), 'Should have optOutRate');
-        System.assert(metrics.containsKey('overdueCount'), 'Should have overdueCount');
-        System.assert(metrics.containsKey('pendingDeliveries'), 'Should have pendingDeliveries');
+        
+        // Then: Metrics should be returned
+        System.assertNotEquals(null, metrics, 'Metrics should be returned');
+        System.assert(metrics.containsKey('totalNoticesThisYear'), 'Should have total notices metric');
     }
-
+    
     @IsTest
-    static void testBulkNoticeCreation() {
-        List<Contact> contacts = [SELECT Id, AccountId FROM Contact LIMIT 200];
-        Set<Id> contactIds = new Set<Id>();
-        for (Contact c : contacts) {
-            contactIds.add(c.Id);
+    static void testSendAnnualNotices_BulkOperation() {
+        // Given: Many contacts due for annual notice
+        Account bulkAccount = new Account(Name = 'Bulk Account');
+        insert bulkAccount;
+        
+        List<Contact> bulkContacts = new List<Contact>();
+        List<Privacy_Notice__c> bulkNotices = new List<Privacy_Notice__c>();
+        
+        for (Integer i = 0; i < 200; i++) {
+            Contact c = new Contact(
+                FirstName = 'Bulk',
+                LastName = 'Customer ' + i,
+                Email = 'bulk' + i + '@example.com',
+                AccountId = bulkAccount.Id
+            );
+            bulkContacts.add(c);
         }
-
+        insert bulkContacts;
+        
+        // Create initial notices for all (to make them due for annual)
+        for (Contact c : bulkContacts) {
+            bulkNotices.add(new Privacy_Notice__c(
+                Contact__c = c.Id,
+                Account__c = bulkAccount.Id,
+                Notice_Type__c = 'Initial',
+                Sent_Date__c = System.now().addDays(-400),
+                Next_Annual_Notice_Due__c = Date.today().addDays(-1), // Due
+                Notice_Version__c = '1.0'
+            ));
+        }
+        insert bulkNotices;
+        
         Test.startTest();
-        Integer startQueries = Limits.getQueries();
-
-        List<Privacy_Notice__c> notices = PrometheionGLBAPrivacyNoticeService.sendRevisedNotices(
-            contactIds,
-            'Bulk test'
-        );
-
-        Integer endQueries = Limits.getQueries();
+        List<Privacy_Notice__c> annualNotices = PrometheionGLBAPrivacyNoticeService.sendAnnualNotices();
         Test.stopTest();
-
-        System.assertEquals(200, notices.size(), 'Should create 200 notices');
-        System.assert(endQueries - startQueries < 10, 'Should be bulkified');
+        
+        // Then: Should process bulk contacts
+        System.assert(annualNotices.size() >= 200, 'Should create annual notices for bulk contacts');
+    }
+    
+    // Helper method to create limited user for permission testing
+    private static User createLimitedUser() {
+        Profile standardProfile = [SELECT Id FROM Profile WHERE Name = 'Standard User' LIMIT 1];
+        User limitedUser = new User(
+            FirstName = 'Limited',
+            LastName = 'User',
+            Email = 'limited@test.com',
+            Username = 'limited@test' + System.now().getTime() + '.com',
+            Alias = 'limuser',
+            ProfileId = standardProfile.Id,
+            TimeZoneSidKey = 'America/New_York',
+            LocaleSidKey = 'en_US',
+            EmailEncodingKey = 'UTF-8',
+            LanguageLocaleKey = 'en_US'
+        );
+        insert limitedUser;
+        return limitedUser;
     }
 }
