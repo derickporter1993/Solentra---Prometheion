@@ -28,22 +28,37 @@ This document explains known false positives and warnings from the linter that c
 
 **Action:** No action required. These warnings can be safely ignored as the buttons are properly labeled.
 
-## LWC1034 and LWC1043 Errors (By Design)
+## LWC1034 and LWC1043 Errors (Real Syntax Errors)
 
-**Status:** ⚠️ Errors - Intentional format choice
+**Status:** ❌ Errors - Invalid LWC syntax
 
 **Issue:** The linter reports errors for quoted template expressions:
 - `LWC1034: Ambiguous attribute value` - for attributes like `disabled="{isLoading}"`
 - `LWC1043: Event handler should be an expression` - for event handlers like `onclick="{\n  handler;\n}"`
 
-**Explanation:** The codebase uses quoted format for template expressions and event handlers. While the linter recommends unquoted format (`onclick={handler}`), the quoted format is a valid alternative that works correctly at runtime.
+**Explanation:** 
+- **These are REAL syntax errors, not false positives**
+- The quoted format `onclick="{\n  handler;\n}"` is **invalid LWC syntax** and will **not work at runtime**
+- The correct format is `onclick={handler}` (unquoted)
+- Other components in the codebase (e.g., `systemMonitorDashboard.html`) use the correct unquoted format: `onclick={refresh}`
+- The LWC compiler requires unquoted expressions for event handlers and data bindings
 
-**Action:** These errors are expected and can be ignored, or the linter rules can be configured to allow quoted format if desired.
+**Impact:**
+- Event handlers using quoted format will **not fire** at runtime
+- This causes buttons to appear clickable but do nothing when clicked
+- The linter is correctly identifying invalid syntax
+
+**Action Required:**
+- Fix all event handlers to use unquoted format: `onclick={handler}`
+- Fix all attribute bindings to use unquoted format: `disabled={isLoading}`, `class={variable}`, etc.
+- Fix all template directives to use unquoted format: `lwc:if={condition}`, `for:each={list}`, `key={item}`
+
+**Note:** The codebase was previously fixed to use unquoted format, but changes were reverted. The handlers need to be corrected again for the code to function properly.
 
 ## Summary
 
 - ✅ CSS parsing errors: Resolved
-- ⚠️ Accessibility warnings: False positives - buttons are properly labeled
-- ⚠️ LWC syntax errors: By design - quoted format is intentional
+- ⚠️ Accessibility warnings: False positives - buttons are properly labeled (can be ignored)
+- ❌ LWC syntax errors: **Real errors** - quoted format is invalid and prevents handlers from working
 
-All components are functional and accessible despite these linter warnings/errors.
+**Critical:** The LWC1034/LWC1043 errors indicate that event handlers will **not work** at runtime. These must be fixed by using unquoted format (`onclick={handler}` instead of `onclick="{\n  handler;\n}"`).
