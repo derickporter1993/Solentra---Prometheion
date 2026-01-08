@@ -1,0 +1,193 @@
+<template>
+    <lightning-card title="Control Mapping Matrix" icon-name="standard:multi_select_checkbox">
+        <div slot="actions">
+            <lightning-button-icon
+                icon-name="utility:download"
+                alternative-text="Export"
+                title="Export Matrix"
+                onclick={handleExport}>
+            </lightning-button-icon>
+        </div>
+
+        <div class="slds-p-around_medium">
+            <!-- Framework Selection -->
+            <div class="slds-grid slds-gutters slds-m-bottom_medium">
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-combobox
+                        name="sourceFramework"
+                        label="Source Framework"
+                        value={sourceFramework}
+                        options={frameworkOptions}
+                        onchange={handleSourceChange}>
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-dual-listbox
+                        name="targetFrameworks"
+                        label="Target Frameworks"
+                        source-label="Available"
+                        selected-label="Selected"
+                        options={availableTargetFrameworks}
+                        value={targetFrameworks}
+                        onchange={handleTargetChange}>
+                    </lightning-dual-listbox>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="slds-m-bottom_medium">
+                <div class="legend slds-grid slds-grid_align-center">
+                    <div class="legend-item slds-m-right_medium">
+                        <span class="legend-dot direct"></span>
+                        <span class="slds-text-body_small">Direct Mapping</span>
+                    </div>
+                    <div class="legend-item slds-m-right_medium">
+                        <span class="legend-dot partial"></span>
+                        <span class="slds-text-body_small">Partial Mapping</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot none"></span>
+                        <span class="slds-text-body_small">No Mapping</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Matrix Table -->
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading"></lightning-spinner>
+            </template>
+
+            <template if:false={isLoading}>
+                <div class="matrix-container">
+                    <table class="slds-table slds-table_bordered slds-table_fixed-layout matrix-table">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="control-header">
+                                    <div class="slds-truncate">{sourceFramework} Control</div>
+                                </th>
+                                <template for:each={targetFrameworks} for:item="framework">
+                                    <th key={framework} scope="col" class="framework-header">
+                                        <div class="slds-truncate">{framework}</div>
+                                    </th>
+                                </template>
+                                <th scope="col" class="coverage-header">
+                                    <div class="slds-truncate">Coverage</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={mappingRows} for:item="row">
+                                <tr key={row.id}>
+                                    <td class="control-cell">
+                                        <div class="slds-truncate" title={row.controlName}>
+                                            <strong>{row.controlCode}</strong>
+                                            <div class="slds-text-body_small slds-text-color_weak">{row.controlName}</div>
+                                        </div>
+                                    </td>
+                                    <template for:each={row.mappings} for:item="mapping">
+                                        <td key={mapping.framework} class={mapping.cellClass} onclick={handleCellClick} data-row={row.id} data-framework={mapping.framework}>
+                                            <template if:true={mapping.hasMapping}>
+                                                <div class="mapping-content">
+                                                    <span class="mapping-code">{mapping.targetCode}</span>
+                                                    <lightning-icon icon-name={mapping.icon} size="x-small"></lightning-icon>
+                                                </div>
+                                            </template>
+                                            <template if:false={mapping.hasMapping}>
+                                                <span class="slds-text-color_weak">—</span>
+                                            </template>
+                                        </td>
+                                    </template>
+                                    <td class="coverage-cell">
+                                        <lightning-progress-ring value={row.coveragePercent} size="small" variant={row.coverageVariant}></lightning-progress-ring>
+                                        <span class="slds-m-left_x-small">{row.coveragePercent}%</span>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Summary Statistics -->
+                <div class="slds-grid slds-gutters slds-m-top_medium">
+                    <div class="slds-col slds-size_1-of-4">
+                        <div class="stat-box">
+                            <div class="stat-value">{totalControls}</div>
+                            <div class="stat-label">Total Controls</div>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4">
+                        <div class="stat-box direct">
+                            <div class="stat-value">{directMappings}</div>
+                            <div class="stat-label">Direct Mappings</div>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4">
+                        <div class="stat-box partial">
+                            <div class="stat-value">{partialMappings}</div>
+                            <div class="stat-label">Partial Mappings</div>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4">
+                        <div class="stat-box none">
+                            <div class="stat-value">{unmappedControls}</div>
+                            <div class="stat-label">Gaps</div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+
+    <!-- Mapping Detail Modal -->
+    <template if:true={showMappingModal}>
+        <section role="dialog" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={closeMappingModal}>
+                        <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                    </button>
+                    <h2 class="slds-modal__title">Control Mapping Details</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <template if:true={selectedMapping}>
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_1-of-2">
+                                <div class="slds-box slds-theme_shade">
+                                    <h3 class="slds-text-title_caps slds-m-bottom_small">Source Control</h3>
+                                    <p><strong>{selectedMapping.sourceCode}</strong></p>
+                                    <p class="slds-text-body_small">{selectedMapping.sourceName}</p>
+                                    <p class="slds-text-color_weak slds-m-top_small">{selectedMapping.sourceDescription}</p>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <div class="slds-box slds-theme_shade">
+                                    <h3 class="slds-text-title_caps slds-m-bottom_small">Target Control</h3>
+                                    <p><strong>{selectedMapping.targetCode}</strong></p>
+                                    <p class="slds-text-body_small">{selectedMapping.targetName}</p>
+                                    <p class="slds-text-color_weak slds-m-top_small">{selectedMapping.targetDescription}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-m-top_medium">
+                            <h3 class="slds-text-title_caps slds-m-bottom_small">Mapping Analysis</h3>
+                            <dl class="slds-dl_horizontal">
+                                <dt class="slds-dl_horizontal__label">Mapping Type:</dt>
+                                <dd class="slds-dl_horizontal__detail">
+                                    <lightning-badge label={selectedMapping.mappingType}></lightning-badge>
+                                </dd>
+                                <dt class="slds-dl_horizontal__label">Confidence:</dt>
+                                <dd class="slds-dl_horizontal__detail">{selectedMapping.confidence}%</dd>
+                                <dt class="slds-dl_horizontal__label">Notes:</dt>
+                                <dd class="slds-dl_horizontal__detail">{selectedMapping.notes}</dd>
+                            </dl>
+                        </div>
+                    </template>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Close" onclick={closeMappingModal}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>
