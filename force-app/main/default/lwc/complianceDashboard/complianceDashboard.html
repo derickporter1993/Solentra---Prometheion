@@ -6,7 +6,7 @@
             </template>
 
             <template if:true={error}>
-                <div class="slds-text-color_error">
+                <div class="slds-text-color_error" role="alert" aria-live="assertive">
                     Error loading dashboard: {error.body.message}
                 </div>
             </template>

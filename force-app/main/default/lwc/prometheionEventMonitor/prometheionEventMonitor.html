@@ -2,14 +2,14 @@
   <lightning-card title="Prometheion Event Monitor" icon-name="standard:event">
     <div class="slds-var-p-around_medium">
       <template if:true={hasEvents}>
-        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered" role="table" aria-label="Prometheion event monitor table">
           <thead>
             <tr>
-              <th>Event Type</th>
-              <th>Entity Type</th>
-              <th>Entity ID</th>
-              <th>Framework</th>
-              <th>Timestamp</th>
+              <th scope="col">Event Type</th>
+              <th scope="col">Entity Type</th>
+              <th scope="col">Entity ID</th>
+              <th scope="col">Framework</th>
+              <th scope="col">Timestamp</th>
             </tr>
           </thead>
           <tbody>
