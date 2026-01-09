@@ -5,9 +5,11 @@ export default {
   modulePathIgnorePatterns: ["<rootDir>/.localdevserver"],
   testPathIgnorePatterns: [
     "<rootDir>/node_modules/",
+    "<rootDir>/Sentinel-main/",
     "<rootDir>/force-app/main/default/lwc/__tests__/setupTests.js",
     "<rootDir>/force-app/main/default/lwc/__tests__/axeTestHelper.js",
     "<rootDir>/force-app/main/default/lwc/__tests__/a11yTestUtils.js",
+    "<rootDir>/force-app/main/default/lwc/__tests__/wireAdapterTestUtils.js",
   ],
   setupFilesAfterEnv: [
     "<rootDir>/force-app/main/default/lwc/__tests__/setupTests.js",

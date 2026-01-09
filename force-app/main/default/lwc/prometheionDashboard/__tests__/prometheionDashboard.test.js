@@ -10,13 +10,77 @@
 
 import { createElement } from "lwc";
 import PrometheionDashboard from "c/prometheionDashboard";
-import { registerApexTestWireAdapter } from "@salesforce/sfdx-lwc-jest";
-import calculateReadinessScore from "@salesforce/apex/PrometheionComplianceScorer.calculateReadinessScore";
-import getAuditPackages from "@salesforce/apex/PrometheionDashboardController.getAuditPackages";
+import { safeCleanupDom } from "../../__tests__/wireAdapterTestUtils";
 
-// Register wire adapters
-const calculateReadinessScoreAdapter = registerApexTestWireAdapter(calculateReadinessScore);
-const getAuditPackagesAdapter = registerApexTestWireAdapter(getAuditPackages);
+// Wire adapter callbacks - must be declared before jest.mock (which is hoisted)
+// Using 'mock' prefix allows Jest to hoist properly
+let mockReadinessScoreCallbacks = new Set();
+let mockAuditPackagesCallbacks = new Set();
+
+// Store for imperative call result
+let mockImperativeResult = null;
+
+// Mock wire adapter that supports BOTH wire and imperative usage
+// LWC Apex methods can be used as @wire adapters OR called imperatively
+jest.mock(
+  "@salesforce/apex/PrometheionComplianceScorer.calculateReadinessScore",
+  () => ({
+    default: function MockReadinessScoreAdapter(callback) {
+      // Check if called with 'new' (wire adapter mode)
+      if (new.target) {
+        this.callback = callback;
+        mockReadinessScoreCallbacks.add(callback);
+        this.connect = () => {};
+        this.disconnect = () => {
+          mockReadinessScoreCallbacks.delete(this.callback);
+        };
+        this.update = () => {};
+        return this;
+      }
+      // Called as regular function (imperative mode) - return a promise
+      return Promise.resolve(mockImperativeResult);
+    },
+  }),
+  { virtual: true }
+);
+
+jest.mock(
+  "@salesforce/apex/PrometheionDashboardController.getAuditPackages",
+  () => ({
+    default: function MockAuditPackagesAdapter(callback) {
+      if (new.target) {
+        this.callback = callback;
+        mockAuditPackagesCallbacks.add(callback);
+        this.connect = () => {};
+        this.disconnect = () => {
+          mockAuditPackagesCallbacks.delete(this.callback);
+        };
+        this.update = () => {};
+        return this;
+      }
+      return Promise.resolve([]);
+    },
+  }),
+  { virtual: true }
+);
+
+// Wire adapter emit helpers (defined after mocks)
+const emitReadinessScore = (data) => {
+  mockReadinessScoreCallbacks.forEach((cb) => cb({ data, error: undefined }));
+};
+
+const emitAuditPackages = (data) => {
+  mockAuditPackagesCallbacks.forEach((cb) => cb({ data, error: undefined }));
+};
+
+const emitReadinessScoreError = (error) => {
+  mockReadinessScoreCallbacks.forEach((cb) => cb({ data: undefined, error }));
+};
+
+const resetWireCallbacks = () => {
+  mockReadinessScoreCallbacks = new Set();
+  mockAuditPackagesCallbacks = new Set();
+};
 
 // Mock ShowToastEvent
 jest.mock(
@@ -111,12 +175,13 @@ const MOCK_AUDIT_PACKAGES = [
 describe("c-prometheion-dashboard", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    resetWireCallbacks();
+    // Set up imperative call result
+    mockImperativeResult = MOCK_SCORE_RESULT;
   });
 
   afterEach(() => {
-    while (document.body.firstChild) {
-      document.body.removeChild(document.body.firstChild);
-    }
+    safeCleanupDom();
   });
 
   /**
@@ -138,8 +203,8 @@ describe("c-prometheion-dashboard", () => {
     await flushPromises();
 
     // Emit wire adapter data
-    calculateReadinessScoreAdapter.emit(MOCK_SCORE_RESULT);
-    getAuditPackagesAdapter.emit(MOCK_AUDIT_PACKAGES);
+    emitReadinessScore(MOCK_SCORE_RESULT);
+    emitAuditPackages(MOCK_AUDIT_PACKAGES);
 
     await flushPromises();
     await Promise.resolve();
@@ -175,7 +240,8 @@ describe("c-prometheion-dashboard", () => {
     it("renders framework cards", async () => {
       const element = await createComponent();
 
-      const frameworkCards = element.shadowRoot.querySelectorAll(".framework-card");
+      const frameworkCards =
+        element.shadowRoot.querySelectorAll(".framework-card");
       expect(frameworkCards.length).toBeGreaterThan(0);
     });
 
@@ -209,7 +275,8 @@ describe("c-prometheion-dashboard", () => {
       await flushPromises();
 
       // Should show drill-down view for HIPAA
-      const drillDownView = element.shadowRoot.querySelector(".drill-down-view");
+      const drillDownView =
+        element.shadowRoot.querySelector(".drill-down-view");
       expect(drillDownView).not.toBeNull();
     });
   });
@@ -218,13 +285,15 @@ describe("c-prometheion-dashboard", () => {
     it("navigates to drill-down view when framework card is clicked", async () => {
       const element = await createComponent();
 
-      const frameworkCard = element.shadowRoot.querySelector(".framework-card");
+      const frameworkCard =
+        element.shadowRoot.querySelector(".framework-card");
       expect(frameworkCard).not.toBeNull();
 
       frameworkCard.click();
       await flushPromises();
 
-      const drillDownView = element.shadowRoot.querySelector(".drill-down-view");
+      const drillDownView =
+        element.shadowRoot.querySelector(".drill-down-view");
       expect(drillDownView).not.toBeNull();
     });
 
@@ -232,7 +301,8 @@ describe("c-prometheion-dashboard", () => {
       const element = await createComponent();
 
       // First click a framework card
-      const frameworkCard = element.shadowRoot.querySelector(".framework-card");
+      const frameworkCard =
+        element.shadowRoot.querySelector(".framework-card");
       frameworkCard.click();
       await flushPromises();
 
@@ -242,7 +312,8 @@ describe("c-prometheion-dashboard", () => {
       backButton.click();
       await flushPromises();
 
-      const frameworkGrid = element.shadowRoot.querySelector(".framework-grid");
+      const frameworkGrid =
+        element.shadowRoot.querySelector(".framework-grid");
       expect(frameworkGrid).not.toBeNull();
     });
   });
@@ -258,7 +329,8 @@ describe("c-prometheion-dashboard", () => {
     it("shows severity badge for each risk", async () => {
       const element = await createComponent();
 
-      const severityBadges = element.shadowRoot.querySelectorAll(".severity-badge");
+      const severityBadges =
+        element.shadowRoot.querySelectorAll(".severity-badge");
       expect(severityBadges.length).toBeGreaterThan(0);
     });
 
@@ -272,22 +344,28 @@ describe("c-prometheion-dashboard", () => {
   });
 
   describe("Loading State", () => {
-    it("shows loading overlay initially", async () => {
+    it("shows component initially", async () => {
       const element = createElement("c-prometheion-dashboard", {
         is: PrometheionDashboard,
       });
       document.body.appendChild(element);
 
-      // Before wire data is emitted, should be loading
-      const loadingOverlay = element.shadowRoot.querySelector(".loading-overlay");
-      // Note: Initial state may show loading
+      await flushPromises();
+
+      // Component should render
       expect(element).not.toBeNull();
+
+      // Emit data to complete the test
+      emitReadinessScore(MOCK_SCORE_RESULT);
+      emitAuditPackages(MOCK_AUDIT_PACKAGES);
+      await flushPromises();
     });
 
     it("hides loading overlay after data loads", async () => {
       const element = await createComponent();
 
-      const loadingOverlay = element.shadowRoot.querySelector(".loading-overlay");
+      const loadingOverlay =
+        element.shadowRoot.querySelector(".loading-overlay");
       expect(loadingOverlay).toBeNull();
     });
   });
@@ -325,7 +403,8 @@ describe("c-prometheion-dashboard", () => {
     it("has ARIA labels on framework cards", async () => {
       const element = await createComponent();
 
-      const frameworkCard = element.shadowRoot.querySelector(".framework-card");
+      const frameworkCard =
+        element.shadowRoot.querySelector(".framework-card");
       expect(frameworkCard).not.toBeNull();
       expect(frameworkCard.getAttribute("aria-label")).not.toBeNull();
     });
@@ -343,7 +422,8 @@ describe("c-prometheion-dashboard", () => {
     it("framework cards are keyboard accessible", async () => {
       const element = await createComponent();
 
-      const frameworkCard = element.shadowRoot.querySelector(".framework-card");
+      const frameworkCard =
+        element.shadowRoot.querySelector(".framework-card");
       expect(frameworkCard.tagName.toLowerCase()).toBe("button");
       expect(frameworkCard.getAttribute("type")).toBe("button");
     });
@@ -351,7 +431,8 @@ describe("c-prometheion-dashboard", () => {
     it("progress bars have proper ARIA attributes", async () => {
       const element = await createComponent();
 
-      const progressBars = element.shadowRoot.querySelectorAll('[role="progressbar"]');
+      const progressBars =
+        element.shadowRoot.querySelectorAll('[role="progressbar"]');
       progressBars.forEach((bar) => {
         expect(bar.getAttribute("aria-valuemin")).toBe("0");
         expect(bar.getAttribute("aria-valuemax")).toBe("100");
@@ -364,8 +445,8 @@ describe("c-prometheion-dashboard", () => {
       const element = await createComponent();
 
       const buttons = element.shadowRoot.querySelectorAll(".action-btn");
-      const soc2Button = Array.from(buttons).find(
-        (btn) => btn.textContent.includes("SOC2")
+      const soc2Button = Array.from(buttons).find((btn) =>
+        btn.textContent.includes("SOC2")
       );
       expect(soc2Button).not.toBeNull();
     });
@@ -374,8 +455,8 @@ describe("c-prometheion-dashboard", () => {
       const element = await createComponent();
 
       const buttons = element.shadowRoot.querySelectorAll(".action-btn");
-      const hipaaButton = Array.from(buttons).find(
-        (btn) => btn.textContent.includes("HIPAA")
+      const hipaaButton = Array.from(buttons).find((btn) =>
+        btn.textContent.includes("HIPAA")
       );
       expect(hipaaButton).not.toBeNull();
     });
@@ -391,12 +472,14 @@ describe("c-prometheion-dashboard", () => {
       await flushPromises();
 
       // Emit error from wire adapter
-      calculateReadinessScoreAdapter.error({ body: { message: "Test error" } });
+      emitReadinessScoreError({ body: { message: "Test error" } });
 
       await flushPromises();
 
       // Component should still be functional
-      expect(element.shadowRoot.querySelector(".prometheion-dashboard")).not.toBeNull();
+      expect(
+        element.shadowRoot.querySelector(".prometheion-dashboard")
+      ).not.toBeNull();
     });
   });
 });
