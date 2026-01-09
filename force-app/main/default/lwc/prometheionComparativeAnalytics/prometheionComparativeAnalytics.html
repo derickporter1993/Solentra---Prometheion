@@ -48,14 +48,14 @@
             <template if:true={hasResults}>
                 <div class="slds-var-m-top_large">
                     <h3 class="slds-text-heading_small">Matrix Results</h3>
-                    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                    <table class="slds-table slds-table_bordered slds-table_cell-buffer" role="table" aria-label="Comparative analytics matrix">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th scope="row">Row</th>
                                 <template for:each={matrixColumns} for:item="col">
-                                    <th key={col}>{col}</th>
+                                    <th key={col} scope="col">{col}</th>
                                 </template>
-                                <th>Total</th>
+                                <th scope="col">Total</th>
                             </tr>
                         </thead>
                         <tbody>
