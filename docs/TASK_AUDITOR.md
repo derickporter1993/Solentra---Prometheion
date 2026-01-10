@@ -12,6 +12,7 @@
 | /sfcontext command | `claude/determine-project-phase-Q95M8` | Claude | ✅ COMPLETED | 2026-01-10 | 2026-01-10 |
 | Merge SOC2/HIPAA services from Cursor | `claude/determine-project-phase-Q95M8` | Claude | ✅ COMPLETED | 2026-01-10 | 2026-01-10 |
 | Code audit and test coverage fixes | `claude/determine-project-phase-Q95M8` | Claude | ✅ COMPLETED | 2026-01-10 | 2026-01-10 |
+| Fix P1 low-coverage test classes | `claude/determine-project-phase-Q95M8` | Claude | ✅ COMPLETED | 2026-01-10 | 2026-01-10 |
 
 ---
 
