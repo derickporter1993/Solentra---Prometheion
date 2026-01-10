@@ -73,7 +73,9 @@ private class GDPRConsentManagementServiceTest {
     
     @IsTest
     static void testWithdrawConsent_Success() {
-        Contact testContact = [SELECT Id FROM Contact WHERE Id IN (SELECT Contact__c FROM Consent__c WHERE Consent_Given__c = true LIMIT 1)];
+        // Get a contact that has a consent record
+        List<Consent__c> consents = [SELECT Contact__c FROM Consent__c WHERE Consent_Given__c = true LIMIT 1];
+        Contact testContact = [SELECT Id FROM Contact WHERE Id = :consents[0].Contact__c LIMIT 1];
         
         Test.startTest();
         GDPRConsentManagementService service = new GDPRConsentManagementService();
@@ -93,7 +95,9 @@ private class GDPRConsentManagementServiceTest {
     
     @IsTest
     static void testGetConsentHistory() {
-        Contact testContact = [SELECT Id FROM Contact WHERE Id IN (SELECT Contact__c FROM Consent__c LIMIT 1)];
+        // Get a contact that has a consent record
+        List<Consent__c> consents = [SELECT Contact__c FROM Consent__c LIMIT 1];
+        Contact testContact = [SELECT Id FROM Contact WHERE Id = :consents[0].Contact__c LIMIT 1];
         
         Test.startTest();
         GDPRConsentManagementService service = new GDPRConsentManagementService();

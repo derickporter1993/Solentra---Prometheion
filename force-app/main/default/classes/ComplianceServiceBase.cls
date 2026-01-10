@@ -133,7 +133,7 @@ public abstract with sharing class ComplianceServiceBase {
      * @param operation DML operation type
      * @return Database.SaveResult or Database.DeleteResult list
      */
-    protected List<Database.SaveResult> executeSecureDML(List<SObject> records, AccessType accessType) {
+    protected List<Database.SaveResult> executeSecureDML(List<SObject> records, System.AccessType accessType) {
         if (records == null || records.isEmpty()) {
             return new List<Database.SaveResult>();
         }
@@ -151,9 +151,10 @@ public abstract with sharing class ComplianceServiceBase {
         }
         
         // Determine operation type from access type
-        if (accessType == AccessType.CREATABLE) {
+        String accessTypeStr = String.valueOf(accessType);
+        if (accessTypeStr == 'CREATABLE') {
             return Database.insert(sanitizedRecords, false, AccessLevel.USER_MODE);
-        } else if (accessType == AccessType.UPDATABLE) {
+        } else if (accessTypeStr == 'UPDATABLE') {
             return Database.update(sanitizedRecords, false, AccessLevel.USER_MODE);
         } else {
             throw new IllegalArgumentException('Unsupported access type for DML: ' + accessType);
