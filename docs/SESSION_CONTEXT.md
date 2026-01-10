@@ -13,6 +13,15 @@
 | P1 Blockers | 0/12 done | Input validation, USER_MODE, bulk tests |
 | v1.5 Features | 0/5 done | Report Scheduler first |
 
+## Task Auditor
+
+**IMPORTANT**: Before starting work, check `docs/TASK_AUDITOR.md` for:
+- Pending tasks from previous sessions
+- Blocked items that may now be unblocked
+- Completed work to avoid duplication
+
+Update TASK_AUDITOR.md as you complete tasks.
+
 ## Active Work Split
 
 **CURSOR Tasks** (Mechanical):
@@ -47,6 +56,7 @@
 
 ## Key Documents
 
+- `docs/TASK_AUDITOR.md` - Cross-session task tracking
 - `docs/plans/V1.5_AI_ASSISTED_REMEDIATION_PLAN.md` - Full v1.5 architecture
 - `docs/TECHNICAL_IMPROVEMENTS_TRACKER.md` - 57 tracked items
 - `docs/IMPROVEMENT_TODOS.md` - 47 actionable items
@@ -61,4 +71,4 @@ Start implementing Compliance Report Scheduler:
 ## How to Use This File
 
 In any new chat session, say:
-> "Read docs/SESSION_CONTEXT.md and continue from there"
+> "Read docs/SESSION_CONTEXT.md and docs/TASK_AUDITOR.md, then continue from there"
