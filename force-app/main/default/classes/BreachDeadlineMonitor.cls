@@ -235,6 +235,7 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
             }
 
             if (!newGaps.isEmpty()) {
+                PrometheionSecurityUtils.validateCRUDAccess('Compliance_Gap__c', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
                 insert newGaps;
             }
         }
@@ -290,6 +291,7 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
         }
 
         if (!breachesToUpdate.isEmpty()) {
+            PrometheionSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', PrometheionSecurityUtils.DmlOperation.DML_UPDATE);
             update breachesToUpdate;
         }
     }
@@ -310,6 +312,7 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
             log.Status__c = result.overdueBreaches.isEmpty() ? 'Success' : 'Warning';
             log.Details__c = details;
             log.User__c = UserInfo.getUserId();
+            PrometheionSecurityUtils.validateCRUDAccess('Prometheion_Audit_Log__c', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
             insert log;
         } catch (Exception e) {
             System.debug(LoggingLevel.ERROR, 'Failed to log execution: ' + e.getMessage());
@@ -326,6 +329,7 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
             log.Status__c = 'Error';
             log.Details__c = message;
             log.User__c = UserInfo.getUserId();
+            PrometheionSecurityUtils.validateCRUDAccess('Prometheion_Audit_Log__c', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
             insert log;
         } catch (Exception e) {
             System.debug(LoggingLevel.ERROR, 'Failed to log error: ' + e.getMessage());
