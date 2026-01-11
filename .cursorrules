@@ -1,0 +1,115 @@
+# Prometheion Cursor Rules
+
+## Important
+Read and follow all rules in CLAUDE.md before making changes.
+
+---
+
+## LWC Template Syntax (CRITICAL)
+
+- NEVER quote template bindings: use `data={value}` not `data="{value}"`
+- NEVER quote event handlers: use `onclick={handler}` not `onclick="{handler}"`
+- Use `lwc:if` for modern LWC (preferred over `if:true`)
+- Bindings in attributes: `key={item.id}` not `key="{item.id}"`
+
+### Correct Examples
+```html
+<lightning-datatable data={rows} columns={columns}></lightning-datatable>
+<lightning-button onclick={handleClick} label={buttonLabel}></lightning-button>
+<template lwc:if={hasData}>...</template>
+```
+
+### Wrong Examples (DO NOT USE)
+```html
+<lightning-datatable data="{rows}" columns="{columns}"></lightning-datatable>
+<lightning-button onclick="{handleClick}" label="{buttonLabel}"></lightning-button>
+```
+
+---
+
+## Apex Security (AppExchange Required)
+
+- All classes: `with sharing` keyword
+- All SOQL: `WITH SECURITY_ENFORCED`
+- Before DML: `PrometheionSecurityUtils.validateCRUDAccess('Object__c', DmlOperation.DML_INSERT)`
+
+```apex
+// Correct
+public with sharing class MyClass {
+    List<Account> accounts = [SELECT Id FROM Account WITH SECURITY_ENFORCED];
+
+    PrometheionSecurityUtils.validateCRUDAccess('Account', DmlOperation.DML_UPDATE);
+    update accounts;
+}
+```
+
+---
+
+## Jest Testing Rules
+
+### Mock Salesforce Modules
+Always add `{ virtual: true }` to Salesforce module mocks:
+```javascript
+jest.mock("@salesforce/apex/Controller.method", () => ({
+  default: jest.fn()
+}), { virtual: true });
+```
+
+### Mock LWC Classes (PollingManager pattern)
+Use factory functions to avoid hoisting issues:
+```javascript
+jest.mock("c/pollingManager", () => {
+  return class MockPollingManager {
+    callback = null;
+    interval = 60000;
+    constructor(callback, interval = 60000) {
+      this.callback = callback;
+      this.interval = interval;
+    }
+    start() {}
+    stop() {}
+    cleanup() {}
+  };
+}, { virtual: true });
+```
+
+### Never Access Private Properties
+- WRONG: `expect(element.rows).toEqual([])`
+- RIGHT: `expect(element.shadowRoot.querySelector("lightning-datatable")).not.toBeNull()`
+
+### Key-field Attribute Access
+```javascript
+// Handle both property and attribute access
+expect(datatable.keyField || datatable.getAttribute("key-field")).toBeTruthy();
+```
+
+---
+
+## Before Committing
+
+1. Run `npm run lint` - fix all errors
+2. Run `npm run test:unit` - fix all failures
+3. Run `npm run fmt` - format code
+
+---
+
+## Workflow
+
+1. Always read existing files before modifying
+2. Follow patterns already in the codebase
+3. Look at similar test files for mock patterns
+4. Run tests after making changes
+5. Fix failures before committing
+
+---
+
+## Common Mistakes to Avoid
+
+| Mistake | Fix |
+|---------|-----|
+| `data="{rows}"` | `data={rows}` |
+| `onclick="{handler}"` | `onclick={handler}` |
+| `element.rows` in tests | Use shadow DOM queries |
+| Missing `{ virtual: true }` | Add to all SF module mocks |
+| Class mock hoisting error | Use factory function pattern |
+| `if:true={value}` | Use `lwc:if={value}` |
