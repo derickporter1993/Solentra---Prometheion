@@ -21,6 +21,7 @@ Thumbs.db
 # IDE and editor files
 .vscode/
 .idea/
+.cursor/
 *.sublime-*
 .history/
 
@@ -34,6 +35,7 @@ Thumbs.db
 .cache/
 coverage/
 sf/
+scanner-reports/
 
 # Temporary documentation and analysis files
 FAILED_PRS_SUMMARY.md

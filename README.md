@@ -677,12 +677,44 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-## Support
+## Documentation
 
-- **Documentation**: [docs/](docs/)
-- **Sample Reports**: [examples/](examples/)
-- **Issues**: [GitHub Issues](https://github.com/derickporter1993/prometheion/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/derickporter1993/prometheion/discussions)
+### Installation & Setup
+
+- **📦 [Installation Guide](docs/INSTALLATION_GUIDE.md)** - Complete installation instructions with step-by-step configuration
+- **🔌 [External Services Guide](docs/EXTERNAL_SERVICES.md)** - Claude AI, Slack, PagerDuty, ServiceNow, Teams integration setup
+- **⚙️ Post-Install Configuration** - Named Credentials, AI settings, compliance frameworks
+
+### Security & Testing
+
+- **🔒 [PagerDuty Security Review](docs/PAGERDUTY_INTEGRATION_SECURITY_REVIEW.md)** - Critical security findings and remediation
+- **🛡️ [Scanner Report Bundle](docs/SCANNER_REPORT_BUNDLE.md)** - AppExchange Code Analyzer guide and security scanning
+- **🧪 Test Utilities** - `PrometheionTestUserFactory`, `PrometheionTestDataFactory` for security testing
+
+### Development
+
+- **🤝 [Contributing Guide](CONTRIBUTING.md)** - Development workflow, coding standards, testing requirements
+- **📝 [Changelog](CHANGELOG.md)** - Release notes and version history
+- **🗺️ [Roadmap](ROADMAP.md)** - Feature roadmap and planned releases
+
+### Architecture & Reference
+
+- **📘 [Technical Deep Dive](TECHNICAL_DEEP_DIVE.md)** - Architecture and implementation details
+- **📚 [API Reference](API_REFERENCE.md)** - API documentation and code examples
+- **🤖 [Claude.md](CLAUDE.md)** - AI assistant guide for the codebase
+- **📋 [Compliance Frameworks Reference](docs/COMPLIANCE_FRAMEWORKS_CODE_REFERENCE.md)** - Framework code patterns
+
+### Examples & Reports
+
+- **📊 [Sample Compliance Report](examples/compliance-baseline-report-sample.md)** - Example compliance baseline report
+- **📁 [Examples Directory](examples/)** - Sample outputs and reports
+
+### Support
+
+- **🐛 [Report Issues](https://github.com/derickporter1993/prometheion/issues)** - Bug reports and feature requests
+- **💬 [Discussions](https://github.com/derickporter1993/prometheion/discussions)** - Community discussions and Q&A
+- **📧 Email Support**: support@prometheion.io
+- **🔒 Security Issues**: security@prometheion.io
 
 ---
 
