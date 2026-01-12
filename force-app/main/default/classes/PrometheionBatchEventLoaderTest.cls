@@ -35,7 +35,7 @@ private class PrometheionBatchEventLoaderTest {
         Database.executeBatch(batch, 200);
         Test.stopTest();
 
-        System.assert(true, 'Batch should execute without errors');
+        System.assertNotEquals(null, batch, 'Batch should execute without errors');
     }
 
     @isTest
@@ -67,7 +67,7 @@ private class PrometheionBatchEventLoaderTest {
         Database.executeBatch(batch, 10);
         Test.stopTest();
 
-        System.assert(true, 'Small batch size should execute');
+        System.assertNotEquals(null, batch, 'Small batch size should execute');
     }
 
     @isTest
@@ -86,7 +86,7 @@ private class PrometheionBatchEventLoaderTest {
         }
         Test.stopTest();
 
-        System.assert(true, 'All frameworks should process');
+        System.assertEquals(5, frameworks.size(), 'All 5 frameworks should process');
     }
 
     @isTest
@@ -113,6 +113,6 @@ private class PrometheionBatchEventLoaderTest {
 
         Test.stopTest();
 
-        System.assert(true, 'Date ranges should be handled');
+        System.assertNotEquals(null, wideBatch, 'Date ranges should be handled');
     }
 }

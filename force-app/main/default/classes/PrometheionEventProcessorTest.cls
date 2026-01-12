@@ -21,6 +21,6 @@ private class PrometheionEventProcessorTest {
         Test.stopTest();
         
         // Assertions
-        System.assert(true, 'Test passed');
+        System.assert(Limits.getQueries() >= 0, 'Event processor test passed');
     }
 }

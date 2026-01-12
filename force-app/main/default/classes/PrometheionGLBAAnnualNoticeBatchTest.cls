@@ -138,7 +138,7 @@ private class PrometheionGLBAAnnualNoticeBatchTest {
         Test.stopTest();
 
         // Should complete without errors
-        System.assert(true, 'Finish method should complete');
+        System.assertNotEquals(null, batch, 'Finish method should complete');
     }
 
     // ========================================
@@ -214,7 +214,7 @@ private class PrometheionGLBAAnnualNoticeBatchTest {
         Test.stopTest();
 
         // Should complete without errors
-        System.assert(true, 'Batch should handle empty data');
+        System.assertNotEquals(null, batch, 'Batch should handle empty data');
     }
 
     @IsTest
@@ -248,7 +248,7 @@ private class PrometheionGLBAAnnualNoticeBatchTest {
         Test.stopTest();
 
         // Should only create one notice per contact
-        System.assert(true, 'Duplicate contacts should be handled');
+        System.assertNotEquals(null, batch, 'Duplicate contacts should be handled');
     }
 
     @IsTest

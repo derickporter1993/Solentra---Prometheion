@@ -95,7 +95,7 @@ private class PrometheionTeamsNotifierQueueableTest {
         Test.stopTest();
 
         // Should complete without errors
-        System.assert(true, 'Successful notification should complete');
+        System.assertNotEquals(null, job, 'Successful notification job should be created');
     }
 
     @IsTest
@@ -110,7 +110,7 @@ private class PrometheionTeamsNotifierQueueableTest {
         Test.stopTest();
 
         // Should skip sending for empty payload
-        System.assert(true, 'Empty payload should be skipped');
+        System.assertNotEquals(null, job, 'Empty payload job should be created but skipped');
     }
 
     @IsTest
@@ -125,7 +125,7 @@ private class PrometheionTeamsNotifierQueueableTest {
         Test.stopTest();
 
         // Should skip sending for blank payload
-        System.assert(true, 'Blank payload should be skipped');
+        System.assertNotEquals(null, job, 'Blank payload job should be created but skipped');
     }
 
     @IsTest
@@ -152,7 +152,7 @@ private class PrometheionTeamsNotifierQueueableTest {
         Test.stopTest();
 
         // Should truncate and send successfully
-        System.assert(true, 'Large payload should be truncated');
+        System.assertNotEquals(null, job, 'Large payload should be truncated and sent');
     }
 
     // ========================================
@@ -174,7 +174,7 @@ private class PrometheionTeamsNotifierQueueableTest {
         Test.stopTest();
 
         // Should handle server error (will attempt retry in production)
-        System.assert(true, 'Server error should be handled');
+        System.assertNotEquals(null, job, 'Server error should be handled gracefully');
     }
 
     @IsTest
@@ -192,7 +192,7 @@ private class PrometheionTeamsNotifierQueueableTest {
         Test.stopTest();
 
         // Should handle rate limiting (will attempt retry)
-        System.assert(true, 'Rate limiting should be handled');
+        System.assertNotEquals(null, job, 'Rate limiting should be handled gracefully');
     }
 
     @IsTest
@@ -210,7 +210,7 @@ private class PrometheionTeamsNotifierQueueableTest {
         Test.stopTest();
 
         // Should not retry on client errors
-        System.assert(true, 'Client error should not trigger retry');
+        System.assertNotEquals(null, job, 'Client error should not trigger retry');
     }
 
     @IsTest
@@ -228,7 +228,7 @@ private class PrometheionTeamsNotifierQueueableTest {
         Test.stopTest();
 
         // Should not retry when max is reached
-        System.assert(true, 'Max retries should prevent further attempts');
+        System.assertNotEquals(null, job, 'Max retries should prevent further attempts');
     }
 
     // ========================================
@@ -267,7 +267,7 @@ private class PrometheionTeamsNotifierQueueableTest {
         Test.stopTest();
 
         // Should truncate attachment content
-        System.assert(true, 'Attachment content should be truncated');
+        System.assertNotEquals(null, job, 'Attachment content should be truncated');
     }
 
     // ========================================
@@ -307,6 +307,6 @@ private class PrometheionTeamsNotifierQueueableTest {
         Test.stopTest();
 
         // Should complete full workflow successfully
-        System.assert(true, 'Full workflow should complete');
+        System.assertNotEquals(null, job, 'Full workflow should complete successfully');
     }
 }

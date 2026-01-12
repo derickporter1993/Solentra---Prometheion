@@ -504,10 +504,201 @@ public class PrometheionTestDataFactory {
      * @param hoursAgo Hours in the past for the timestamp
      * @return Map of event data
      */
-    public static Map&lt;String, Object&gt; createEventWithTimestamp(String eventType, Integer hoursAgo) {
-        Map&lt;String, Object&gt; event = createMockEventWithRiskLevel('MEDIUM');
+    public static Map<String, Object> createEventWithTimestamp(String eventType, Integer hoursAgo) {
+        Map<String, Object> event = createMockEventWithRiskLevel('MEDIUM');
         event.put('EVENT_TYPE', eventType);
         event.put('TIMESTAMP', String.valueOf(Datetime.now().addHours(-hoursAgo)));
         return event;
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // PERFORMANCE THRESHOLD SETTINGS
+    // ═══════════════════════════════════════════════════════════════
+
+    /**
+     * @description Create CCX_Settings__c custom settings for performance thresholds
+     * @param cpuWarn CPU warning threshold (ms)
+     * @param cpuCrit CPU critical threshold (ms)
+     * @param heapWarn Heap warning threshold (KB)
+     * @param heapCrit Heap critical threshold (KB)
+     * @param soqlWarn SOQL warning threshold (count)
+     * @param soqlCrit SOQL critical threshold (count)
+     * @param dmlWarn DML warning threshold (count)
+     * @param dmlCrit DML critical threshold (count)
+     * @return Inserted CCX_Settings__c record
+     */
+    public static CCX_Settings__c createCCXSettings(
+        Integer cpuWarn, Integer cpuCrit,
+        Integer heapWarn, Integer heapCrit,
+        Integer soqlWarn, Integer soqlCrit,
+        Integer dmlWarn, Integer dmlCrit
+    ) {
+        CCX_Settings__c settings = CCX_Settings__c.getOrgDefaults();
+
+        if (settings.Id == null) {
+            settings = new CCX_Settings__c(
+                SetupOwnerId = UserInfo.getOrganizationId()
+            );
+        }
+
+        settings.CPU_Warn__c = cpuWarn;
+        settings.CPU_Crit__c = cpuCrit;
+        settings.Heap_Warn__c = heapWarn;
+        settings.Heap_Crit__c = heapCrit;
+        settings.SOQL_Warn__c = soqlWarn;
+        settings.SOQL_Crit__c = soqlCrit;
+        settings.DML_Warn__c = dmlWarn;
+        settings.DML_Crit__c = dmlCrit;
+
+        upsert settings;
+        return settings;
+    }
+
+    /**
+     * @description Create CCX_Settings__c with default thresholds
+     * @return Inserted CCX_Settings__c record with standard thresholds
+     */
+    public static CCX_Settings__c createDefaultCCXSettings() {
+        return createCCXSettings(
+            8000, 9000,   // CPU: warn at 8000ms, critical at 9000ms
+            4500, 5000,   // Heap: warn at 4500KB, critical at 5000KB
+            90, 100,      // SOQL: warn at 90, critical at 100
+            140, 150      // DML: warn at 140, critical at 150
+        );
+    }
+
+    /**
+     * @description Create CCX_Settings__c with low thresholds for testing alerts
+     * @return Inserted CCX_Settings__c record with low thresholds
+     */
+    public static CCX_Settings__c createLowThresholdCCXSettings() {
+        return createCCXSettings(
+            100, 200,     // CPU: very low thresholds
+            100, 200,     // Heap: very low thresholds
+            5, 10,        // SOQL: very low thresholds
+            5, 10         // DML: very low thresholds
+        );
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // PERFORMANCE ALERT DATA
+    // ═══════════════════════════════════════════════════════════════
+
+    /**
+     * @description Create Performance_Alert_History__c record
+     * @param metric The metric name (CPU, Heap, SOQL, DML)
+     * @param value The metric value
+     * @param threshold The threshold that was exceeded
+     * @param contextRecordId Optional context record ID
+     * @return Inserted Performance_Alert_History__c record
+     */
+    public static Performance_Alert_History__c createPerformanceAlertHistory(
+        String metric,
+        Decimal value,
+        Decimal threshold,
+        String contextRecordId
+    ) {
+        Performance_Alert_History__c alert = new Performance_Alert_History__c(
+            Metric__c = metric,
+            Value__c = value,
+            Threshold__c = threshold,
+            Context_Record__c = contextRecordId,
+            Stack__c = metric + ' threshold exceeded: ' + value + ' >= ' + threshold
+        );
+        insert alert;
+        return alert;
+    }
+
+    /**
+     * @description Build Performance_Alert_History__c without insert
+     * @param metric The metric name
+     * @param value The metric value
+     * @param threshold The threshold exceeded
+     * @return Non-inserted Performance_Alert_History__c record
+     */
+    public static Performance_Alert_History__c buildPerformanceAlertHistory(
+        String metric,
+        Decimal value,
+        Decimal threshold
+    ) {
+        return new Performance_Alert_History__c(
+            Metric__c = metric,
+            Value__c = value,
+            Threshold__c = threshold,
+            Stack__c = metric + ' threshold exceeded'
+        );
+    }
+
+    /**
+     * @description Create multiple performance alert history records
+     * @param count Number of records to create
+     * @return List of inserted Performance_Alert_History__c records
+     */
+    public static List<Performance_Alert_History__c> createPerformanceAlertHistoryBulk(Integer count) {
+        List<Performance_Alert_History__c> alerts = new List<Performance_Alert_History__c>();
+        List<String> metrics = new List<String>{'CPU', 'Heap', 'SOQL', 'DML'};
+
+        for (Integer i = 0; i < count; i++) {
+            String metric = metrics[Math.mod(i, metrics.size())];
+            Decimal value = 1000 + (i * 100);
+            Decimal threshold = 900 + (i * 50);
+
+            alerts.add(new Performance_Alert_History__c(
+                Metric__c = metric,
+                Value__c = value,
+                Threshold__c = threshold,
+                Context_Record__c = 'bulk_test_' + String.valueOf(i).leftPad(5, '0'),
+                Stack__c = metric + ' threshold exceeded in bulk test'
+            ));
+        }
+
+        insert alerts;
+        return alerts;
+    }
+
+    /**
+     * @description Create LimitMetrics.GovernorStats for testing
+     * @param cpuMs CPU time in milliseconds
+     * @param heapKb Heap size in KB
+     * @param soql SOQL query count
+     * @param dml DML statement count
+     * @return Populated GovernorStats object
+     */
+    public static LimitMetrics.GovernorStats createGovernorStats(
+        Integer cpuMs,
+        Integer heapKb,
+        Integer soql,
+        Integer dml
+    ) {
+        LimitMetrics.GovernorStats stats = new LimitMetrics.GovernorStats();
+        stats.cpuMs = cpuMs;
+        stats.heapKb = heapKb;
+        stats.soql = soql;
+        stats.dml = dml;
+        return stats;
+    }
+
+    /**
+     * @description Create GovernorStats at critical levels
+     * @return GovernorStats with values exceeding critical thresholds
+     */
+    public static LimitMetrics.GovernorStats createCriticalGovernorStats() {
+        return createGovernorStats(9500, 5500, 105, 155);
+    }
+
+    /**
+     * @description Create GovernorStats at warning levels
+     * @return GovernorStats with values at warning thresholds
+     */
+    public static LimitMetrics.GovernorStats createWarningGovernorStats() {
+        return createGovernorStats(8500, 4700, 92, 142);
+    }
+
+    /**
+     * @description Create GovernorStats at safe levels
+     * @return GovernorStats with values below all thresholds
+     */
+    public static LimitMetrics.GovernorStats createSafeGovernorStats() {
+        return createGovernorStats(5000, 3000, 50, 50);
     }
 }

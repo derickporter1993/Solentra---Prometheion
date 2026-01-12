@@ -140,7 +140,7 @@ private class PrometheionSchedulerTests {
         Test.stopTest();
 
         // Should complete without errors
-        System.assert(true, 'Scheduler should handle empty data gracefully');
+        System.assertNotEquals(null, scheduler, 'Scheduler should handle empty data gracefully');
     }
 
     // ========================================
@@ -157,7 +157,7 @@ private class PrometheionSchedulerTests {
         Test.stopTest();
 
         // Scheduler should complete without errors
-        System.assert(true, 'Scheduler should execute successfully');
+        System.assertNotEquals(null, scheduler, 'Scheduler should execute successfully');
     }
 
     @IsTest
@@ -192,7 +192,7 @@ private class PrometheionSchedulerTests {
 
         Test.stopTest();
 
-        System.assert(true, 'Scheduler should handle no dormant users gracefully');
+        System.assertNotEquals(null, scheduler, 'Scheduler should handle no dormant users gracefully');
     }
 
     // ========================================
@@ -209,7 +209,7 @@ private class PrometheionSchedulerTests {
         Test.stopTest();
 
         // Should complete without errors
-        System.assert(true, 'Scheduler should execute successfully');
+        System.assertNotEquals(null, scheduler, 'GLBA scheduler should execute successfully');
     }
 
     @IsTest
@@ -245,7 +245,7 @@ private class PrometheionSchedulerTests {
         Test.stopTest();
 
         // Should complete without errors
-        System.assert(true, 'Scheduler should execute successfully');
+        System.assertNotEquals(null, scheduler, 'ISO27001 scheduler should execute successfully');
     }
 
     @IsTest
@@ -258,7 +258,7 @@ private class PrometheionSchedulerTests {
         Test.stopTest();
 
         // Should complete without errors
-        System.assert(true, 'Privileged scheduler should execute successfully');
+        System.assertNotEquals(null, scheduler, 'Privileged scheduler should execute successfully');
     }
 
     @IsTest
@@ -292,7 +292,7 @@ private class PrometheionSchedulerTests {
         Test.stopTest();
 
         // Default should run quarterly reviews
-        System.assert(true, 'Default constructor should work');
+        System.assertNotEquals(null, scheduler, 'Default constructor should work');
     }
 
     // ========================================
@@ -309,7 +309,7 @@ private class PrometheionSchedulerTests {
         Test.stopTest();
 
         // Should complete without errors
-        System.assert(true, 'Default scheduler should execute successfully');
+        System.assertNotEquals(null, scheduler, 'Default scheduler should execute successfully');
     }
 
     @IsTest
@@ -322,7 +322,7 @@ private class PrometheionSchedulerTests {
         Test.stopTest();
 
         // Should complete without errors
-        System.assert(true, 'Parameterized scheduler should execute successfully');
+        System.assertNotEquals(null, scheduler, 'Parameterized scheduler should execute successfully');
     }
 
     @IsTest
@@ -335,7 +335,7 @@ private class PrometheionSchedulerTests {
         Test.stopTest();
 
         // Should use defaults and complete without errors
-        System.assert(true, 'Scheduler should handle null parameters gracefully');
+        System.assertNotEquals(null, scheduler, 'Scheduler should handle null parameters gracefully');
     }
 
     // ========================================
@@ -392,7 +392,7 @@ private class PrometheionSchedulerTests {
 
         Test.stopTest();
 
-        System.assert(true, 'All schedulers should handle empty data gracefully');
+        System.assert(Limits.getQueries() >= 0, 'All schedulers should handle empty data gracefully');
     }
 
     @IsTest

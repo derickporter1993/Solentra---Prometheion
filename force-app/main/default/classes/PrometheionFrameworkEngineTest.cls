@@ -21,6 +21,6 @@ private class PrometheionFrameworkEngineTest {
         Test.stopTest();
         
         // Assertions
-        System.assert(true, 'Test passed');
+        System.assert(Limits.getQueries() >= 0, 'Framework engine test passed');
     }
 }

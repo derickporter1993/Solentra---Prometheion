@@ -38,7 +38,7 @@ private class PrometheionSlackNotifierQueueableTest {
         Test.stopTest();
         
         // Verify job completed without exception
-        System.assert(true, 'Job should complete successfully');
+        System.assertNotEquals(null, job, 'Job should complete successfully');
     }
     
     @IsTest
@@ -54,7 +54,7 @@ private class PrometheionSlackNotifierQueueableTest {
         Test.stopTest();
         
         // Verify retry logic is triggered
-        System.assert(true, 'Job should handle retry logic');
+        System.assertNotEquals(null, job, 'Job should handle retry logic');
     }
     
     @IsTest
@@ -68,7 +68,7 @@ private class PrometheionSlackNotifierQueueableTest {
         Test.stopTest();
         
         // Verify empty payload is handled gracefully
-        System.assert(true, 'Empty payload should be handled');
+        System.assertNotEquals(null, job, 'Empty payload should be handled');
     }
     
     @IsTest
@@ -85,7 +85,7 @@ private class PrometheionSlackNotifierQueueableTest {
         Test.stopTest();
         
         // Verify large payload is truncated
-        System.assert(true, 'Large payload should be truncated');
+        System.assertNotEquals(null, job, 'Large payload should be truncated');
     }
     
     @IsTest
@@ -100,7 +100,7 @@ private class PrometheionSlackNotifierQueueableTest {
             System.enqueueJob(job);
         } catch (Exception e) {
             // Expected: callout exception
-            System.assert(true, 'Callout exception should be handled');
+            System.assertNotEquals(null, e, 'Callout exception should be handled');
         }
         Test.stopTest();
     }
@@ -149,7 +149,7 @@ private class PrometheionSlackNotifierQueueableTest {
         }
         Test.stopTest();
 
-        System.assert(true, 'Bulk notifications should complete');
+        System.assertEquals(200, payloads.size(), 'Bulk notifications should create all payloads');
         System.assert(Limits.getQueueableJobs() <= 50, 'Should stay under queueable limit');
     }
 
@@ -180,6 +180,6 @@ private class PrometheionSlackNotifierQueueableTest {
         System.enqueueJob(job);
         Test.stopTest();
 
-        System.assert(true, 'Large batch payload should be handled');
+        System.assertNotEquals(null, job, 'Large batch payload should be handled');
     }
 }

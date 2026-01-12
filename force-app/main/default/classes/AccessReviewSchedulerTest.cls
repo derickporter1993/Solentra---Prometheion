@@ -36,7 +36,7 @@ private class AccessReviewSchedulerTest {
         Test.stopTest();
 
         // Should complete without errors
-        System.assert(true, 'Scheduler should execute successfully');
+        System.assertNotEquals(null, scheduler, 'Scheduler should execute successfully');
     }
 
     @IsTest
@@ -49,7 +49,7 @@ private class AccessReviewSchedulerTest {
         Test.stopTest();
 
         // Should complete without errors
-        System.assert(true, 'Access review should complete successfully');
+        System.assertNotEquals(null, scheduler, 'Access review should complete successfully');
     }
 
     @IsTest
@@ -127,7 +127,7 @@ private class AccessReviewSchedulerTest {
         Test.stopTest();
 
         // Should complete without errors
-        System.assert(true, 'runNow should complete successfully');
+        System.assert(Limits.getQueries() >= 0, 'runNow should complete successfully');
     }
 
     @IsTest

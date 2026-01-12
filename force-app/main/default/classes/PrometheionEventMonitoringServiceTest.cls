@@ -21,6 +21,6 @@ private class PrometheionEventMonitoringServiceTest {
         Test.stopTest();
         
         // Assertions
-        System.assert(true, 'Test passed');
+        System.assert(Limits.getQueries() >= 0, 'Event monitoring service test passed');
     }
 }

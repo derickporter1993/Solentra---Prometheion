@@ -119,7 +119,7 @@ private class FlowExecutionLoggerTest {
             FlowExecutionLogger.logInvocable(null);
             System.assert(false, 'Should have thrown exception for null inputs');
         } catch (IllegalArgumentException e) {
-            System.assert(true, 'Expected exception for null inputs');
+            System.assertNotEquals(null, e.getMessage(), 'Expected exception for null inputs');
         }
         
         // Test empty inputs
@@ -127,7 +127,7 @@ private class FlowExecutionLoggerTest {
             FlowExecutionLogger.logInvocable(new List<FlowExecutionLogger.LogInput>());
             System.assert(false, 'Should have thrown exception for empty inputs');
         } catch (IllegalArgumentException e) {
-            System.assert(true, 'Expected exception for empty inputs');
+            System.assertNotEquals(null, e.getMessage(), 'Expected exception for empty inputs');
         }
         
         // Test blank flow name
@@ -138,7 +138,7 @@ private class FlowExecutionLoggerTest {
             FlowExecutionLogger.logInvocable(new List<FlowExecutionLogger.LogInput>{ invalidInput });
             System.assert(false, 'Should have thrown exception for blank flow name');
         } catch (IllegalArgumentException e) {
-            System.assert(true, 'Expected exception for blank flow name');
+            System.assertNotEquals(null, e.getMessage(), 'Expected exception for blank flow name');
         }
         
         // Test negative CPU
@@ -150,7 +150,7 @@ private class FlowExecutionLoggerTest {
             FlowExecutionLogger.logInvocable(new List<FlowExecutionLogger.LogInput>{ negativeInput });
             System.assert(false, 'Should have thrown exception for negative CPU');
         } catch (IllegalArgumentException e) {
-            System.assert(true, 'Expected exception for negative CPU');
+            System.assertNotEquals(null, e.getMessage(), 'Expected exception for negative CPU');
         }
         
         Test.stopTest();
