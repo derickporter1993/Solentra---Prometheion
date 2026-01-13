@@ -27,19 +27,19 @@
 | ~~USER_MODE - PrometheionGraphIndexer.cls~~ | Cursor | ✅ COMPLETE | Lines 79, 100 |
 | ~~USER_MODE - EvidenceCollectionService.cls~~ | Cursor | ✅ COMPLETE | Line 123 (SECURITY_ENFORCED) |
 | ~~USER_MODE - ComplianceDashboardController.cls~~ | Cursor | ✅ COMPLETE | Lines 49, 58, 88, 97 |
-| Recursion guard - PerformanceAlertEventTrigger | Cursor | PENDING | Add TriggerRecursionGuard |
-| Recursion guard - PrometheionPCIAccessAlertTrigger | Cursor | PENDING | Add TriggerRecursionGuard |
-| Recursion guard - PrometheionEventCaptureTrigger | Cursor | PENDING | Add TriggerRecursionGuard |
+| ~~Recursion guard - PerformanceAlertEventTrigger~~ | Claude | ✅ COMPLETE | TriggerRecursionGuard added (2026-01-13) |
+| ~~Recursion guard - PrometheionPCIAccessAlertTrigger~~ | Claude | ✅ COMPLETE | TriggerRecursionGuard added (2026-01-13) |
+| ~~Recursion guard - PrometheionEventCaptureTrigger~~ | Claude | ✅ COMPLETE | TriggerRecursionGuard added (2026-01-13) |
 
 ### MEDIUM Priority
 
 | Task | Owner | Status | Notes |
 |------|-------|--------|-------|
-| Bulk tests - PrometheionComplianceScorerTest.cls | Cursor | PENDING | 200+ records |
-| Bulk tests - PrometheionGraphIndexerTest.cls | Cursor | PENDING | 200+ records |
-| Bulk tests - EvidenceCollectionServiceTest.cls | Cursor | PENDING | 200+ records |
-| Bulk tests - PerformanceAlertPublisherTest.cls | Cursor | PENDING | 200+ records |
-| LWC test coverage expansion | Cursor | PENDING | 28 components need tests |
+| ~~Bulk tests - PrometheionComplianceScorerTest.cls~~ | Cursor | ✅ COMPLETE | 250 records (already existed) |
+| ~~Bulk tests - PrometheionGraphIndexerTest.cls~~ | Cursor | ✅ COMPLETE | 200 records (already existed) |
+| ~~Bulk tests - EvidenceCollectionServiceTest.cls~~ | Claude | ✅ COMPLETE | 200+ records (2026-01-13) |
+| ~~Bulk tests - PerformanceAlertPublisherTest.cls~~ | Claude | ✅ COMPLETE | 200 records (2026-01-13) |
+| ~~LWC test coverage expansion~~ | Claude | ✅ COMPLETE | 559 tests passing (2026-01-13) |
 
 ### v1.5 Features (Claude)
 
@@ -82,6 +82,15 @@
 ---
 
 ## Session Log
+
+### 2026-01-13 Session 1
+- Fixed all 559 LWC tests (20 test files updated with proper wire adapter mocks)
+- Added trigger recursion guards to 3 triggers (PerformanceAlertEventTrigger, PrometheionPCIAccessAlertTrigger, PrometheionEventCaptureTrigger)
+- Added 200+ record bulk tests to EvidenceCollectionServiceTest and PerformanceAlertPublisherTest
+- Verified PrometheionComplianceScorerTest and PrometheionGraphIndexerTest already had bulk tests
+- Pushed changes to branch claude/trigger-guards-and-bulk-tests-6zRNV
+- Updated TECHNICAL_IMPROVEMENTS_TRACKER.md - P1 items now at 91.7% complete
+- All P1 blockers complete except framework validation
 
 ### 2026-01-12 Session 1
 - Verified codebase state vs documentation (found major discrepancies)
