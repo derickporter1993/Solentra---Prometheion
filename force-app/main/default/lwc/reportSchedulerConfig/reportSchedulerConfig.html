@@ -1,0 +1,198 @@
+<template>
+  <lightning-card title="Compliance Report Scheduler" icon-name="standard:report">
+    <div slot="actions">
+      <lightning-button-group>
+        <lightning-button
+          label="Refresh"
+          icon-name="utility:refresh"
+          onclick={handleRefresh}
+        ></lightning-button>
+        <lightning-button
+          label="New Scheduled Report"
+          variant="brand"
+          icon-name="utility:add"
+          onclick={handleNewReport}
+        ></lightning-button>
+      </lightning-button-group>
+    </div>
+
+    <div class="slds-p-around_medium">
+      <!-- Loading Spinner -->
+      <template lwc:if={isLoading}>
+        <div class="slds-is-relative slds-p-around_large">
+          <lightning-spinner
+            alternative-text="Loading"
+            size="medium"
+          ></lightning-spinner>
+        </div>
+      </template>
+
+      <template lwc:if={notLoading}>
+        <!-- Scheduled Reports Table -->
+        <template lwc:if={hasScheduledReports}>
+          <lightning-datatable
+            key-field="jobId"
+            data={scheduledReports}
+            columns={columns}
+            onrowaction={handleRowAction}
+            hide-checkbox-column
+          ></lightning-datatable>
+        </template>
+
+        <!-- Empty State -->
+        <template lwc:else>
+          <div class="slds-illustration slds-illustration_small slds-p-around_large">
+            <div class="slds-text-longform">
+              <h3 class="slds-text-heading_medium slds-text-align_center">
+                No Scheduled Reports
+              </h3>
+              <p class="slds-text-body_regular slds-text-align_center slds-m-top_small">
+                Schedule automated compliance reports to keep stakeholders informed.
+                Reports can be sent daily, weekly, or monthly with framework filtering.
+              </p>
+            </div>
+            <div class="slds-text-align_center slds-m-top_medium">
+              <lightning-button
+                label="Schedule Your First Report"
+                variant="brand"
+                icon-name="utility:add"
+                onclick={handleNewReport}
+              ></lightning-button>
+            </div>
+          </div>
+        </template>
+      </template>
+    </div>
+
+    <!-- Info Section -->
+    <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+      <div class="slds-box slds-theme_shade slds-text-body_small">
+        <p>
+          <lightning-icon
+            icon-name="utility:info"
+            size="x-small"
+            class="slds-m-right_x-small"
+            aria-hidden="true"
+          ></lightning-icon>
+          <strong>Report Delivery:</strong> Reports are sent via email with an HTML summary
+          and CSV attachment containing all compliance gaps.
+        </p>
+      </div>
+    </div>
+  </lightning-card>
+
+  <!-- New Report Modal -->
+  <template lwc:if={showNewReportModal}>
+    <section
+      role="dialog"
+      tabindex="-1"
+      aria-modal="true"
+      aria-labelledby="modal-heading-01"
+      class="slds-modal slds-fade-in-open"
+    >
+      <div class="slds-modal__container">
+        <header class="slds-modal__header">
+          <lightning-button-icon
+            icon-name="utility:close"
+            alternative-text="Close"
+            variant="bare-inverse"
+            class="slds-modal__close"
+            onclick={handleCloseModal}
+          ></lightning-button-icon>
+          <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">
+            Schedule New Compliance Report
+          </h2>
+        </header>
+        <div class="slds-modal__content slds-p-around_medium">
+          <!-- Frequency Selection -->
+          <lightning-combobox
+            label="Report Frequency"
+            value={newReportFrequency}
+            options={frequencyOptions}
+            onchange={handleFrequencyChange}
+            class="slds-m-bottom_medium"
+            required
+          ></lightning-combobox>
+
+          <!-- Framework Selection -->
+          <lightning-combobox
+            label="Compliance Framework"
+            value={newReportFramework}
+            options={frameworkOptions}
+            onchange={handleFrameworkChange}
+            class="slds-m-bottom_medium"
+          ></lightning-combobox>
+
+          <!-- Recipients -->
+          <div class="slds-m-bottom_small">
+            <lightning-textarea
+              label="Email Recipients"
+              value={newReportRecipients}
+              onchange={handleRecipientsChange}
+              placeholder="Enter email addresses separated by commas or new lines"
+              required
+            ></lightning-textarea>
+            <div class="slds-form-element__help slds-text-body_small">
+              Example: compliance@company.com, ciso@company.com
+            </div>
+          </div>
+        </div>
+        <footer class="slds-modal__footer">
+          <lightning-button
+            label="Cancel"
+            onclick={handleCloseModal}
+          ></lightning-button>
+          <lightning-button
+            label="Schedule Report"
+            variant="brand"
+            onclick={handleScheduleReport}
+            class="slds-m-left_x-small"
+          ></lightning-button>
+        </footer>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+
+  <!-- Confirmation Modal -->
+  <template lwc:if={showConfirmModal}>
+    <section
+      role="dialog"
+      tabindex="-1"
+      aria-modal="true"
+      aria-labelledby="confirm-heading-01"
+      class="slds-modal slds-fade-in-open slds-modal_small"
+    >
+      <div class="slds-modal__container">
+        <header class="slds-modal__header slds-theme_warning">
+          <lightning-button-icon
+            icon-name="utility:close"
+            alternative-text="Close"
+            variant="bare-inverse"
+            class="slds-modal__close"
+            onclick={handleCloseConfirm}
+          ></lightning-button-icon>
+          <h2 id="confirm-heading-01" class="slds-modal__title">
+            Confirm Action
+          </h2>
+        </header>
+        <div class="slds-modal__content slds-p-around_medium">
+          <p>{confirmMessage}</p>
+        </div>
+        <footer class="slds-modal__footer">
+          <lightning-button
+            label="Cancel"
+            onclick={handleCloseConfirm}
+          ></lightning-button>
+          <lightning-button
+            label="Confirm"
+            variant="destructive"
+            onclick={handleConfirmAction}
+            class="slds-m-left_x-small"
+          ></lightning-button>
+        </footer>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+</template>

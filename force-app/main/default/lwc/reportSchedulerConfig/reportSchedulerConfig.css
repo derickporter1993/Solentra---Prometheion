@@ -1,0 +1,16 @@
+/* Report Scheduler Config Styles */
+
+.slds-modal__container {
+  max-width: 40rem;
+}
+
+.slds-illustration {
+  background-color: var(--lwc-colorBackgroundAlt, #f3f3f3);
+  border-radius: 0.25rem;
+}
+
+/* Ensure proper spacing for form elements */
+.slds-form-element__help {
+  color: var(--lwc-colorTextWeak, #706e6b);
+  margin-top: 0.25rem;
+}
