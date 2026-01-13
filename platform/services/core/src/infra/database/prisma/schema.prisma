@@ -1,0 +1,512 @@
+// Salesforce DevOps Platform - Database Schema
+// Using PostgreSQL with Prisma ORM
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =============================================================================
+// MULTI-TENANCY: Organizations and Workspaces
+// =============================================================================
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workspaces Workspace[]
+
+  @@map("organizations")
+}
+
+model Workspace {
+  id             String        @id @default(cuid())
+  organizationId String?
+  name           String
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  members      WorkspaceMember[]
+  orgs         OrgConnection[]
+  policies     MaskingPolicy[]
+  plans        SyncPlan[]
+  jobs         Job[]
+  audits       AuditEntry[]
+  approvalPolicies ApprovalPolicy[]
+  templates    SyncTemplate[]
+
+  @@map("workspaces")
+}
+
+model WorkspaceMember {
+  id          String   @id @default(cuid())
+  workspaceId String
+  userId      String
+  email       String
+  role        Role     @default(OPERATOR)
+  permissions String[] // Array of permission strings
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+  @@index([workspaceId])
+  @@map("workspace_members")
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  OPERATOR
+  VIEWER
+}
+
+// =============================================================================
+// ORG CONNECTIONS
+// =============================================================================
+
+model OrgConnection {
+  id          String       @id @default(cuid())
+  workspaceId String
+  alias       String
+  orgId       String       // Salesforce Org ID (15 or 18 char)
+  orgType     OrgType
+  instanceUrl String
+  loginUrl    String
+
+  // Encrypted credentials (reference to secrets vault)
+  credentialRef String
+  authMethod    AuthMethod
+
+  lastHealthCheck   DateTime?
+  healthStatus      HealthStatus @default(UNKNOWN)
+  healthScore       Int?         // 0-100
+  healthDetails     Json?        // Detailed health info
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  sourcePlans       SyncPlan[] @relation("SourceOrg")
+  targetPlans       SyncPlan[] @relation("TargetOrg")
+  compatibilityFrom CompatibilityAnalysis[] @relation("CompatSource")
+  compatibilityTo   CompatibilityAnalysis[] @relation("CompatTarget")
+  automationScans   AutomationScan[]
+  apiUsageRecords   ApiUsageRecord[]
+
+  @@unique([workspaceId, alias])
+  @@index([workspaceId])
+  @@index([orgId])
+  @@map("org_connections")
+}
+
+enum OrgType {
+  PRODUCTION
+  SANDBOX
+  DEVELOPER
+  SCRATCH
+}
+
+enum AuthMethod {
+  JWT_BEARER
+  WEB_OAUTH
+}
+
+enum HealthStatus {
+  HEALTHY
+  DEGRADED
+  UNHEALTHY
+  UNKNOWN
+}
+
+// =============================================================================
+// COMPATIBILITY & AUTOMATION ANALYSIS
+// =============================================================================
+
+model CompatibilityAnalysis {
+  id           String   @id @default(cuid())
+  sourceOrgId  String
+  targetOrgId  String
+  status       CompatibilityStatus
+  issues       Json     // CompatibilityIssue[]
+  sobjects     String[] // Objects analyzed
+  analyzedAt   DateTime @default(now())
+
+  sourceOrg OrgConnection @relation("CompatSource", fields: [sourceOrgId], references: [id], onDelete: Cascade)
+  targetOrg OrgConnection @relation("CompatTarget", fields: [targetOrgId], references: [id], onDelete: Cascade)
+
+  @@index([sourceOrgId, targetOrgId])
+  @@map("compatibility_analyses")
+}
+
+enum CompatibilityStatus {
+  PASSED
+  WARNINGS
+  FAILED
+}
+
+model AutomationScan {
+  id          String   @id @default(cuid())
+  orgId       String
+  sobjects    String[]
+  scans       Json     // AutomationScan[]
+  overallRisk RiskLevel
+  scannedAt   DateTime @default(now())
+
+  org OrgConnection @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([orgId])
+  @@map("automation_scans")
+}
+
+enum RiskLevel {
+  NONE
+  LOW
+  MEDIUM
+  HIGH
+}
+
+// =============================================================================
+// MASKING POLICIES
+// =============================================================================
+
+model MaskingPolicy {
+  id          String   @id @default(cuid())
+  workspaceId String
+  name        String
+  description String?
+  version     Int      @default(1)
+  rules       Json     // MaskingRule[]
+  isDefault   Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  versions  MaskingPolicyVersion[]
+  plans     SyncPlan[]
+
+  @@unique([workspaceId, name])
+  @@index([workspaceId])
+  @@map("masking_policies")
+}
+
+model MaskingPolicyVersion {
+  id         String   @id @default(cuid())
+  policyId   String
+  version    Int
+  rules      Json     // MaskingRule[]
+  createdBy  String
+  changeNote String?
+  createdAt  DateTime @default(now())
+
+  policy MaskingPolicy @relation(fields: [policyId], references: [id], onDelete: Cascade)
+
+  @@unique([policyId, version])
+  @@index([policyId])
+  @@map("masking_policy_versions")
+}
+
+// =============================================================================
+// SYNC PLANS
+// =============================================================================
+
+model SyncPlan {
+  id          String   @id @default(cuid())
+  workspaceId String
+  name        String?
+  mode        SyncMode
+
+  sourceOrgId String
+  targetOrgId String
+  policyId    String?
+
+  // Plan configuration
+  objects     Json     // ObjectConfig[]
+  options     Json     // SyncOptions
+
+  // Computed estimates (cached)
+  estimates   Json?    // SyncEstimate
+  graphData   Json?    // DependencyGraph
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workspace Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  sourceOrg OrgConnection  @relation("SourceOrg", fields: [sourceOrgId], references: [id])
+  targetOrg OrgConnection  @relation("TargetOrg", fields: [targetOrgId], references: [id])
+  policy    MaskingPolicy? @relation(fields: [policyId], references: [id])
+  jobs      Job[]
+
+  @@index([workspaceId])
+  @@index([sourceOrgId])
+  @@index([targetOrgId])
+  @@map("sync_plans")
+}
+
+enum SyncMode {
+  PROD_SUBSET_MASKED
+  SANDBOX_DELTA
+  SYNTHETIC_SEED
+}
+
+model SyncTemplate {
+  id          String   @id @default(cuid())
+  workspaceId String?  // Null for global/curated templates
+  name        String
+  description String?
+  category    TemplateCategory
+  objects     Json     // ObjectConfig[]
+  policyId    String?  // Reference policy
+  isPublic    Boolean  @default(false)
+  isCurated   Boolean  @default(false)
+  usageCount  Int      @default(0)
+  rating      Float?
+
+  createdBy   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  workspace Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([category])
+  @@index([isCurated])
+  @@map("sync_templates")
+}
+
+enum TemplateCategory {
+  SALES_CLOUD
+  SERVICE_CLOUD
+  PLATFORM
+  CUSTOM
+}
+
+// =============================================================================
+// JOBS
+// =============================================================================
+
+model Job {
+  id          String    @id @default(cuid())
+  workspaceId String
+  planId      String
+  status      JobStatus @default(PENDING)
+
+  // Run mode
+  isDryRun    Boolean   @default(false)
+  isShadow    Boolean   @default(false)
+
+  // Progress tracking
+  currentPhase String?
+  progress     Json?    // JobProgress
+
+  // Results
+  summary   Json?        // JobSummary
+  errorInfo Json?        // Error details if failed
+
+  // Artifacts (references to object storage)
+  artifacts Json?        // JobArtifacts
+
+  // API Usage
+  apiCalls     Int @default(0)
+  bulkBatches  Int @default(0)
+
+  // Snapshot for rollback
+  snapshotRef  String?
+  snapshotExpiresAt DateTime?
+
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+
+  // Cancellation
+  cancelledBy   String?
+  cancelledAt   DateTime?
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  plan      SyncPlan  @relation(fields: [planId], references: [id])
+  idMappings IdMapping[]
+  approvalRequest ApprovalRequest?
+
+  @@index([workspaceId])
+  @@index([planId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("jobs")
+}
+
+enum JobStatus {
+  PENDING
+  QUEUED
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+model IdMapping {
+  id        String   @id @default(cuid())
+  jobId     String
+  sobject   String
+  sourceId  String   // 18-char Salesforce ID
+  targetId  String   // 18-char Salesforce ID
+  createdAt DateTime @default(now())
+
+  job Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, sobject, sourceId])
+  @@index([jobId, sobject])
+  @@map("id_mappings")
+}
+
+// =============================================================================
+// APPROVALS
+// =============================================================================
+
+model ApprovalPolicy {
+  id               String   @id @default(cuid())
+  workspaceId      String
+  name             String
+  triggers         String[] // ApprovalTrigger[]
+  recordThreshold  Int?
+  rule             ApprovalRule
+  approverRoles    String[] // Role[]
+  isActive         Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  requests  ApprovalRequest[]
+
+  @@index([workspaceId])
+  @@map("approval_policies")
+}
+
+enum ApprovalRule {
+  SINGLE_APPROVER
+  TWO_PERSON
+}
+
+model ApprovalRequest {
+  id           String         @id @default(cuid())
+  workspaceId  String
+  policyId     String
+  jobId        String?        @unique
+  planId       String?
+  trigger      String         // ApprovalTrigger
+  status       ApprovalStatus @default(PENDING)
+  requestedBy  String
+  requestedAt  DateTime       @default(now())
+  expiresAt    DateTime?
+
+  policy    ApprovalPolicy @relation(fields: [policyId], references: [id])
+  job       Job?           @relation(fields: [jobId], references: [id])
+  decisions ApprovalDecision[]
+
+  @@index([workspaceId])
+  @@index([status])
+  @@map("approval_requests")
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+model ApprovalDecision {
+  id         String   @id @default(cuid())
+  requestId  String
+  decidedBy  String
+  decision   Decision
+  comment    String?
+  decidedAt  DateTime @default(now())
+
+  request ApprovalRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  @@index([requestId])
+  @@map("approval_decisions")
+}
+
+enum Decision {
+  APPROVED
+  REJECTED
+}
+
+// =============================================================================
+// AUDIT
+// =============================================================================
+
+model AuditEntry {
+  id           String   @id @default(cuid())
+  workspaceId  String
+  action       String   // e.g., "sync.job.started", "org.connected"
+  actorId      String
+  actorEmail   String
+  resourceType String   // e.g., "Job", "OrgConnection"
+  resourceId   String
+  metadata     Json?    // Additional context
+  ipAddress    String?
+  userAgent    String?
+  createdAt    DateTime @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, createdAt])
+  @@index([workspaceId, action])
+  @@index([resourceType, resourceId])
+  @@map("audit_entries")
+}
+
+// =============================================================================
+// API USAGE TRACKING
+// =============================================================================
+
+model ApiUsageRecord {
+  id          String   @id @default(cuid())
+  workspaceId String
+  orgId       String
+  jobId       String?
+  apiCalls    Int
+  bulkBatches Int
+  recordedAt  DateTime @default(now())
+
+  org OrgConnection @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, recordedAt])
+  @@index([orgId, recordedAt])
+  @@map("api_usage_records")
+}
+
+// =============================================================================
+// DRIFT CHECK
+// =============================================================================
+
+model DriftCheck {
+  id          String      @id @default(cuid())
+  sourceOrgId String
+  targetOrgId String
+  status      DriftStatus
+  driftItems  Json        // DriftItem[]
+  categories  String[]    // Categories checked
+  checkedAt   DateTime    @default(now())
+
+  @@index([sourceOrgId, targetOrgId])
+  @@map("drift_checks")
+}
+
+enum DriftStatus {
+  NO_DRIFT
+  MINOR_DRIFT
+  SIGNIFICANT_DRIFT
+}
