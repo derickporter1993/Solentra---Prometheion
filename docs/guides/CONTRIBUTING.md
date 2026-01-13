@@ -569,7 +569,7 @@ Closes #123
 |---------|----------------|---------|
 | Require pull request reviews | Yes (1 approval minimum) | Ensure code review |
 | Require status checks to pass | Yes | Prevent broken builds |
-| Required status checks | `code-quality`, `unit-tests`, `security-scan`, `cli-build` | Gate on all CI jobs |
+| Required status checks | `code-quality`, `unit-tests`, `security-scan`, `cli-build`, `validate-metadata` | Gate on all CI jobs |
 | Require branches to be up to date | Yes | Prevent merge conflicts |
 | Restrict who can push | Enabled | Prevent direct pushes |
 | Restrict force pushes | Enabled | Protect commit history |

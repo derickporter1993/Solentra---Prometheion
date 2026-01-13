@@ -145,12 +145,10 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
-          cache-dependency-path: platform/package-lock.json
 
       - name: Install Platform Dependencies
         working-directory: platform
-        run: npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+        run: npm install --legacy-peer-deps
 
       - name: Build CLI
         working-directory: platform
