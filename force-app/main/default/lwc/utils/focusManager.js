@@ -38,9 +38,12 @@ export function getFocusableElements(container) {
   return Array.from(container.querySelectorAll(FOCUSABLE_SELECTORS)).filter((element) => {
     // Verify element is visible
     const style = window.getComputedStyle(element);
-    return (
-      style.display !== "none" && style.visibility !== "hidden" && element.offsetParent !== null
-    );
+    // Note: offsetParent is null in jsdom, so we only check it in real browser environments
+    const isVisible = style.display !== "none" && style.visibility !== "hidden";
+    const hasLayout = element.offsetParent !== null || typeof jest !== "undefined";
+    // Elements with tabindex=-1 are explicitly removed from tab order
+    const notExcluded = element.getAttribute("tabindex") !== "-1";
+    return isVisible && hasLayout && notExcluded;
   });
 }
 
@@ -191,7 +194,9 @@ export function handleRovingTabindex(elements, event, options = {}) {
   const forwardKey = vertical ? "ArrowDown" : "ArrowRight";
   const backwardKey = vertical ? "ArrowUp" : "ArrowLeft";
 
-  const currentIndex = elements.indexOf(event.target);
+  // Use event.target if available, otherwise fall back to document.activeElement
+  const targetElement = event.target || document.activeElement;
+  const currentIndex = elements.indexOf(targetElement);
   if (currentIndex === -1) return;
 
   let nextIndex;

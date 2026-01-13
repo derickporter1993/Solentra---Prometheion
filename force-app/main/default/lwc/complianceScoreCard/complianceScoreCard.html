@@ -48,13 +48,11 @@
               <div class="slds-text-body_small">{latestAuditPackage.name}</div>
               <div class="slds-text-body_small">
                 Status:
-                <span class="status-{latestAuditPackage.status.toLowerCase()}"
-                  >{latestAuditPackage.status}</span
-                >
+                <span class={formattedLatestPackage.statusClass}>{latestAuditPackage.status}</span>
               </div>
               <div class="slds-text-body_small">
-                Period: {formatDate(latestAuditPackage.periodStart)} -
-                {formatDate(latestAuditPackage.periodEnd)}
+                Period: {formattedLatestPackage.formattedPeriodStart} -
+                {formattedLatestPackage.formattedPeriodEnd}
               </div>
               <lightning-button
                 label="View Package"

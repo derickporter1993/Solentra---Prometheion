@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Entity_Types__c</fullName>
+    <label>Entity Types</label>
+    <description>Comma-separated list of Salesforce entity types this policy applies to (e.g., OBJECT, FIELD, FIELD_HISTORY, USER, PERMISSION_SET).</description>
+    <type>Text</type>
+    <length>255</length>
+    <required>false</required>
+</CustomField>

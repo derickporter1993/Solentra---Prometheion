@@ -78,10 +78,12 @@ export default class ComplianceScoreCard extends NavigationMixin(LightningElemen
 
   get formattedLatestPackage() {
     if (!this.latestAuditPackage) return null;
+    const status = this.latestAuditPackage.status || "";
     return {
       ...this.latestAuditPackage,
       formattedPeriodStart: this.formatDate(this.latestAuditPackage.periodStart),
       formattedPeriodEnd: this.formatDate(this.latestAuditPackage.periodEnd),
+      statusClass: `status-${status.toLowerCase()}`,
     };
   }
 
