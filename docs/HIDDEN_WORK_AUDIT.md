@@ -8,6 +8,7 @@
 ## 1. Dangling Commits (Lost Work)
 
 ### Found Dangling Commits:
+
 - `f152d15` - **WIP stash merge** - Contains LWC template fixes (complianceCopilot, complianceDashboard, complianceGapList, etc.)
 - `e01e16e` - Stash commit (from earlier session)
 - `6ae5880` - Dangling commit
@@ -16,6 +17,7 @@
 **Action Required**: Review `f152d15` - it contains LWC template syntax fixes that may not be in main.
 
 **Command to recover**:
+
 ```bash
 git show f152d15 --stat  # Review changes
 git cherry-pick f152d15  # Apply to current branch if needed
@@ -28,6 +30,7 @@ git cherry-pick f152d15  # Apply to current branch if needed
 ### Branches with commits NOT in main:
 
 #### `origin/claude/analyze-test-coverage-ssZZC`
+
 - `f7ac914` - feat: Implement comprehensive compliance management platform
 - `f59e4c5` - feat: Add PrometheionSecurityUtils class for CRUD/FLS enforcement
 - `a881e6c` - docs: Add detailed technical changes specification
@@ -37,6 +40,7 @@ git cherry-pick f152d15  # Apply to current branch if needed
 **Status**: ⚠️ **5 commits not in main** - May contain important security utilities
 
 #### `origin/claude/debug-and-improve-code-7kLAj`
+
 - `b017439` - fix: Resolve additional CI failures
 - `558d5b2` - fix: CI/CD pipeline fixes - formatting and ESLint errors
 - `139cedb` - docs: Add comprehensive codebase analysis report
@@ -44,6 +48,7 @@ git cherry-pick f152d15  # Apply to current branch if needed
 **Status**: ⚠️ **3 commits not in main** - CI/CD fixes that may be needed
 
 #### `origin/claude/explain-codebase-mk370q4mgzhq3h5k-G985g`
+
 - `8586f8a` - Fix: Critical code issues - security and deployment fixes
 - `8d7e20f` - Perf: Code quality improvements - N+1 queries, error handling, console.log cleanup
 - `98d9904` - Fix: Code review remediation - Security, deployment, and test fixes
@@ -51,9 +56,11 @@ git cherry-pick f152d15  # Apply to current branch if needed
 **Status**: ⚠️ **3 commits not in main** - Critical security and performance fixes
 
 #### `origin/claude/determine-project-phase-Q95M8`
+
 **Status**: ✅ **All commits merged** - No unmerged work
 
 #### Other branches checked:
+
 - `origin/claude/add-claude-documentation-X5TGs` - ✅ All merged
 - `origin/claude/plan-ai-remediation-v1.5-efea6` - ✅ All merged
 - `origin/claude/salesforce-devops-design-nXBtm` - ✅ All merged
@@ -63,12 +70,14 @@ git cherry-pick f152d15  # Apply to current branch if needed
 ## 3. TODO/FIXME Items in Code
 
 ### Found TODO/FIXME markers in:
+
 - **47 items** in `docs/IMPROVEMENT_TODOS.md` (P1-P4 priorities)
 - Multiple TODO comments in source code (grep found 30+ files with TODO/FIXME)
 
 ### Priority Items (P1 - Blocking for AppExchange):
 
 #### Security Improvements:
+
 - [ ] Add input validation to `PrometheionGraphIndexer.indexChange()`
 - [ ] Add input validation to `PerformanceAlertPublisher.publish()`
 - [ ] Add input validation to `FlowExecutionLogger.log()`
@@ -77,6 +86,7 @@ git cherry-pick f152d15  # Apply to current branch if needed
 - [ ] Document justification for `without sharing` on `PrometheionReasoningEngine`
 
 #### Test Coverage:
+
 - [ ] Add 200+ record bulk test to `FlowExecutionLoggerTest`
 - [ ] Add bulk test to `PrometheionGraphIndexerTest`
 - [ ] Add test for Einstein callout failure
@@ -98,11 +108,13 @@ git cherry-pick f152d15  # Apply to current branch if needed
 ### Key Remaining Work:
 
 #### Phase 4 (IN PROGRESS):
+
 - LWC Jest test coverage
 - Performance optimization
 - Mobile responsiveness improvements
 
 #### v1.5 Features (NOT STARTED):
+
 - AI Remediation Engine enhancements
 - Advanced analytics
 - Multi-org support
@@ -112,6 +124,7 @@ git cherry-pick f152d15  # Apply to current branch if needed
 ## 5. Plan Files (Potential Incomplete Work)
 
 ### Found Plan Files:
+
 - `.cursor/plans/compliance_services_with_improvements.plan.md`
 - `.cursor/plans/merge_solentra_into_sentinel_39bd1ebd.plan.md`
 - `.cursor/plans/compliance_services_implementation.plan.md`
@@ -124,6 +137,7 @@ git cherry-pick f152d15  # Apply to current branch if needed
 ## 6. Merge Conflicts History
 
 ### Found merge conflict resolutions:
+
 - `1716bd7` - merge: Resolve 113 conflicts from origin/main
 - `23794a2` - merge: Resolve conflicts by keeping lwc:if migration changes
 - Multiple other conflict resolutions
@@ -135,6 +149,7 @@ git cherry-pick f152d15  # Apply to current branch if needed
 ## 7. Reverted Work
 
 ### Found reverts:
+
 - `fba0aa1` - Revert "[WIP] Investigate reasons for failing pull requests"
 - `6ff435a` - Revert "[WIP] Investigate reasons for failing pull requests"
 
@@ -159,6 +174,7 @@ git cherry-pick f152d15  # Apply to current branch if needed
 ### High Priority (Move to Main):
 
 1. **Review dangling commit `f152d15`** - Contains LWC template fixes
+
    ```bash
    git show f152d15
    git cherry-pick f152d15  # If changes are needed
@@ -190,12 +206,14 @@ git cherry-pick f152d15  # Apply to current branch if needed
 ## Quick Commands to Recover Work
 
 ### Review dangling commit:
+
 ```bash
 git show f152d15 --stat
 git show f152d15  # Full diff
 ```
 
 ### Check what's in unmerged branches:
+
 ```bash
 git log origin/claude/explain-codebase-mk370q4mgzhq3h5k-G985g --not main
 git log origin/claude/debug-and-improve-code-7kLAj --not main
@@ -203,6 +221,7 @@ git log origin/claude/analyze-test-coverage-ssZZC --not main
 ```
 
 ### Merge critical fixes:
+
 ```bash
 git checkout main
 git merge origin/claude/explain-codebase-mk370q4mgzhq3h5k-G985g
