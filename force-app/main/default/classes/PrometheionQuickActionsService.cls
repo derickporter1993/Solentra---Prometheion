@@ -120,12 +120,17 @@ public with sharing class PrometheionQuickActionsService {
         
         if (!newAssignments.isEmpty()) {
             try {
-                // Strip inaccessible fields before insert
-                SObjectAccessDecision decision = Security.stripInaccessible(
-                    AccessType.CREATABLE,
-                    newAssignments
-                );
-                insert decision.getRecords();
+                // CRUD check: Verify PermissionSetAssignment is creatable
+                if (!Schema.sObjectType.PermissionSetAssignment.isCreateable()) {
+                    result.messages.add('Insufficient permissions to create permission set assignments');
+                } else {
+                    // Strip inaccessible fields before insert
+                    SObjectAccessDecision decision = Security.stripInaccessible(
+                        AccessType.CREATABLE,
+                        newAssignments
+                    );
+                    insert decision.getRecords();
+                }
             } catch (DmlException e) {
                 System.debug(LoggingLevel.ERROR, '[PrometheionQuickActionsService] DML exception inserting assignments: ' + e.getMessage());
                 result.messages.add('Error creating permission set assignments: ' + e.getMessage());
@@ -190,12 +195,17 @@ public with sharing class PrometheionQuickActionsService {
         
         if (!inactiveUsers.isEmpty()) {
             try {
-                // Strip inaccessible fields before update
-                SObjectAccessDecision decision = Security.stripInaccessible(
-                    AccessType.UPDATABLE,
-                    inactiveUsers
-                );
-                update decision.getRecords();
+                // CRUD check: Verify User is updateable
+                if (!Schema.sObjectType.User.isUpdateable()) {
+                    result.messages.add('Insufficient permissions to update users');
+                } else {
+                    // Strip inaccessible fields before update
+                    SObjectAccessDecision decision = Security.stripInaccessible(
+                        AccessType.UPDATABLE,
+                        inactiveUsers
+                    );
+                    update decision.getRecords();
+                }
             } catch (DmlException e) {
                 System.debug(LoggingLevel.ERROR, '[PrometheionQuickActionsService] DML exception updating users: ' + e.getMessage());
                 result.messages.add('Error deactivating users: ' + e.getMessage());

@@ -1,106 +1,396 @@
-# Cursor Rules for Prometheion
+# Salesforce Security Compliance Runbook - Cursor Commands
 
-## Git Workflow - MANDATORY After Task Completion
+## General Commands
 
-**CRITICAL**: After any work is created or a set of tasks are complete, you MUST follow this exact sequence:
-
-### Quick Command (RECOMMENDED)
-
-**Cursor Slash Command:**
-```
-/sync-all "Your commit message"
-```
-
-**Or use the script directly:**
+### Find Narrowest Tests
 ```bash
-./scripts/sync-all.sh "Your commit message" "Optional merge message"
+# Find tests for a specific class
+rg "ClassName" force-app/main/default/classes/*Test.cls
+
+# Find tests for a trigger/object
+rg "TriggerName|ObjectApiName" force-app/main/default/classes/*Test.cls
+
+# Find tests for a feature area
+rg "Prometheion" force-app/main/default/classes/*Test.cls
 ```
 
-Or with just commit message (merge message auto-generated):
-
+### Compile/Check-Only Deploy
 ```bash
-./scripts/sync-all.sh "Your commit message"
+# Deploy single class (check-only)
+sf project deploy start --dry-run --source-dir force-app/main/default/classes/ClassName.cls
+
+# Deploy multiple files (check-only)
+sf project deploy start --dry-run --source-dir force-app/main/default/classes/Class1.cls --source-dir force-app/main/default/classes/Class2.cls
+
+# Deploy folder (check-only)
+sf project deploy start --dry-run --source-dir force-app/main/default/classes
+
+# SFDX equivalent
+sfdx force:source:deploy -c -p force-app/main/default/classes/ClassName.cls
 ```
 
-### Manual Workflow (Alternative)
-
-If you prefer manual steps:
-
-#### 1. Commit Changes Locally
-
+### Run Tests
 ```bash
-git add .
-git commit -m "Descriptive commit message"
+# Run specific test classes
+sf apex test run --tests TestClassA,TestClassB --result-format human --wait 30
+
+# Run all local tests (broader fallback)
+sf apex test run --test-level RunLocalTests --result-format human --wait 30
 ```
 
-#### 2. Push to Remote Feature Branch
+---
 
+## Backend (Phase 1)
+
+### 1. Add WITH SECURITY_ENFORCED to PrometheionQuickActionsService
+
+**Implementation Steps:**
+- Open `PrometheionQuickActionsService.cls`
+- Identify the 3 methods requiring WITH SECURITY_ENFORCED
+- Add `WITH SECURITY_ENFORCED` to each SOQL query
+- Remove any inaccessible fields from SELECT if needed
+- Update tests if they fail due to missing field access
+
+**After implementation:**
 ```bash
-BRANCH=$(git branch --show-current)
-git push origin $BRANCH
+# (a) Compile
+sf project deploy start --dry-run --source-dir force-app/main/default/classes/PrometheionQuickActionsService.cls
+
+# (b) Find tests
+rg "PrometheionQuickActionsService" force-app/main/default/classes/*Test.cls
+
+# (c) Run tests (replace with actual test class names from grep)
+sf apex test run --tests <TestClassNames> --result-format human --wait 30
 ```
 
-#### 3. Merge to Main and Push
+---
 
+### 2. Add CRUD Checks to PrometheionQuickActionsService DML
+
+**Implementation Steps:**
+- Locate the 3 DML operations in `PrometheionQuickActionsService.cls`
+- Add `Schema.sObjectType.X.isCreateable()`, `isUpdateable()`, or `isDeletable()` checks before each DML
+- If DML list contains multiple sObject types, group by type and check each
+- Update tests to cover denial path or ensure happy-path remains intact
+
+**After implementation:**
 ```bash
-BRANCH=$(git branch --show-current)
-git checkout main
-git pull origin main  # Ensure main is up to date
-git merge $BRANCH --no-ff -m "Merge feature branch: <description>"
-git push origin main
-git checkout $BRANCH  # Return to feature branch
+# (a) Compile
+sf project deploy start --dry-run --source-dir force-app/main/default/classes/PrometheionQuickActionsService.cls
+
+# (b) Find tests
+rg "PrometheionQuickActionsService" force-app/main/default/classes/*Test.cls
+
+# (c) Run tests
+sf apex test run --tests <TestClassNames> --result-format human --wait 30
 ```
 
-### Complete Manual Workflow Script
+---
 
+### 3. Add HTTP Timeout + CRUD Check to ApiUsageSnapshot
+
+**Implementation Steps:**
+- Open `ApiUsageSnapshot.cls`
+- Add `req.setTimeout(<ms>)` to HttpRequest (use repo-consistent timeout value)
+- Add `isAccessible()`, `isCreateable()`, `isUpdateable()` checks before SOQL/DML
+- Adjust callout mocks/tests if request properties are asserted
+
+**After implementation:**
 ```bash
-# Get current branch name
-BRANCH=$(git branch --show-current)
+# (a) Compile
+sf project deploy start --dry-run --source-dir force-app/main/default/classes/ApiUsageSnapshot.cls
 
-# Commit
-git add .
-git commit -m "Your commit message"
+# (b) Find tests
+rg "ApiUsageSnapshot" force-app/main/default/classes/*Test.cls
+rg "HttpCalloutMock|Mock" force-app/main/default/classes/*Test.cls
 
-# Push to feature branch
-git push origin $BRANCH
-
-# Merge to main
-git checkout main
-git pull origin main
-git merge $BRANCH --no-ff -m "Merge feature branch: Your description"
-git push origin main
-
-# Return to feature branch
-git checkout $BRANCH
+# (c) Run tests
+sf apex test run --tests <TestClassNames> --result-format human --wait 30
 ```
 
-## Important Notes
+---
 
-- **ALWAYS** use `--no-ff` for merge commits to preserve branch history
-- **ALWAYS** pull main before merging to avoid conflicts
-- **ALWAYS** return to feature branch after merging to continue work
-- **NEVER** skip any of these steps - all three steps are mandatory
+### 4. Create TriggerRecursionGuard.cls
 
-## Current Feature Branch
+**Implementation Steps:**
+- Create `TriggerRecursionGuard.cls` with minimal API (e.g., `enter(key)` returns boolean)
+- Create `TriggerRecursionGuard.cls-meta.xml`
+- Use `public with sharing` or follow repo conventions
+- Include test-reset hook if consistent with existing patterns
+- Create `TriggerRecursionGuardTest.cls` if needed
 
-- Default: `claude/review-prometheion-app-0BLu9` (check with `git branch --show-current`)
-
-## Verification
-
-The `sync-all.sh` script automatically verifies synchronization. For manual verification:
-
+**After implementation:**
 ```bash
-git status  # Should show "working tree clean"
-git rev-list --count origin/<feature-branch>..<feature-branch>  # Should be 0
-git rev-list --count origin/main..main  # Should be 0
+# (a) Compile
+sf project deploy start --dry-run --source-dir force-app/main/default/classes/TriggerRecursionGuard.cls
+
+# (b) Run tests (if test class created)
+sf apex test run --tests TriggerRecursionGuardTest --result-format human --wait 30
 ```
 
-## Git Alias (Optional)
+---
 
-You can also create a git alias for even faster access:
+### 5. Create 2 Missing Trigger Handlers
 
+**Implementation Steps:**
+- Identify the two triggers missing handler classes
+- Create the two handler classes following repo's trigger-handler pattern
+- Add method stubs for the events used
+- Update triggers to call handlers if needed
+- Keep logic minimal (wiring and stubs only)
+
+**After implementation:**
 ```bash
-git config --global alias.sync-all '!f() { ./scripts/sync-all.sh "$@"; }; f'
+# (a) Compile (adjust handler and trigger names)
+sf project deploy start --dry-run \
+  --source-dir force-app/main/default/classes/Handler1.cls \
+  --source-dir force-app/main/default/classes/Handler2.cls \
+  --source-dir force-app/main/default/triggers/Trigger1.trigger \
+  --source-dir force-app/main/default/triggers/Trigger2.trigger
+
+# (b) Find tests
+rg "Handler1|Trigger1|ObjectApiName1" force-app/main/default/classes/*Test.cls
+rg "Handler2|Trigger2|ObjectApiName2" force-app/main/default/classes/*Test.cls
+
+# (c) Run tests (or fallback to feature tests)
+sf apex test run --tests <TestClassNames> --result-format human --wait 30
+
+# Fallback if no direct hits:
+rg "Prometheion" force-app/main/default/classes/*Test.cls
 ```
 
-Then use: `git sync-all "Your commit message"`
+---
+
+### 6. Add Recursion Guards to 5 Triggers
+
+**Implementation Steps:**
+- Identify the 5 triggers needing recursion guards
+- Determine if guard should be in trigger entrypoint or handler entrypoint
+- Insert guard checks with consistent key format:
+  ```apex
+  if (!TriggerRecursionGuard.enter('TriggerName.eventType')) return;
+  ```
+- Use per-event keys to avoid blocking legitimate same-transaction work
+- Compile frequently to catch issues early
+
+**After implementation:**
+```bash
+# (a) Compile (adjust trigger names)
+sf project deploy start --dry-run \
+  --source-dir force-app/main/default/triggers/Trigger1.trigger \
+  --source-dir force-app/main/default/triggers/Trigger2.trigger \
+  --source-dir force-app/main/default/triggers/Trigger3.trigger \
+  --source-dir force-app/main/default/triggers/Trigger4.trigger \
+  --source-dir force-app/main/default/triggers/Trigger5.trigger \
+  --source-dir force-app/main/default/classes/TriggerRecursionGuard.cls
+
+# (b) Find tests
+rg "Trigger1|ObjectApiName1" force-app/main/default/classes/*Test.cls
+# Repeat for all 5 triggers
+
+# (c) Run tests
+sf apex test run --tests <TestClassNames> --result-format human --wait 30
+
+# Fallback for core triggers:
+sf apex test run --test-level RunLocalTests --result-format human --wait 30
+```
+
+---
+
+## Frontend (Phase 1)
+
+### 7. Add aria-hidden="true" to Icons in complianceCopilot.html
+
+**Implementation Steps:**
+- Open `force-app/main/default/lwc/complianceCopilot/complianceCopilot.html`
+- Locate the 3 decorative icon elements
+- Add `aria-hidden="true"` to each
+- Ensure icons are truly decorative (not interactive or meaning-bearing)
+- Save and format
+
+**After implementation:**
+```bash
+# (a) Lint
+npm run lint
+
+# (b) Run tests (if they exist)
+npx sfdx-lwc-jest force-app/main/default/lwc/complianceCopilot
+
+# Sanity check:
+npm run test:unit -- --listTests
+```
+
+---
+
+### 8. Add Loading States to 3-4 Components
+
+**Implementation Steps (per component):**
+- Identify async operations in component
+- Add `isLoading` tracked property
+- Add `<lightning-spinner if:true={isLoading}></lightning-spinner>`
+- Disable buttons/inputs while loading
+- Set `isLoading = true` before async operations
+- Clear `isLoading` in `finally` blocks
+- **Do one component at a time, not batched**
+
+**After each component:**
+```bash
+# (a) Lint
+npm run lint
+
+# (b) Run tests (if they exist)
+npx sfdx-lwc-jest force-app/main/default/lwc/componentName
+```
+
+---
+
+### 9. Create Jest Tests for 2 Components
+
+**Implementation Steps:**
+- Create test files under `componentName/__tests__/componentName.test.js`
+- Write 3-5 test cases each:
+  - Renders default state
+  - Toggles loading spinner during async
+  - Renders success state
+  - Renders error state
+  - Disables actions while loading
+- Add Apex mocks under `force-app/test/jest-mocks` if needed
+- Run tests component-by-component until green
+
+**After Component X tests:**
+```bash
+# (a) Lint
+npm run lint
+
+# (b) Run tests
+npx sfdx-lwc-jest force-app/main/default/lwc/componentX
+```
+
+**After Component Y tests:**
+```bash
+# (a) Lint
+npm run lint
+
+# (b) Run tests
+npx sfdx-lwc-jest force-app/main/default/lwc/componentY
+```
+
+---
+
+## Lower Priority Items
+
+### Phase 2: Add notifyOnFailure() to PrometheionGLBAAnnualNoticeBatch
+
+**Implementation Steps:**
+- Open `PrometheionGLBAAnnualNoticeBatch.cls`
+- Review existing error tracking/notification patterns in similar batch classes
+- Implement `notifyOnFailure()` in `finish()` method
+- Trigger notification only when failures occurred
+- Avoid throwing unhandled exceptions in `finish()`
+- Update/add tests to cover failure path
+
+**After implementation:**
+```bash
+# (a) Compile
+sf project deploy start --dry-run --source-dir force-app/main/default/classes/PrometheionGLBAAnnualNoticeBatch.cls
+
+# (b) Find tests
+rg "PrometheionGLBAAnnualNoticeBatch" force-app/main/default/classes/*Test.cls
+
+# (c) Run tests
+sf apex test run --tests <TestClassNames> --result-format human --wait 30
+```
+
+---
+
+### Phase 3: Add Descriptions to 59 Custom Fields
+
+**Implementation Steps:**
+- Generate consistent field Description text (1-2 sentences per field)
+- Apply updates in field metadata XML files
+- Process in batches of 10-15 fields
+- Avoid touching unrelated metadata
+- Consider scripted approach if repo has metadata mass-edit scripts
+
+**After each batch (10-15 fields):**
+```bash
+# (a) Compile (adjust object name)
+sf project deploy start --dry-run --source-dir force-app/main/default/objects/ObjectName/fields
+
+# Or specific field metadata files:
+sf project deploy start --dry-run \
+  --source-dir force-app/main/default/objects/ObjectName/fields/FieldName1__c.field-meta.xml \
+  --source-dir force-app/main/default/objects/ObjectName/fields/FieldName2__c.field-meta.xml
+
+# (b) Run tests (usually not needed for field descriptions, but as fallback)
+sf apex test run --test-level RunLocalTests --result-format human --wait 30
+```
+
+---
+
+### Phase 3: Capture 12 AppExchange Screenshots
+
+**Implementation Steps:**
+- Create screenshot shot-list for AppExchange
+- Enumerate 12 required views:
+  - Setup screens
+  - Key UI screens
+  - Permission sets
+  - Sample outputs
+- Use consistent naming convention
+- Capture in running org
+- **Note: This is operational work, not code changes**
+
+---
+
+## Quick Reference
+
+### SFDX to SF CLI Equivalents
+```bash
+# Check-only deploy
+sfdx force:source:deploy -c -p <path>
+sf project deploy start --dry-run --source-dir <path>
+
+# Run tests
+sfdx force:apex:test:run -n TestClass1,TestClass2 -r human -w 30
+sf apex test run --tests TestClass1,TestClass2 --result-format human --wait 30
+```
+
+### Common Patterns
+```bash
+# Deploy class + test
+sf project deploy start --dry-run \
+  --source-dir force-app/main/default/classes/MyClass.cls \
+  --source-dir force-app/main/default/classes/MyClassTest.cls
+
+# Deploy trigger + handler
+sf project deploy start --dry-run \
+  --source-dir force-app/main/default/triggers/MyTrigger.trigger \
+  --source-dir force-app/main/default/classes/MyTriggerHandler.cls
+
+# Frontend lint + test
+npm run lint && npx sfdx-lwc-jest force-app/main/default/lwc/componentName
+```
+
+---
+
+## Notes
+
+- **Always run compile (check-only deploy) before tests**
+- **Use narrowest test selection via grep first, then fallback to broader tests**
+- **Process frontend changes one component at a time**
+- **Keep recursion guard keys per-event to avoid blocking legitimate work**
+- **Clear isLoading in finally blocks to handle all code paths**
+- **Field description changes rarely need test runs**
+
+---
+
+## Customization Needed
+
+Replace these placeholders with your actual values:
+- `<TestClassNames>` - Output from grep searches
+- `Handler1`, `Handler2` - Actual handler class names
+- `Trigger1`, `Trigger2`, etc. - Actual trigger names
+- `ObjectApiName1`, etc. - Actual object API names
+- `componentX`, `componentY` - Actual LWC component names
+- Timeout values in `req.setTimeout(<ms>)`
