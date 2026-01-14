@@ -4,11 +4,12 @@ Prometheion CLI - Command-line interface for the AI Compliance Brain for Salesfo
 
 ## Installation
 
-This package is part of the Prometheion monorepo. From the workspace root:
+This package is part of the Prometheion monorepo. From the platform directory:
 
 ```bash
+cd platform
 npm install
-npm run cli:build
+npm run build
 ```
 
 ## Usage

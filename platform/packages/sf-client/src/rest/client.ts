@@ -249,7 +249,7 @@ export class RestClient {
       return undefined as T;
     }
 
-    return response.json();
+    return response.json() as Promise<T>;
   }
 
   /**

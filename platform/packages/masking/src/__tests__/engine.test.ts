@@ -2,11 +2,25 @@ import { describe, it, expect } from 'vitest';
 import { MaskingEngine } from '../engine.js';
 import { redact } from '../strategies/redact.js';
 import { hash } from '../strategies/hash.js';
+import type { MaskingPolicy } from '@platform/types';
+
+// Test policy for MaskingEngine tests
+const createTestPolicy = (): MaskingPolicy => ({
+  id: 'test-policy-1',
+  workspaceId: 'test-workspace',
+  name: 'Test Policy',
+  version: 1,
+  rules: [],
+  isDefault: false,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+});
 
 describe('Masking Engine', () => {
   describe('MaskingEngine', () => {
-    it('should be constructable', () => {
-      const engine = new MaskingEngine();
+    it('should be constructable with a policy', () => {
+      const policy = createTestPolicy();
+      const engine = new MaskingEngine(policy);
       expect(engine).toBeDefined();
     });
   });
