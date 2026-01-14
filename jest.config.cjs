@@ -2,9 +2,10 @@ const { jestConfig } = require("@salesforce/sfdx-lwc-jest/config");
 
 module.exports = {
   ...jestConfig,
-  modulePathIgnorePatterns: [],
+  modulePathIgnorePatterns: ["<rootDir>/platform/"],
   testPathIgnorePatterns: [
     "<rootDir>/node_modules/",
+    "<rootDir>/platform/",
     "<rootDir>/Sentinel-main/",
     "<rootDir>/force-app/main/default/lwc/__tests__/setupTests.js",
     "<rootDir>/force-app/main/default/lwc/__tests__/axeTestHelper.js",
