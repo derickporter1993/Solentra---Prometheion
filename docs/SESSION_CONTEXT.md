@@ -10,7 +10,7 @@
 | Core v3.0 | COMPLETE | All 10 compliance frameworks |
 | Security | APPROVED | CRUD/FLS, no injection vulnerabilities |
 | Test Coverage | ~52%* | Need 75% for AppExchange (269 classes, 140 tests*) |
-| P1 Blockers | 11/12 done | Only framework validation remaining |
+| P1 Blockers | 12/12 done | ALL P1 complete (pending branch merge) |
 | v1.5 Features | COMPLETE | All 6 features delivered |
 | CLI Tool | COMPLETE | Prometheion CLI added (PR #114) |
 
@@ -78,20 +78,17 @@ Update TASK_AUDITOR.md as you complete tasks.
 
 ## Next Step
 
-**Option 1 (P1 Completion)**: Complete framework validation
-- Add `PrometheionConstants.isValidFramework()` to remaining service classes
-- Last P1 blocker for AppExchange
-
-**Option 2 (Merge Outstanding Work)**: Merge feature branches
-- `claude/fix-branch-protection-ci-FqH9b` (21 commits - CI fixes)
+**Priority 1 (Merge Outstanding Work)**: Merge feature branches to consolidate work
+- `claude/review-all-commits-Tphxe` (4 commits - deployment fixes, P1 complete)
 - `cursor/add-test-classes-for-7-classes` (21 commits - test classes)
+- `claude/fix-branch-protection-ci-FqH9b` (21 commits - CI fixes)
 - `claude/add-cli-build-job-ONM5C` (6 commits - CLI build)
 
-**Option 3 (Coverage Push)**: Increase test coverage to 75%
-- Current: 48% | Required: 75% for AppExchange
-- ~30-40 classes need additional coverage
+**Priority 2 (Coverage Push)**: Increase test coverage to 75%
+- Current: ~52%* | Required: 75% for AppExchange
+- Will improve once test class branches are merged
 
-**Option 4 (P2 Work)**: Start error handling improvements
+**Priority 3 (P2 Work)**: Start error handling improvements
 - Add correlation IDs to 4 core classes
 - Improve audit logging
 
