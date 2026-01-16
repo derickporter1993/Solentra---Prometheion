@@ -21,6 +21,12 @@ public class BreachNotificationTypes {
         @AuraEnabled public String discoveredBy;
         @AuraEnabled public Boolean encryptionInPlace;
         @AuraEnabled public String circumstances;
+        // Additional properties for risk assessment
+        @AuraEnabled public Boolean recipientAuthorized;
+        @AuraEnabled public String recipientType;
+        @AuraEnabled public Boolean dataAcquired;
+        @AuraEnabled public Boolean dataViewed;
+        @AuraEnabled public List<String> mitigationsApplied;
     }
 
     /**
@@ -56,7 +62,7 @@ public class BreachNotificationTypes {
     }
 
     /**
-     * Breach summary for listing
+     * Breach summary for listing and dashboard
      */
     public class BreachSummary {
         @AuraEnabled public Id breachId;
@@ -68,6 +74,13 @@ public class BreachNotificationTypes {
         @AuraEnabled public String status;
         @AuraEnabled public String framework;
         @AuraEnabled public Decimal riskScore;
+        // Dashboard summary properties
+        @AuraEnabled public Integer totalBreaches;
+        @AuraEnabled public Integer openBreaches;
+        @AuraEnabled public Integer closedBreaches;
+        @AuraEnabled public Integer totalAffectedIndividuals;
+        @AuraEnabled public Integer overdueNotifications;
+        @AuraEnabled public Boolean hhsAnnualReportRequired;
     }
 
     /**

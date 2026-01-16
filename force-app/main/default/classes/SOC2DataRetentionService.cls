@@ -42,17 +42,9 @@ public with sharing class SOC2DataRetentionService extends ComplianceServiceBase
     protected override List<ComplianceServiceBase.InternalViolation> evaluateControls() {
         List<ComplianceServiceBase.InternalViolation> violations = new List<ComplianceServiceBase.InternalViolation>();
 
-        // Convert from standalone Violation to InternalViolation
-        for (Violation v : evaluateFieldHistoryTracking()) {
-            violations.add(new ComplianceServiceBase.InternalViolation(
-                v.title, v.description, v.severity, '', v.remediation != null ? v.remediation : '', v.riskScore
-            ));
-        }
-        for (Violation v : evaluateDataDisposal()) {
-            violations.add(new ComplianceServiceBase.InternalViolation(
-                v.title, v.description, v.severity, '', v.remediation != null ? v.remediation : '', v.riskScore
-            ));
-        }
+        // Add violations from helper methods
+        violations.addAll(evaluateFieldHistoryTracking());
+        violations.addAll(evaluateDataDisposal());
 
         return violations;
     }
@@ -177,12 +169,12 @@ public with sharing class SOC2DataRetentionService extends ComplianceServiceBase
     /**
      * Evaluate Field History Tracking compliance
      */
-    private List<Violation> evaluateFieldHistoryTracking() {
-        List<Violation> violations = new List<Violation>();
+    private List<ComplianceServiceBase.InternalViolation> evaluateFieldHistoryTracking() {
+        List<ComplianceServiceBase.InternalViolation> violations = new List<ComplianceServiceBase.InternalViolation>();
 
         for (String objectName : SENSITIVE_OBJECTS) {
             if (!hasFieldHistoryEnabled(objectName)) {
-                Violation v = new Violation(
+                ComplianceServiceBase.InternalViolation v = new ComplianceServiceBase.InternalViolation(
                     'Missing Field History Tracking',
                     'Object ' + objectName + ' does not have Field History Tracking enabled',
                     'HIGH',
@@ -190,8 +182,6 @@ public with sharing class SOC2DataRetentionService extends ComplianceServiceBase
                     'Enable Field History Tracking on sensitive fields for ' + objectName,
                     7.5
                 );
-                v.entityType = 'OBJECT';
-                v.entityId = objectName;
                 violations.add(v);
             }
         }
@@ -202,8 +192,8 @@ public with sharing class SOC2DataRetentionService extends ComplianceServiceBase
     /**
      * Evaluate data disposal policies
      */
-    private List<Violation> evaluateDataDisposal() {
-        List<Violation> violations = new List<Violation>();
+    private List<ComplianceServiceBase.InternalViolation> evaluateDataDisposal() {
+        List<ComplianceServiceBase.InternalViolation> violations = new List<ComplianceServiceBase.InternalViolation>();
 
         // Check for stale data that should be archived/deleted
         Integer staleDataThreshold = 2555; // 7 years
@@ -218,7 +208,7 @@ public with sharing class SOC2DataRetentionService extends ComplianceServiceBase
         ];
 
         if (oldEvidenceCount > 0) {
-            Violation v = new Violation(
+            ComplianceServiceBase.InternalViolation v = new ComplianceServiceBase.InternalViolation(
                 'Stale Compliance Evidence',
                 oldEvidenceCount + ' compliance evidence records exceed retention period',
                 'MEDIUM',
@@ -226,8 +216,6 @@ public with sharing class SOC2DataRetentionService extends ComplianceServiceBase
                 'Archive or delete compliance evidence older than ' + (staleDataThreshold / 365) + ' years',
                 5.0
             );
-            v.entityType = 'DATA';
-            v.entityId = 'Compliance_Evidence__c';
             violations.add(v);
         }
 
@@ -247,15 +235,19 @@ public with sharing class SOC2DataRetentionService extends ComplianceServiceBase
             // Check if object supports history tracking
             Schema.DescribeSObjectResult describe = objType.getDescribe();
 
-            // Check for history tracking fields
-            Map<String, Schema.SObjectField> fields = describe.fields.getMap();
-            for (Schema.SObjectField field : fields.values()) {
-                Schema.DescribeFieldResult fieldDescribe = field.getDescribe();
-                if (fieldDescribe.isHistoryTracked() != null && fieldDescribe.isHistoryTracked()) {
-                    return true;
-                }
+            // Check for history tracking - Field History Tracking is enabled at object level
+            // Note: Individual field tracking cannot be checked via DescribeFieldResult
+            // This is a simplified check - assumes object has Field History enabled if we can query it
+            // In production, use FieldDefinition via Tooling API for accurate field-level tracking
+            try {
+                // Attempt to query history table as a proxy check
+                String historyTableName = objectName + '__History';
+                Database.query('SELECT Id FROM ' + historyTableName + ' LIMIT 1');
+                return true;
+            } catch (Exception e) {
+                // History table doesn't exist or Field History not enabled
+                return false;
             }
-            return false;
         } catch (Exception e) {
             System.debug(LoggingLevel.ERROR, 'Error checking field history: ' + e.getMessage());
             return false;

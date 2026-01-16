@@ -54,11 +54,12 @@ public with sharing class PerformanceAlertPublisher {
             insert alertHistory;
             
             // Also send Slack notification if configured
-            try {
-                SlackNotifier.notifyPerformanceAlert(metric, value, threshold, contextRecordId);
-            } catch (Exception slackError) {
-                System.debug(LoggingLevel.WARN, 'PerformanceAlertPublisher: Slack notification failed: ' + slackError.getMessage());
-            }
+            // Note: SlackNotifier class not yet implemented - placeholder for future integration
+            // try {
+            //     SlackNotifier.notifyPerformanceAlert(metric, value, threshold, contextRecordId);
+            // } catch (Exception slackError) {
+            //     System.debug(LoggingLevel.WARN, 'PerformanceAlertPublisher: Slack notification failed: ' + slackError.getMessage());
+            // }
             
         } catch (IllegalArgumentException e) {
             System.debug(LoggingLevel.ERROR, 'PerformanceAlertPublisher: Validation error: ' + e.getMessage());

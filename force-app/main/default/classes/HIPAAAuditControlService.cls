@@ -265,7 +265,7 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
         cv.Title = 'HIPAA_Audit_Report_' + DateTime.now().format('yyyy-MM-dd');
         cv.PathOnClient = cv.Title + '.txt';
         cv.VersionData = Blob.valueOf(reportContent);
-        PrometheionSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
+        PrometheionSecurityUtils.validateCRUDAccess('ContentVersion', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
         insert cv;
 
         // Get ContentDocumentId
@@ -326,15 +326,16 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
             try {
                 Schema.SObjectType objType = Schema.getGlobalDescribe().get(objectName);
                 if (objType != null) {
-                    Map<String, Schema.SObjectField> fields = objType.getDescribe().fields.getMap();
+                    // Check if object has Field History Tracking enabled
+                    // Note: isHistoryTracked() doesn't exist on DescribeFieldResult
+                    // Use history table query as proxy check
                     Boolean hasTracking = false;
-
-                    for (Schema.SObjectField field : fields.values()) {
-                        Schema.DescribeFieldResult fieldDesc = field.getDescribe();
-                        if (fieldDesc.isHistoryTracked() != null && fieldDesc.isHistoryTracked()) {
-                            hasTracking = true;
-                            break;
-                        }
+                    try {
+                        String historyTableName = objectName + '__History';
+                        Database.query('SELECT Id FROM ' + historyTableName + ' LIMIT 1');
+                        hasTracking = true; // History table exists, Field History is enabled
+                    } catch (Exception e) {
+                        hasTracking = false; // History table doesn't exist or Field History not enabled
                     }
 
                     if (hasTracking) {

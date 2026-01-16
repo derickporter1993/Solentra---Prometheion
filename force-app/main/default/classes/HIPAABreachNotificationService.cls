@@ -80,8 +80,9 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
         Decimal riskScore = 5.0; // Base score
         
         // Adjust based on records affected
+        // Use HHS_ANNUAL_THRESHOLD constant for consistency with HIPAA 45 CFR §164.408
         if (request.recordsAffected != null) {
-            if (request.recordsAffected >= 500) {
+            if (request.recordsAffected >= HHS_ANNUAL_THRESHOLD) {
                 riskScore += 3.0;
             } else if (request.recordsAffected >= 100) {
                 riskScore += 2.0;
@@ -122,16 +123,18 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
             'Implement additional safeguards if needed'
         };
         
-        // Determine notification types required
+        // Determine notification types required per HIPAA 45 CFR §164.404
+        // HHS (REGULATOR) notification is only required immediately for breaches affecting 500+ individuals
+        // Smaller breaches are logged and reported annually to HHS, not immediately notified
         assessment.notificationTypes = new List<String>();
         if (assessment.notificationRequired) {
             assessment.notificationTypes.add('INDIVIDUAL');
             if (request.recordsAffected != null && request.recordsAffected >= HHS_ANNUAL_THRESHOLD) {
                 assessment.notificationTypes.add('REGULATOR');
                 assessment.notificationTypes.add('MEDIA');
-            } else {
-                assessment.notificationTypes.add('REGULATOR');
             }
+            // For breaches < 500 individuals, no immediate REGULATOR notification required
+            // These are logged and reported in annual HHS submission
         }
         
         // Create breach record if needed
@@ -187,9 +190,24 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
         status.breachId = breach.Id;
         
         // Set deadline and calculate if deadline was met
+        // Deadline is met only if required notifications were actually sent before the deadline
         if (breach.Notification_Deadline__c != null) {
             status.deadline = DateTime.newInstance(breach.Notification_Deadline__c, Time.newInstance(0, 0, 0, 0));
-            status.deadlineMet = Date.today() <= breach.Notification_Deadline__c;
+            
+            // Check if individual notification was sent on time (required for all breaches)
+            Boolean individualsNotifiedOnTime = breach.Individuals_Notified__c == true && 
+                breach.Individual_Notification_Date__c != null &&
+                breach.Individual_Notification_Date__c <= breach.Notification_Deadline__c;
+            
+            // For breaches >= 500, also check HHS notification timing
+            Boolean hhsNotificationRequired = breach.Records_Affected__c != null && 
+                breach.Records_Affected__c >= HHS_ANNUAL_THRESHOLD;
+            Boolean hhsNotifiedOnTime = !hhsNotificationRequired || 
+                (breach.HHS_Notified__c == true && 
+                 breach.HHS_Notification_Date__c != null &&
+                 breach.HHS_Notification_Date__c <= breach.Notification_Deadline__c);
+            
+            status.deadlineMet = individualsNotifiedOnTime && hhsNotifiedOnTime;
         }
 
         // Individual notification status
@@ -386,8 +404,8 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
 
         metrics.totalBreaches = breaches.size();
         metrics.breachesByType = new Map<String, Integer>();
-        metrics.breachesByRiskLevel = new Map<String, Integer>();
-        metrics.averageNotificationDays = 0;
+        metrics.breachesBySeverity = new Map<String, Integer>();
+        metrics.averageResolutionDays = 0;
 
         Decimal totalNotificationDays = 0;
         Integer notifiedCount = 0;
@@ -400,12 +418,12 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
             }
             metrics.breachesByType.put(breachType, metrics.breachesByType.get(breachType) + 1);
 
-            // Count by risk level
-            String riskLevel = breach.Risk_Level__c != null ? breach.Risk_Level__c : 'Unknown';
-            if (!metrics.breachesByRiskLevel.containsKey(riskLevel)) {
-                metrics.breachesByRiskLevel.put(riskLevel, 0);
+            // Count by severity (using Risk_Level__c field)
+            String severity = breach.Risk_Level__c != null ? breach.Risk_Level__c : 'Unknown';
+            if (!metrics.breachesBySeverity.containsKey(severity)) {
+                metrics.breachesBySeverity.put(severity, 0);
             }
-            metrics.breachesByRiskLevel.put(riskLevel, metrics.breachesByRiskLevel.get(riskLevel) + 1);
+            metrics.breachesBySeverity.put(severity, metrics.breachesBySeverity.get(severity) + 1);
 
             // Calculate notification time
             if (breach.Individual_Notification_Date__c != null && breach.Discovery_Date__c != null) {
@@ -417,7 +435,7 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
         }
 
         if (notifiedCount > 0) {
-            metrics.averageNotificationDays = (totalNotificationDays / notifiedCount).setScale(1);
+            metrics.averageResolutionDays = (totalNotificationDays / notifiedCount).setScale(1);
         }
 
         return metrics;
@@ -438,7 +456,7 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
         breach.Breach_Type__c = (String) breachData.get('breachType');
         breach.Status__c = 'Open';
 
-        PrometheionSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', DmlOperation.DML_INSERT);
+        PrometheionSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
         insert breach;
 
         // Log audit entry
@@ -497,7 +515,7 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
         breach.Individual_Notification_Date__c = Date.today();
         breach.Individuals_Notified_Count__c = individualsNotified;
 
-        PrometheionSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', DmlOperation.DML_UPDATE);
+        PrometheionSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', PrometheionSecurityUtils.DmlOperation.DML_UPDATE);
         update breach;
 
         HIPAABreachNotificationService service = new HIPAABreachNotificationService();
@@ -522,7 +540,7 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
         breach.HHS_Notification_Date__c = Date.today();
         breach.HHS_Confirmation_Number__c = hhsConfirmationNumber;
 
-        PrometheionSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', DmlOperation.DML_UPDATE);
+        PrometheionSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', PrometheionSecurityUtils.DmlOperation.DML_UPDATE);
         update breach;
 
         HIPAABreachNotificationService service = new HIPAABreachNotificationService();
@@ -621,16 +639,19 @@ public with sharing class HIPAABreachNotificationService extends ComplianceServi
 
         // High-risk PHI types increase score
         Set<String> highRiskTypes = new Set<String>{'SSN', 'Financial', 'Mental Health', 'Substance Abuse', 'HIV/AIDS'};
-        for (String dataType : request.dataTypesInvolved) {
-            if (highRiskTypes.contains(dataType)) {
-                score += 2;
+        if (request.dataTypesExposed != null) {
+            for (String dataType : request.dataTypesExposed) {
+                if (highRiskTypes.contains(dataType)) {
+                    score += 2;
+                }
             }
         }
 
-        // Volume of records affects score
-        if (request.recordsAffected > 500) {
+        // Volume of records affects score (use >= HHS_ANNUAL_THRESHOLD per HIPAA 45 CFR §164.408)
+        // Must match assessBreach() method for consistent 4-factor risk assessment
+        if (request.recordsAffected != null && request.recordsAffected >= HHS_ANNUAL_THRESHOLD) {
             score += 2;
-        } else if (request.recordsAffected > 100) {
+        } else if (request.recordsAffected != null && request.recordsAffected >= 100) {
             score += 1;
         }
 
