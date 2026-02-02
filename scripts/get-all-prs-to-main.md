@@ -37,9 +37,11 @@ One of the following:
 - **GitHub CLI (gh)** - Installed and authenticated (recommended)
   - Install: https://cli.github.com/
   - Authenticate: `gh auth login`
+  - Also requires: `jq` for JSON parsing
 - **GITHUB_TOKEN** - Environment variable with a GitHub personal access token
   - Create token: https://github.com/settings/tokens
   - Set: `export GITHUB_TOKEN=your_token_here`
+  - Also requires: `python3` for JSON parsing
 
 ## Output
 

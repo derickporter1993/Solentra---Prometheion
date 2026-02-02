@@ -40,6 +40,29 @@ echo "Repository: $REPO"
 echo "State: $STATE"
 echo ""
 
+# Function to format PR output with jq (for gh CLI)
+format_pr_jq() {
+    jq -r '.[] | "PR #\(.number) - \(.state)\n  Title: \(.title)\n  Author: \(.author.login)\n  Created: \(.createdAt)\n  Updated: \(.updatedAt)\n"'
+}
+
+# Function to format PR output with Python (for GitHub API)
+format_pr_python() {
+    python3 -c "
+import sys, json
+try:
+    prs = json.load(sys.stdin)
+    for pr in prs:
+        print(f\"PR #{pr['number']} - {pr['state'].upper()}\")
+        print(f\"  Title: {pr['title']}\")
+        print(f\"  Author: {pr['user']['login']}\")
+        print(f\"  Created: {pr['created_at']}\")
+        print(f\"  Updated: {pr['updated_at']}\")
+        print()
+except Exception as e:
+    print(f'Error: {e}', file=sys.stderr)
+"
+}
+
 # Check if gh CLI is available
 if command -v gh &> /dev/null; then
     # Use gh CLI (preferred method)
@@ -48,15 +71,11 @@ if command -v gh &> /dev/null; then
     
     if [ "$STATE" = "all" ]; then
         # Get both open and closed PRs
-        gh pr list --repo "$REPO" --base main --state open --limit 100 --json number,title,author,state,createdAt,updatedAt | \
-            jq -r '.[] | "PR #\(.number) - \(.state)\n  Title: \(.title)\n  Author: \(.author.login)\n  Created: \(.createdAt)\n  Updated: \(.updatedAt)\n"'
-        
-        gh pr list --repo "$REPO" --base main --state closed --limit 100 --json number,title,author,state,createdAt,updatedAt | \
-            jq -r '.[] | "PR #\(.number) - \(.state)\n  Title: \(.title)\n  Author: \(.author.login)\n  Created: \(.createdAt)\n  Updated: \(.updatedAt)\n"'
+        gh pr list --repo "$REPO" --base main --state open --limit 100 --json number,title,author,state,createdAt,updatedAt | format_pr_jq
+        gh pr list --repo "$REPO" --base main --state closed --limit 100 --json number,title,author,state,createdAt,updatedAt | format_pr_jq
     else
         # Get PRs with specific state
-        gh pr list --repo "$REPO" --base main --state "$STATE" --limit 100 --json number,title,author,state,createdAt,updatedAt | \
-            jq -r '.[] | "PR #\(.number) - \(.state)\n  Title: \(.title)\n  Author: \(.author.login)\n  Created: \(.createdAt)\n  Updated: \(.updatedAt)\n"'
+        gh pr list --repo "$REPO" --base main --state "$STATE" --limit 100 --json number,title,author,state,createdAt,updatedAt | format_pr_jq
     fi
     
     # Get count
@@ -75,8 +94,15 @@ if command -v gh &> /dev/null; then
     fi
     
 elif [ -n "$GITHUB_TOKEN" ]; then
-    # Fallback to curl with GitHub API
+    # Fallback to curl with GitHub API (requires Python 3 for JSON parsing)
     echo "Using GitHub API (GITHUB_TOKEN)..."
+    
+    # Check if Python 3 is available
+    if ! command -v python3 &> /dev/null; then
+        echo "Error: Python 3 is required for GitHub API fallback but not found"
+        echo "Please install Python 3 or use GitHub CLI instead"
+        exit 1
+    fi
     
     if [ "$STATE" = "all" ]; then
         # Fetch both open and closed
@@ -85,42 +111,19 @@ elif [ -n "$GITHUB_TOKEN" ]; then
                 -H "Authorization: token $GITHUB_TOKEN" \
                 -H "Accept: application/vnd.github.v3+json")
             
-            echo "$response" | python3 -c "
-import sys, json
-try:
-    prs = json.load(sys.stdin)
-    for pr in prs:
-        print(f\"PR #{pr['number']} - {pr['state'].upper()}\")
-        print(f\"  Title: {pr['title']}\")
-        print(f\"  Author: {pr['user']['login']}\")
-        print(f\"  Created: {pr['created_at']}\")
-        print(f\"  Updated: {pr['updated_at']}\")
-        print()
-except Exception as e:
-    print(f'Error: {e}', file=sys.stderr)
-"
+            echo "$response" | format_pr_python
         done
     else
         response=$(curl -s "https://api.github.com/repos/$REPO/pulls?state=$STATE&base=main&per_page=100" \
             -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github.v3+json")
         
-        echo "$response" | python3 -c "
-import sys, json
-try:
-    prs = json.load(sys.stdin)
-    for pr in prs:
-        print(f\"PR #{pr['number']} - {pr['state'].upper()}\")
-        print(f\"  Title: {pr['title']}\")
-        print(f\"  Author: {pr['user']['login']}\")
-        print(f\"  Created: {pr['created_at']}\")
-        print(f\"  Updated: {pr['updated_at']}\")
-        print()
-    print('=' * 50)
-    print(f'Total {sys.argv[1]} PRs: {len(prs)}')
-except Exception as e:
-    print(f'Error: {e}', file=sys.stderr)
-" "$STATE"
+        echo "$response" | format_pr_python
+        
+        # Print summary
+        echo "=================================="
+        COUNT=$(echo "$response" | python3 -c "import sys, json; print(len(json.load(sys.stdin)))")
+        echo "Total $STATE PRs: $COUNT"
     fi
 else
     echo "Error: Neither 'gh' CLI nor GITHUB_TOKEN environment variable is available"
@@ -129,5 +132,7 @@ else
     echo "  1. Install GitHub CLI: https://cli.github.com/"
     echo "  2. Set GITHUB_TOKEN environment variable with a GitHub personal access token"
     echo "     Get a token from: https://github.com/settings/tokens"
+    echo ""
+    echo "Note: GitHub API fallback also requires Python 3 for JSON parsing"
     exit 1
 fi
