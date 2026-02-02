@@ -147,18 +147,22 @@ Use the centralized `PrometheionSecurityUtils` class for all CRUD/FLS checks:
 
 ```apex
 // Check object CRUD before DML
-if (!PrometheionSecurityUtils.checkObjectCRUD('Account', 'CREATE')) {
+if (!PrometheionSecurityUtils.hasCreateAccess('Account')) {
     throw new AuraHandledException('Insufficient privileges to create Accounts');
 }
 
 // Check field-level access before queries
 List<String> fields = new List<String>{'Name', 'Email', 'Phone'};
-if (!PrometheionSecurityUtils.checkFieldAccess('Contact', fields, 'READ')) {
-    throw new AuraHandledException('Access denied to Contact fields');
+for (String field : fields) {
+    if (!PrometheionSecurityUtils.hasFieldReadAccess('Contact', field)) {
+        throw new AuraHandledException('Access denied to Contact field: ' + field);
+    }
 }
 
-// Validate FLS on DML operations
-PrometheionSecurityUtils.validateFLSAccess(accountList, 'CREATE');
+// Validate CRUD and FLS before DML operations
+PrometheionSecurityUtils.validateCRUDAccess('Account', PrometheionSecurityUtils.DmlOperation.DML_INSERT);
+List<String> accountFields = new List<String>{'Name', 'Industry', 'Phone'};
+PrometheionSecurityUtils.validateFLSAccess('Account', accountFields, true);
 Database.insert(accountList);
 ```
 
