@@ -35,15 +35,13 @@ jobs:
           echo "Total open PRs: $TOTAL_PRS"
           echo ""
           
-          # Categorize PRs
-          READY_TO_MERGE=0
-          NEEDS_REVIEW=0
-          HAS_CONFLICTS=0
-          CHECKS_PENDING=0
-          CHECKS_FAILING=0
-          DRAFT_PRS=0
+          # Categorize PRs (using temp file to persist counts across loop)
+          TEMP_COUNTS=$(mktemp)
+          echo "0 0 0 0 0 0" > "$TEMP_COUNTS"
           
-          echo "$PRS" | jq -c '.[]' | while read -r pr; do
+          while read -r pr; do
+            # Read current counts
+            read -r READY_TO_MERGE NEEDS_REVIEW HAS_CONFLICTS CHECKS_PENDING CHECKS_FAILING DRAFT_PRS < "$TEMP_COUNTS"
             NUMBER=$(echo "$pr" | jq -r '.number')
             TITLE=$(echo "$pr" | jq -r '.title')
             AUTHOR=$(echo "$pr" | jq -r '.author.login')
@@ -89,7 +87,14 @@ jobs:
               echo "  Status: ❓ UNKNOWN STATE"
             fi
             echo ""
-          done
+            
+            # Write updated counts
+            echo "$READY_TO_MERGE $NEEDS_REVIEW $HAS_CONFLICTS $CHECKS_PENDING $CHECKS_FAILING $DRAFT_PRS" > "$TEMP_COUNTS"
+          done < <(echo "$PRS" | jq -c '.[]')
+          
+          # Read final counts
+          read -r READY_TO_MERGE NEEDS_REVIEW HAS_CONFLICTS CHECKS_PENDING CHECKS_FAILING DRAFT_PRS < "$TEMP_COUNTS"
+          rm -f "$TEMP_COUNTS"
           
           echo "===================================="
           echo "Summary:"

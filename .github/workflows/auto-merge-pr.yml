@@ -79,20 +79,17 @@ jobs:
           
           echo "🔄 Auto-merging PR #$PR_NUMBER..."
           
-          # Merge the PR using squash merge
+          # Merge the PR using squash merge (checks already verified as passing)
           gh pr merge $PR_NUMBER \
             --repo ${{ github.repository }} \
             --squash \
-            --auto \
             --delete-branch || {
-              echo "❌ Failed to enable auto-merge. Trying direct merge..."
-              gh pr merge $PR_NUMBER \
-                --repo ${{ github.repository }} \
-                --squash \
-                --delete-branch || {
-                  echo "⚠️ Direct merge also failed. PR may require manual intervention."
-                  exit 0
-                }
+              echo "❌ Merge failed. PR may require manual intervention."
+              echo "This could be due to:"
+              echo "  - Additional branch protection rules"
+              echo "  - Required reviewers not yet approved"
+              echo "  - Insufficient permissions"
+              exit 0
             }
           
           echo "✅ PR #$PR_NUMBER merged successfully!"
