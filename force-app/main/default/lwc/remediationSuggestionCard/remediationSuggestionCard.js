@@ -264,6 +264,6 @@ export default class RemediationSuggestionCard extends LightningElement {
     handleError(error) {
         const message = error.body?.message || error.message || 'An error occurred';
         this.showToast('Error', message, 'error');
-        console.error('Error:', error);
+        // Error logged via toast notification
     }
 }

@@ -130,7 +130,7 @@ export default class OnCallScheduleManager extends LightningElement {
         if (result.data) {
             this.currentOnCall = result.data;
         } else if (result.error) {
-            console.error('Error loading on-call users:', result.error);
+            this.handleError(result.error);
         }
     }
 
@@ -292,7 +292,7 @@ export default class OnCallScheduleManager extends LightningElement {
     handleError(error) {
         const message = error.body?.message || error.message || 'An error occurred';
         this.showToast('Error', message, 'error');
-        console.error('Error:', error);
+        // Error logged via toast notification
     }
 
     handleRefresh() {

@@ -33,8 +33,9 @@ export default class JiraCreateModal extends LightningElement {
   async checkConfiguration() {
     try {
       this.isConfigured = await isConfigured();
-    } catch (err) {
+    } catch (_error) {
       this.isConfigured = false;
+      // Configuration check failed - will show setup message
     }
   }
 
