@@ -157,8 +157,8 @@ if (!PrometheionSecurityUtils.checkFieldAccess('Contact', fields, 'READ')) {
     throw new AuraHandledException('Access denied to Contact fields');
 }
 
-// Enforce FLS on DML operations
-PrometheionSecurityUtils.enforceFLS(accountList, 'CREATE');
+// Validate FLS on DML operations
+PrometheionSecurityUtils.validateFLSAccess(accountList, 'CREATE');
 Database.insert(accountList);
 ```
 
