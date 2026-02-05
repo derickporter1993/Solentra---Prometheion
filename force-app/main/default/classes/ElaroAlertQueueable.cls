@@ -3,7 +3,7 @@
  * @group Automation & Alerting
  * @author Elaro Team
  */
-public class ElaroAlertQueueable implements Queueable, Database.AllowsCallouts {
+public with sharing class ElaroAlertQueueable implements Queueable, Database.AllowsCallouts {
     
     private ElaroComplianceAlert.AlertQueueItem queueItem;
     
