@@ -116,35 +116,38 @@ askCopilot()              // Main entry point (20 lines)
 
 ## Testing Concerns
 
-### 6. Limited HTTP Mocking for Claude API ⚠️ MEDIUM
+### 6. Limited HTTP Mocking for Claude API ✅ FIXED
 
 **File**: `ElaroComplianceCopilotService.cls:249-253`
 
-**Current**:
+**Status**: ✅ **RESOLVED** - Fixed in commit `65d31f8`
+
+**Resolution**:
+
+Created `ElaroClaudeAPIMock.cls` with full HttpCalloutMock implementation:
 
 ```java
-@TestVisible
-private static String callClaudeAPI(String userPrompt) {
-    if (Test.isRunningTest()) {
-        return ElaroTestDataFactory.createMockClaudeResponse();
-    }
-    // ... actual callout
-}
-```
-
-**Issue**: Uses static test data method rather than proper `HttpCalloutMock`. Limits testing flexibility.
-
-**Recommendation**: Implement proper mock:
-
-```java
-private class MockClaudeAPI implements HttpCalloutMock {
+public class ElaroClaudeAPIMock implements HttpCalloutMock {
     public HttpResponse respond(HttpRequest req) {
-        // Return dynamic responses based on request
+        // Returns configured response based on type
     }
 }
 ```
 
-**Effort**: 45 minutes
+**Features**:
+
+- Enum-based response types (SUCCESS, ERROR, RATE_LIMITED, TIMEOUT)
+- Static factory methods: `success()`, `error()`, `rateLimited()`, `timeout()`
+- Custom status code and body support
+- Comprehensive test coverage in `ElaroClaudeAPIMockTest.cls`
+
+**Usage**:
+
+```java
+Test.setMock(HttpCalloutMock.class, ElaroClaudeAPIMock.success());
+```
+
+**Commit**: `65d31f8 test(integration): add proper HTTP mock for Claude API`
 
 ---
 
