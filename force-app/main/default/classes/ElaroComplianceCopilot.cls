@@ -532,138 +532,205 @@ public with sharing class ElaroComplianceCopilot {
 
         try {
             // Validate input
-            if (String.isBlank(topic)) {
-                response.answer = 'Please provide a topic for deep analysis (e.g., "HIPAA compliance", "permission sprawl")';
+            ValidationResult validation = validateDeepAnalysisInput(topic);
+            if (!validation.isValid) {
+                response.answer = validation.message;
                 response.confidence = 0.0;
                 return response;
             }
 
-            // Validate input length
-            if (topic.length() > 500) {
-                throw new AuraHandledException('Topic exceeds maximum length of 500 characters');
-            }
-
-            String lowerTopic = topic.toLowerCase();
             response.queryType = 'DEEP_ANALYSIS';
 
-            // Detect framework from topic
-            String framework = null;
-            if (lowerTopic.contains('hipaa')) framework = ElaroConstants.FRAMEWORK_HIPAA;
-            else if (lowerTopic.contains('soc2') || lowerTopic.contains('soc 2')) framework = ElaroConstants.FRAMEWORK_SOC2;
-            else if (lowerTopic.contains('nist')) framework = ElaroConstants.FRAMEWORK_NIST;
-            else if (lowerTopic.contains('fedramp')) framework = ElaroConstants.FRAMEWORK_FEDRAMP;
-            else if (lowerTopic.contains('gdpr')) framework = ElaroConstants.FRAMEWORK_GDPR;
-            else if (lowerTopic.contains('sox')) framework = ElaroConstants.FRAMEWORK_SOX;
-            else if (lowerTopic.contains('pci') || lowerTopic.contains('pci-dss')) framework = ElaroConstants.FRAMEWORK_PCI_DSS;
-            else if (lowerTopic.contains('ccpa')) framework = ElaroConstants.FRAMEWORK_CCPA;
-            else if (lowerTopic.contains('glba')) framework = ElaroConstants.FRAMEWORK_GLBA;
-            else if (lowerTopic.contains('iso') || lowerTopic.contains('27001')) framework = ElaroConstants.FRAMEWORK_ISO27001;
-
-            // Get comprehensive compliance score
+            // Detect framework and get compliance data
+            String framework = detectFrameworkFromTopic(topic.toLowerCase());
             Map<String, Object> scoreData = ElaroComplianceScorer.calculateComplianceScore();
             Decimal overallScore = (Decimal)scoreData.get('overallScore');
-            Map<String, Decimal> frameworkScores = (Map<String, Decimal>)scoreData.get('frameworkScores');
 
             // Build comprehensive analysis
-            List<String> analysisPoints = new List<String>();
-            analysisPoints.add('📊 *Compliance Overview*');
-            analysisPoints.add('• Overall Score: ' + overallScore.setScale(1) + '%');
-            
-            if (framework != null && frameworkScores.containsKey(framework)) {
-                Decimal frameworkScore = frameworkScores.get(framework);
-                analysisPoints.add('• ' + framework + ' Score: ' + frameworkScore.setScale(1) + '%');
-            }
+            List<String> analysisPoints = buildAnalysisOverview(overallScore, framework, scoreData);
 
-            // Analyze violations
-            List<SetupAuditTrail> violations = [
-                SELECT CreatedDate, CreatedById, CreatedBy.Name, Action, Section, Display
-                FROM SetupAuditTrail
-                WHERE CreatedDate >= LAST_N_DAYS:30
-                AND (Action LIKE '%permission%' OR Action LIKE '%delete%' OR Action LIKE '%removed%' OR Action LIKE '%field%')
-                WITH SECURITY_ENFORCED
-                ORDER BY CreatedDate DESC
-                LIMIT 20
-            ];
+            // Analyze violations and user access
+            analyzeViolations(response, analysisPoints, framework);
+            analyzeUserAccess(analysisPoints);
 
-            if (!violations.isEmpty()) {
-                analysisPoints.add('');
-                analysisPoints.add('⚠️ *Recent Violations* (' + violations.size() + ' found)');
-                Integer count = 1;
-                for (SetupAuditTrail v : violations) {
-                    Evidence ev = new Evidence();
-                    ev.nodeId = String.valueOf(v.Id);
-                    ev.timestamp = v.CreatedDate;
-                    ev.description = v.Display;
-                    ev.entityType = v.Section;
-                    ev.riskScore = calculateRiskFromAction(v.Action);
-                    ev.framework = framework != null ? framework : ElaroConstants.FRAMEWORK_SOC2;
-                    response.evidence.add(ev);
-
-                    if (count <= 5) {
-                        analysisPoints.add(count + '. ' + v.Section + ' - ' + v.Display);
-                        count++;
-                    }
-                }
-                if (violations.size() > 5) {
-                    analysisPoints.add('... and ' + (violations.size() - 5) + ' more');
-                }
-            }
-
-            // Analyze user access
-            List<PermissionSetAssignment> elevatedUsers = [
-                SELECT AssigneeId, Assignee.Name, PermissionSet.Name,
-                       PermissionSet.PermissionsModifyAllData, PermissionSet.PermissionsViewAllData
-                FROM PermissionSetAssignment
-                WHERE PermissionSet.PermissionsModifyAllData = true
-                OR PermissionSet.PermissionsViewAllData = true
-                LIMIT 20
-            ];
-
-            if (!elevatedUsers.isEmpty()) {
-                analysisPoints.add('');
-                analysisPoints.add('🔐 *Elevated Access Users* (' + elevatedUsers.size() + ' found)');
-                Set<Id> userIds = new Set<Id>();
-                for (PermissionSetAssignment psa : elevatedUsers) {
-                    userIds.add(psa.AssigneeId);
-                }
-                analysisPoints.add('• Users with Modify All Data or View All Data: ' + userIds.size());
-            }
-
-            // Add recommendations
-            analysisPoints.add('');
-            analysisPoints.add('💡 *Recommendations*');
-            if (overallScore < 70) {
-                analysisPoints.add('• Review and remediate recent violations');
-                analysisPoints.add('• Conduct access review for elevated permissions');
-                analysisPoints.add('• Enable field history tracking for critical objects');
-            } else if (overallScore < 85) {
-                analysisPoints.add('• Monitor for new violations');
-                analysisPoints.add('• Review permission assignments quarterly');
-            } else {
-                analysisPoints.add('• Maintain current compliance posture');
-                analysisPoints.add('• Continue regular monitoring');
-            }
+            // Add recommendations based on score
+            addRecommendations(analysisPoints, overallScore);
 
             response.answer = String.join(analysisPoints, '\n');
             response.confidence = 0.85;
 
             // Add export action
-            SuggestedAction exportAction = new SuggestedAction();
-            exportAction.actionType = ElaroConstants.ACTION_EXPORT;
-            exportAction.label = 'Export Analysis Report';
-            exportAction.description = 'Generate detailed compliance analysis report';
-            exportAction.canAutoFix = false;
-            response.actions.add(exportAction);
+            addExportAction(response);
 
         } catch (Exception e) {
-            String errorMsg = String.isNotBlank(e.getMessage()) ? e.getMessage() : 'Unknown error';
-            response.answer = 'Error performing deep analysis: ' + errorMsg;
-            response.confidence = 0.0;
-            String correlationId = 'DEEP-ANALYSIS-' + System.now().getTime();
-            System.debug(LoggingLevel.ERROR, ElaroConstants.LOG_PREFIX + 'deepAnalysis error: ' + e.getTypeName() + ' - ' + e.getMessage() + ' [CorrelationId: ' + correlationId + ']');
+            handleDeepAnalysisError(response, e);
         }
 
         return response;
+    }
+
+    /**
+     * Validates input for deep analysis operation
+     */
+    private static ValidationResult validateDeepAnalysisInput(String topic) {
+        if (String.isBlank(topic)) {
+            return new ValidationResult(false, 'Please provide a topic for deep analysis (e.g., "HIPAA compliance", "permission sprawl")');
+        }
+
+        if (topic.length() > 500) {
+            return new ValidationResult(false, 'Topic exceeds maximum length of 500 characters');
+        }
+
+        return new ValidationResult(true, null);
+    }
+
+    /**
+     * Detects compliance framework from topic string
+     */
+    private static String detectFrameworkFromTopic(String lowerTopic) {
+        if (lowerTopic.contains('hipaa')) return ElaroConstants.FRAMEWORK_HIPAA;
+        if (lowerTopic.contains('soc2') || lowerTopic.contains('soc 2')) return ElaroConstants.FRAMEWORK_SOC2;
+        if (lowerTopic.contains('nist')) return ElaroConstants.FRAMEWORK_NIST;
+        if (lowerTopic.contains('fedramp')) return ElaroConstants.FRAMEWORK_FEDRAMP;
+        if (lowerTopic.contains('gdpr')) return ElaroConstants.FRAMEWORK_GDPR;
+        if (lowerTopic.contains('sox')) return ElaroConstants.FRAMEWORK_SOX;
+        if (lowerTopic.contains('pci') || lowerTopic.contains('pci-dss')) return ElaroConstants.FRAMEWORK_PCI_DSS;
+        if (lowerTopic.contains('ccpa')) return ElaroConstants.FRAMEWORK_CCPA;
+        if (lowerTopic.contains('glba')) return ElaroConstants.FRAMEWORK_GLBA;
+        if (lowerTopic.contains('iso') || lowerTopic.contains('27001')) return ElaroConstants.FRAMEWORK_ISO27001;
+        return null;
+    }
+
+    /**
+     * Builds the analysis overview section with compliance scores
+     */
+    private static List<String> buildAnalysisOverview(Decimal overallScore, String framework, Map<String, Object> scoreData) {
+        List<String> analysisPoints = new List<String>();
+        analysisPoints.add('📊 *Compliance Overview*');
+        analysisPoints.add('• Overall Score: ' + overallScore.setScale(1) + '%');
+
+        Map<String, Decimal> frameworkScores = (Map<String, Decimal>)scoreData.get('frameworkScores');
+        if (framework != null && frameworkScores.containsKey(framework)) {
+            Decimal frameworkScore = frameworkScores.get(framework);
+            analysisPoints.add('• ' + framework + ' Score: ' + frameworkScore.setScale(1) + '%');
+        }
+
+        return analysisPoints;
+    }
+
+    /**
+     * Analyzes recent violations and adds findings to response
+     */
+    private static void analyzeViolations(CopilotResponse response, List<String> analysisPoints, String framework) {
+        List<SetupAuditTrail> violations = [
+            SELECT CreatedDate, CreatedById, CreatedBy.Name, Action, Section, Display
+            FROM SetupAuditTrail
+            WHERE CreatedDate >= LAST_N_DAYS:30
+            AND (Action LIKE '%permission%' OR Action LIKE '%delete%' OR Action LIKE '%removed%' OR Action LIKE '%field%')
+            WITH SECURITY_ENFORCED
+            ORDER BY CreatedDate DESC
+            LIMIT 20
+        ];
+
+        if (violations.isEmpty()) {
+            return;
+        }
+
+        analysisPoints.add('');
+        analysisPoints.add('⚠️ *Recent Violations* (' + violations.size() + ' found)');
+
+        Integer count = 1;
+        for (SetupAuditTrail v : violations) {
+            Evidence ev = new Evidence();
+            ev.nodeId = String.valueOf(v.Id);
+            ev.timestamp = v.CreatedDate;
+            ev.description = v.Display;
+            ev.entityType = v.Section;
+            ev.riskScore = calculateRiskFromAction(v.Action);
+            ev.framework = framework != null ? framework : ElaroConstants.FRAMEWORK_SOC2;
+            response.evidence.add(ev);
+
+            if (count <= 5) {
+                analysisPoints.add(count + '. ' + v.Section + ' - ' + v.Display);
+                count++;
+            }
+        }
+
+        if (violations.size() > 5) {
+            analysisPoints.add('... and ' + (violations.size() - 5) + ' more');
+        }
+    }
+
+    /**
+     * Analyzes users with elevated permissions
+     */
+    private static void analyzeUserAccess(List<String> analysisPoints) {
+        List<PermissionSetAssignment> elevatedUsers = [
+            SELECT AssigneeId, Assignee.Name, PermissionSet.Name,
+                   PermissionSet.PermissionsModifyAllData, PermissionSet.PermissionsViewAllData
+            FROM PermissionSetAssignment
+            WHERE PermissionSet.PermissionsModifyAllData = true
+            OR PermissionSet.PermissionsViewAllData = true
+            LIMIT 20
+        ];
+
+        if (elevatedUsers.isEmpty()) {
+            return;
+        }
+
+        analysisPoints.add('');
+        analysisPoints.add('🔐 *Elevated Access Users* (' + elevatedUsers.size() + ' found)');
+
+        Set<Id> userIds = new Set<Id>();
+        for (PermissionSetAssignment psa : elevatedUsers) {
+            userIds.add(psa.AssigneeId);
+        }
+        analysisPoints.add('• Users with Modify All Data or View All Data: ' + userIds.size());
+    }
+
+    /**
+     * Adds compliance recommendations based on overall score
+     */
+    private static void addRecommendations(List<String> analysisPoints, Decimal overallScore) {
+        analysisPoints.add('');
+        analysisPoints.add('💡 *Recommendations*');
+
+        if (overallScore < 70) {
+            analysisPoints.add('• Review and remediate recent violations');
+            analysisPoints.add('• Conduct access review for elevated permissions');
+            analysisPoints.add('• Enable field history tracking for critical objects');
+        } else if (overallScore < 85) {
+            analysisPoints.add('• Monitor for new violations');
+            analysisPoints.add('• Review permission assignments quarterly');
+        } else {
+            analysisPoints.add('• Maintain current compliance posture');
+            analysisPoints.add('• Continue regular monitoring');
+        }
+    }
+
+    /**
+     * Adds export action to the response
+     */
+    private static void addExportAction(CopilotResponse response) {
+        SuggestedAction exportAction = new SuggestedAction();
+        exportAction.actionType = ElaroConstants.ACTION_EXPORT;
+        exportAction.label = 'Export Analysis Report';
+        exportAction.description = 'Generate detailed compliance analysis report';
+        exportAction.canAutoFix = false;
+        response.actions.add(exportAction);
+    }
+
+    /**
+     * Handles errors in deep analysis with structured logging
+     */
+    private static void handleDeepAnalysisError(CopilotResponse response, Exception e) {
+        String errorMsg = String.isNotBlank(e.getMessage()) ? e.getMessage() : 'Unknown error';
+        response.answer = 'Error performing deep analysis: ' + errorMsg;
+        response.confidence = 0.0;
+
+        String correlationId = 'DEEP-ANALYSIS-' + System.now().getTime();
+        System.debug(LoggingLevel.ERROR,
+            ElaroConstants.LOG_PREFIX + 'deepAnalysis error: ' + e.getTypeName() + ' - ' + e.getMessage() + ' [CorrelationId: ' + correlationId + ']');
     }
 
     /**
