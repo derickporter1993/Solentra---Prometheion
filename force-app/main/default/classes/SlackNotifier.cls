@@ -93,6 +93,7 @@ public with sharing class SlackNotifier {
                 req.setMethod('POST');
                 req.setHeader('Content-Type', 'application/json');
                 req.setBody(jsonPayload);
+                req.setTimeout(10000);
                 HttpResponse res = new Http().send(req);
                 if (res.getStatusCode() < 200 || res.getStatusCode() >= 300) {
                     String errorCorrelationId = correlationId + '-' + index;
@@ -102,6 +103,7 @@ public with sharing class SlackNotifier {
             }
         } catch (Exception e) {
             logBulkAsyncError('EXCEPTION', 'Slack bulk notify exception: ' + e.getMessage(), correlationId, e.getStackTraceString());
+            ElaroLogger.error('Slack bulk notify exception: ' + e.getMessage());
         }
     }
 
@@ -109,7 +111,7 @@ public with sharing class SlackNotifier {
      * Log errors from @future context where DML is allowed
      */
     private static void logBulkAsyncError(String errorType, String errorMessage, String correlationId, String context) {
-        System.debug(LoggingLevel.ERROR, 'SlackNotifier: ' + errorMessage + '. CorrelationId: ' + correlationId);
+        ElaroLogger.error('SlackNotifier: ' + errorMessage + '. CorrelationId: ' + correlationId);
         try {
             if (Schema.sObjectType.Integration_Error__c.isCreateable()) {
                 Integration_Error__c error = new Integration_Error__c(
@@ -123,6 +125,7 @@ public with sharing class SlackNotifier {
                 insert error;
             }
         } catch (Exception e) {
+            ElaroLogger.error('SlackNotifier: Failed to log bulk async error: ' + e.getMessage());
             System.debug(LoggingLevel.ERROR, 'SlackNotifier: Failed to log bulk async error: ' + e.getMessage());
         }
     }
