@@ -112,7 +112,7 @@ export default class ComplianceGraphViewer extends LightningElement {
   async loadStats() {
     try {
       this.stats = await getGraphStats();
-    } catch (_e) {
+    } catch {
       // stats are non-critical, fail silently
     }
   }
@@ -302,7 +302,7 @@ export default class ComplianceGraphViewer extends LightningElement {
         nodeId: node.id,
         nodeType: node.nodeType,
       });
-    } catch (error) {
+    } catch {
       this.showToast("Error", "Failed to load node details", "error");
     }
   }
