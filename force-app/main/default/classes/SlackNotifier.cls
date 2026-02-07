@@ -126,7 +126,6 @@ public with sharing class SlackNotifier {
             }
         } catch (Exception e) {
             ElaroLogger.error('SlackNotifier: Failed to log bulk async error: ' + e.getMessage());
-            System.debug(LoggingLevel.ERROR, 'SlackNotifier: Failed to log bulk async error: ' + e.getMessage());
         }
     }
 

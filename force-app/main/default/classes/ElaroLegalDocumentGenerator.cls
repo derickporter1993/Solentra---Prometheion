@@ -95,7 +95,7 @@ public with sharing class ElaroLegalDocumentGenerator {
             return true;
         } catch (Exception e) {
             // If cache partition doesn't exist, allow the call but log warning
-            System.debug(LoggingLevel.WARN, 'ElaroLegalDocumentGenerator: Rate limit check failed, allowing call: ' + e.getMessage());
+            ElaroLogger.warn('ElaroLegalDocumentGenerator: Rate limit check failed, allowing call: ' + e.getMessage());
             return true;
         }
     }
@@ -116,7 +116,7 @@ public with sharing class ElaroLegalDocumentGenerator {
             }
         } catch (Exception e) {
             // Don't fail the main operation if audit logging fails
-            System.debug(LoggingLevel.WARN, 'ElaroLegalDocumentGenerator: Failed to log audit event: ' + e.getMessage());
+            ElaroLogger.warn('ElaroLegalDocumentGenerator: Failed to log audit event: ' + e.getMessage());
         }
     }
 

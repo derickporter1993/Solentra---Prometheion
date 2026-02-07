@@ -91,7 +91,33 @@ public with sharing class ElaroQuickActionsService {
         // Assign to users and remove Modify All Data permission
         List<PermissionSetAssignment> newAssignments = new List<PermissionSetAssignment>();
         List<PermissionSetAssignment> assignmentsToRemove = new List<PermissionSetAssignment>();
-        
+
+        // Bulk query all Modify All Data assignments for these users
+        Set<Id> adminUserIds = new Set<Id>();
+        for (User u : excessiveAdmins) {
+            adminUserIds.add(u.Id);
+        }
+
+        Map<Id, List<PermissionSetAssignment>> modAllByUser = new Map<Id, List<PermissionSetAssignment>>();
+        try {
+            for (PermissionSetAssignment psa : [
+                SELECT Id, AssigneeId
+                FROM PermissionSetAssignment
+                WHERE AssigneeId IN :adminUserIds
+                AND PermissionSet.PermissionsModifyAllData = true
+                WITH SECURITY_ENFORCED
+            ]) {
+                if (!modAllByUser.containsKey(psa.AssigneeId)) {
+                    modAllByUser.put(psa.AssigneeId, new List<PermissionSetAssignment>());
+                }
+                modAllByUser.get(psa.AssigneeId).add(psa);
+            }
+        } catch (SecurityException e) {
+            ElaroLogger.error('[ElaroQuickActionsService] Security exception querying Modify All Data assignments: ' + e.getMessage());
+            result.messages.add('Security exception: Unable to query assignments. ' + e.getMessage());
+            return result;
+        }
+
         for (User u : excessiveAdmins) {
             // Create new assignment
             PermissionSetAssignment psa = new PermissionSetAssignment(
@@ -99,22 +125,12 @@ public with sharing class ElaroQuickActionsService {
                 PermissionSetId = leastPrivTemplate.Id
             );
             newAssignments.add(psa);
-            
-            // Find and remove Modify All Data assignments
-            try {
-                List<PermissionSetAssignment> modAllAssignments = [
-                    SELECT Id
-                    FROM PermissionSetAssignment
-                    WHERE AssigneeId = :u.Id
-                    AND PermissionSet.PermissionsModifyAllData = true
-                    WITH SECURITY_ENFORCED
-                ];
-                assignmentsToRemove.addAll(modAllAssignments);
-            } catch (SecurityException e) {
-                ElaroLogger.error( '[ElaroQuickActionsService] Security exception querying assignments for user ' + u.Id + ': ' + e.getMessage());
-                continue; // Skip this user and continue with others
+
+            // Collect Modify All Data assignments from bulk query
+            if (modAllByUser.containsKey(u.Id)) {
+                assignmentsToRemove.addAll(modAllByUser.get(u.Id));
             }
-            
+
             result.remediatedUsers.add(u.Id);
         }
         

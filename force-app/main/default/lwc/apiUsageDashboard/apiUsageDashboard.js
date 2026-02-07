@@ -15,7 +15,7 @@ export default class ApiUsageDashboard extends LightningElement {
   columns = [
     { label: "Taken On", fieldName: "takenOn", type: "date" },
     { label: "Used", fieldName: "used", type: "number" },
-    { label: "Limit", fieldName: "limit", type: "number" },
+    { label: "Limit", fieldName: "dailyLimit", type: "number" },
     { label: "Percent", fieldName: "percent", type: "percent" },
     { label: "Projected Exhaustion", fieldName: "projected", type: "date" },
   ];

@@ -351,11 +351,11 @@ public with sharing class RootCauseAnalysisEngine {
         return result;
     }
     
-    private static List&lt;String&gt; getTopItems(Map&lt;String, Integer&gt; counts, Integer limit) {
+    private static List&lt;String&gt; getTopItems(Map&lt;String, Integer&gt; counts, Integer maxItems) {
         List&lt;String&gt; items = new List&lt;String&gt;(counts.keySet());
         // Simple sort by count
         items.sort();
-        return items.size() &gt; limit ? new List&lt;String&gt;(items.subList(0, limit)) : items;
+        return items.size() &gt; maxItems ? new List&lt;String&gt;(items.subList(0, maxItems)) : items;
     }
     
     // ═══════════════════════════════════════════════════════════════

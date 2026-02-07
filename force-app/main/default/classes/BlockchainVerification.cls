@@ -125,11 +125,76 @@ public with sharing class BlockchainVerification {
     @AuraEnabled
     public static List<AnchorResult> batchAnchorEvidence(List<String> contentVersionIds) {
         List<AnchorResult> results = new List<AnchorResult>();
-        
-        for (String cvId : contentVersionIds) {
-            results.add(anchorEvidence(cvId));
+
+        if (contentVersionIds == null || contentVersionIds.isEmpty()) {
+            return results;
         }
-        
+
+        // Bulk query all ContentVersions
+        Map<String, ContentVersion> cvMap = new Map<String, ContentVersion>();
+        try {
+            for (ContentVersion cv : [
+                SELECT Id, Title, VersionData, FileExtension, ContentSize
+                FROM ContentVersion
+                WHERE Id IN :contentVersionIds
+                WITH USER_MODE
+            ]) {
+                cvMap.put(cv.Id, cv);
+            }
+        } catch (Exception e) {
+            for (String cvId : contentVersionIds) {
+                AnchorResult errResult = new AnchorResult();
+                errResult.contentVersionId = cvId;
+                errResult.status = 'ERROR';
+                errResult.errorMessage = e.getMessage();
+                results.add(errResult);
+            }
+            return results;
+        }
+
+        // Process hashes and build verification records in memory
+        List<Elaro_Evidence_Anchor__c> anchorsToInsert = new List<Elaro_Evidence_Anchor__c>();
+
+        for (String cvId : contentVersionIds) {
+            AnchorResult result = new AnchorResult();
+            result.contentVersionId = cvId;
+            result.anchoredAt = Datetime.now();
+
+            ContentVersion cv = cvMap.get(cvId);
+            if (cv == null) {
+                result.status = 'ERROR';
+                result.errorMessage = 'ContentVersion not found: ' + cvId;
+                results.add(result);
+                continue;
+            }
+
+            Blob contentHash = Crypto.generateDigest('SHA-256', cv.VersionData);
+            result.contentHash = EncodingUtil.convertToHex(contentHash);
+            result.transactionId = generateTransactionId();
+            result.blockchainNetwork = 'Ethereum';
+            result.status = 'ANCHORED';
+            results.add(result);
+
+            anchorsToInsert.add(new Elaro_Evidence_Anchor__c(
+                Name = 'ANCHOR-' + cvId.left(10),
+                Content_Version_Id__c = cvId,
+                Content_Hash__c = result.contentHash,
+                Transaction_Id__c = result.transactionId,
+                Blockchain_Network__c = result.blockchainNetwork,
+                Anchored_At__c = result.anchoredAt,
+                File_Name__c = cv.Title
+            ));
+        }
+
+        // Single bulk insert for all verification records
+        if (!anchorsToInsert.isEmpty()) {
+            if (!Schema.sObjectType.Elaro_Evidence_Anchor__c.isCreateable()) {
+                throw new AuraHandledException('Insufficient permissions to create Evidence Anchor records');
+            }
+            ElaroSecurityUtils.validateCRUDAccess('Elaro_Evidence_Anchor__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
+            insert anchorsToInsert;
+        }
+
         return results;
     }
     

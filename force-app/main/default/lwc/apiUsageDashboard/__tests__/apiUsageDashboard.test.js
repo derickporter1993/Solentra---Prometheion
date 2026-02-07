@@ -53,7 +53,7 @@ const MOCK_SNAPSHOTS = [
     id: "snap-001",
     takenOn: new Date("2026-01-10T10:00:00Z"),
     used: 5000,
-    limit: 10000,
+    dailyLimit: 10000,
     percent: 50,
     projected: new Date("2026-01-10T20:00:00Z"),
   },
@@ -61,7 +61,7 @@ const MOCK_SNAPSHOTS = [
     id: "snap-002",
     takenOn: new Date("2026-01-10T11:00:00Z"),
     used: 6000,
-    limit: 10000,
+    dailyLimit: 10000,
     percent: 60,
     projected: new Date("2026-01-10T18:20:00Z"),
   },
@@ -426,7 +426,7 @@ describe("c-api-usage-dashboard", () => {
         id: `snap-${i}`,
         takenOn: new Date(),
         used: i * 10,
-        limit: 10000,
+        dailyLimit: 10000,
         percent: (i * 10) / 100,
         projected: new Date(),
       }));
@@ -449,7 +449,7 @@ describe("c-api-usage-dashboard", () => {
         id: `bulk-${i}`,
         takenOn: new Date(),
         used: i,
-        limit: 10000,
+        dailyLimit: 10000,
         percent: i / 100,
       }));
       mockSnapshotsResult = bulkData;

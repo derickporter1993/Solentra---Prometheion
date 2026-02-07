@@ -42,9 +42,12 @@ public with sharing class ComplianceGraphService {
         graph.nodes = new List<GraphNode>();
         graph.edges = new List<GraphEdge>();
 
+        // Query gaps once and reuse
+        List<Compliance_Gap__c> gaps = getGapsForGraph();
+
         // Add framework nodes
         Set<String> frameworks = new Set<String>();
-        for (Compliance_Gap__c gap : getGapsForGraph()) {
+        for (Compliance_Gap__c gap : gaps) {
             frameworks.add(gap.Framework__c);
         }
 
@@ -67,7 +70,7 @@ public with sharing class ComplianceGraphService {
         }
 
         // Add gap nodes and connect to policies and frameworks
-        for (Compliance_Gap__c gap : getGapsForGraph()) {
+        for (Compliance_Gap__c gap : gaps) {
             graph.nodes.add(createGapNode(gap));
 
             // Connect to policy

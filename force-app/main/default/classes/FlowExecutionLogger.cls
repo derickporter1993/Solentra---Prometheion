@@ -92,7 +92,7 @@ public with sharing class FlowExecutionLogger {
             }
         } catch (Cache.CacheException e) {
             // If cache partition doesn't exist, log warning but don't block
-            System.debug(LoggingLevel.WARN, '[FlowExecutionLogger] Rate limit cache unavailable: ' + e.getMessage());
+            ElaroLogger.warn('[FlowExecutionLogger] Rate limit cache unavailable: ' + e.getMessage());
         }
     }
 }
