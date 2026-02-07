@@ -326,7 +326,9 @@ describe("c-on-call-schedule-manager", () => {
       await flushPromises();
 
       // Click cancel
-      const modalButtons = element.shadowRoot.querySelectorAll(".slds-modal__footer lightning-button");
+      const modalButtons = element.shadowRoot.querySelectorAll(
+        ".slds-modal__footer lightning-button"
+      );
       const cancelButton = Array.from(modalButtons).find((btn) => btn.label === "Cancel");
       cancelButton.click();
       await flushPromises();

@@ -337,9 +337,7 @@ describe("c-remediation-suggestion-card", () => {
       await flushPromises();
       await flushPromises();
 
-      const approveButton = element.shadowRoot.querySelector(
-        'lightning-button[variant="success"]'
-      );
+      const approveButton = element.shadowRoot.querySelector('lightning-button[variant="success"]');
       approveButton.click();
       await flushPromises();
 
@@ -498,9 +496,7 @@ describe("c-remediation-suggestion-card", () => {
       await flushPromises();
       await flushPromises();
 
-      const approveButton = element.shadowRoot.querySelector(
-        'lightning-button[variant="success"]'
-      );
+      const approveButton = element.shadowRoot.querySelector('lightning-button[variant="success"]');
       approveButton.click();
       await flushPromises();
 

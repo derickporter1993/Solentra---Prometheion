@@ -186,9 +186,7 @@ describe("c-jira-issue-card", () => {
     it("displays link icon when no issue", async () => {
       const element = await createComponent();
 
-      const linkIcon = element.shadowRoot.querySelector(
-        'lightning-icon[icon-name="utility:link"]'
-      );
+      const linkIcon = element.shadowRoot.querySelector('lightning-icon[icon-name="utility:link"]');
       expect(linkIcon).not.toBeNull();
     });
 
@@ -400,9 +398,7 @@ describe("c-jira-issue-card", () => {
       const modalButtons = element.shadowRoot.querySelectorAll(
         ".slds-modal__footer lightning-button"
       );
-      const submitButton = Array.from(modalButtons).find(
-        (btn) => btn.variant === "brand"
-      );
+      const submitButton = Array.from(modalButtons).find((btn) => btn.variant === "brand");
       submitButton.click();
       await flushPromises();
 
@@ -504,9 +500,7 @@ describe("c-jira-issue-card", () => {
       await flushPromises();
 
       const icons = element.shadowRoot.querySelectorAll("lightning-icon");
-      const arrowUp = Array.from(icons).find(
-        (icon) => icon.iconName === "utility:arrowup"
-      );
+      const arrowUp = Array.from(icons).find((icon) => icon.iconName === "utility:arrowup");
       expect(arrowUp).not.toBeNull();
     });
 
@@ -518,9 +512,7 @@ describe("c-jira-issue-card", () => {
       await flushPromises();
 
       const icons = element.shadowRoot.querySelectorAll("lightning-icon");
-      const arrowDown = Array.from(icons).find(
-        (icon) => icon.iconName === "utility:arrowdown"
-      );
+      const arrowDown = Array.from(icons).find((icon) => icon.iconName === "utility:arrowdown");
       expect(arrowDown).not.toBeNull();
     });
   });

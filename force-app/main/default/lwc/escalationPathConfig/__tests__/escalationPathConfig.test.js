@@ -208,9 +208,7 @@ describe("c-escalation-path-config", () => {
     it("renders New Escalation Level button", async () => {
       const element = await createComponent();
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const newButton = Array.from(buttons).find(
-        (btn) => btn.label === "New Escalation Level"
-      );
+      const newButton = Array.from(buttons).find((btn) => btn.label === "New Escalation Level");
       expect(newButton).not.toBeNull();
     });
 
@@ -271,9 +269,7 @@ describe("c-escalation-path-config", () => {
       await flushAll();
       await flushAll();
 
-      const level1Badge = element.shadowRoot.querySelector(
-        'lightning-badge[label="Level 1"]'
-      );
+      const level1Badge = element.shadowRoot.querySelector('lightning-badge[label="Level 1"]');
 
       if (!level1Badge) {
         expect(element.shadowRoot.querySelector("lightning-card")).not.toBeNull();
@@ -288,9 +284,7 @@ describe("c-escalation-path-config", () => {
       await flushAll();
       await flushAll();
 
-      const level2Badge = element.shadowRoot.querySelector(
-        'lightning-badge[label="Level 2"]'
-      );
+      const level2Badge = element.shadowRoot.querySelector('lightning-badge[label="Level 2"]');
 
       if (!level2Badge) {
         expect(element.shadowRoot.querySelector("lightning-card")).not.toBeNull();
@@ -305,9 +299,7 @@ describe("c-escalation-path-config", () => {
       await flushAll();
       await flushAll();
 
-      const level3Badge = element.shadowRoot.querySelector(
-        'lightning-badge[label="Level 3"]'
-      );
+      const level3Badge = element.shadowRoot.querySelector('lightning-badge[label="Level 3"]');
 
       if (!level3Badge) {
         // Wire data timing - verify component renders
@@ -352,9 +344,7 @@ describe("c-escalation-path-config", () => {
       await flushAll();
       await flushAll();
 
-      const activeBadge = element.shadowRoot.querySelector(
-        'lightning-badge[label="Active"]'
-      );
+      const activeBadge = element.shadowRoot.querySelector('lightning-badge[label="Active"]');
 
       if (!activeBadge) {
         // Wire data timing - verify component renders
@@ -371,9 +361,7 @@ describe("c-escalation-path-config", () => {
       await flushAll();
       await flushAll();
 
-      const inactiveBadge = element.shadowRoot.querySelector(
-        'lightning-badge[label="Inactive"]'
-      );
+      const inactiveBadge = element.shadowRoot.querySelector('lightning-badge[label="Inactive"]');
 
       // The badge may be rendered or may still be loading
       if (!inactiveBadge) {
@@ -392,9 +380,7 @@ describe("c-escalation-path-config", () => {
       await flushPromises();
 
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const newButton = Array.from(buttons).find(
-        (btn) => btn.label === "New Escalation Level"
-      );
+      const newButton = Array.from(buttons).find((btn) => btn.label === "New Escalation Level");
       newButton.click();
       await flushPromises();
 
@@ -408,9 +394,7 @@ describe("c-escalation-path-config", () => {
       await flushPromises();
 
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const newButton = Array.from(buttons).find(
-        (btn) => btn.label === "New Escalation Level"
-      );
+      const newButton = Array.from(buttons).find((btn) => btn.label === "New Escalation Level");
       newButton.click();
       await flushPromises();
 
@@ -424,9 +408,7 @@ describe("c-escalation-path-config", () => {
       await flushPromises();
 
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const newButton = Array.from(buttons).find(
-        (btn) => btn.label === "New Escalation Level"
-      );
+      const newButton = Array.from(buttons).find((btn) => btn.label === "New Escalation Level");
       newButton.click();
       await flushPromises();
       await flushPromises();
@@ -448,9 +430,7 @@ describe("c-escalation-path-config", () => {
       await flushPromises();
 
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const newButton = Array.from(buttons).find(
-        (btn) => btn.label === "New Escalation Level"
-      );
+      const newButton = Array.from(buttons).find((btn) => btn.label === "New Escalation Level");
       newButton.click();
       await flushPromises();
 
@@ -581,15 +561,11 @@ describe("c-escalation-path-config", () => {
       await flushPromises();
 
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const newButton = Array.from(buttons).find(
-        (btn) => btn.label === "New Escalation Level"
-      );
+      const newButton = Array.from(buttons).find((btn) => btn.label === "New Escalation Level");
       newButton.click();
       await flushPromises();
 
-      const levelCombo = element.shadowRoot.querySelector(
-        'lightning-combobox[data-field="level"]'
-      );
+      const levelCombo = element.shadowRoot.querySelector('lightning-combobox[data-field="level"]');
       expect(levelCombo).not.toBeNull();
     });
 
@@ -599,15 +575,11 @@ describe("c-escalation-path-config", () => {
       await flushPromises();
 
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const newButton = Array.from(buttons).find(
-        (btn) => btn.label === "New Escalation Level"
-      );
+      const newButton = Array.from(buttons).find((btn) => btn.label === "New Escalation Level");
       newButton.click();
       await flushPromises();
 
-      const roleCombo = element.shadowRoot.querySelector(
-        'lightning-combobox[data-field="role"]'
-      );
+      const roleCombo = element.shadowRoot.querySelector('lightning-combobox[data-field="role"]');
       expect(roleCombo).not.toBeNull();
     });
   });
@@ -664,9 +636,7 @@ describe("c-escalation-path-config", () => {
       const confirmButtons = element.shadowRoot.querySelectorAll(
         ".slds-modal_small lightning-button"
       );
-      const confirmButton = Array.from(confirmButtons).find(
-        (btn) => btn.variant === "destructive"
-      );
+      const confirmButton = Array.from(confirmButtons).find((btn) => btn.variant === "destructive");
       if (confirmButton) {
         confirmButton.click();
         await flushPromises();
@@ -684,9 +654,7 @@ describe("c-escalation-path-config", () => {
       await flushPromises();
 
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const newButton = Array.from(buttons).find(
-        (btn) => btn.label === "New Escalation Level"
-      );
+      const newButton = Array.from(buttons).find((btn) => btn.label === "New Escalation Level");
       newButton.click();
       await flushPromises();
 
@@ -700,9 +668,7 @@ describe("c-escalation-path-config", () => {
       await flushPromises();
 
       const buttons = element.shadowRoot.querySelectorAll("lightning-button");
-      const newButton = Array.from(buttons).find(
-        (btn) => btn.label === "New Escalation Level"
-      );
+      const newButton = Array.from(buttons).find((btn) => btn.label === "New Escalation Level");
       newButton.click();
       await flushPromises();
 
