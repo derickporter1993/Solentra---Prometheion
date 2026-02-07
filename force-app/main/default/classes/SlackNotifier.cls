@@ -97,7 +97,6 @@ public with sharing class SlackNotifier {
                 if (res.getStatusCode() < 200 || res.getStatusCode() >= 300) {
                     String errorCorrelationId = correlationId + '-' + index;
                     logBulkAsyncError('HTTP_ERROR', 'Slack bulk notify failed with status ' + res.getStatusCode() + ': ' + res.getStatus(), errorCorrelationId, jsonPayload);
-                    ElaroLogger.error('Slack bulk notify failed with status ' + res.getStatusCode() + ': ' + res.getStatus());
                 }
                 index++;
             }
@@ -126,6 +125,7 @@ public with sharing class SlackNotifier {
             }
         } catch (Exception e) {
             ElaroLogger.error('SlackNotifier: Failed to log bulk async error: ' + e.getMessage());
+            System.debug(LoggingLevel.ERROR, 'SlackNotifier: Failed to log bulk async error: ' + e.getMessage());
         }
     }
 
