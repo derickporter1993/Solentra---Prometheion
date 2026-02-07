@@ -1,6 +1,7 @@
 import { LightningElement, wire, track } from "lwc";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { refreshApex } from "@salesforce/apex";
+import _getEscalationPath from "@salesforce/apex/MobileAlertPublisher.getEscalationPath";
 import getEscalationPaths from "@salesforce/apex/EscalationPathController.getPaths";
 import createPath from "@salesforce/apex/EscalationPathController.createPath";
 import updatePath from "@salesforce/apex/EscalationPathController.updatePath";
@@ -87,6 +88,18 @@ export default class EscalationPathConfig extends LightningElement {
 
   get level3Paths() {
     return this.paths.filter((p) => p.level === 3);
+  }
+
+  get hasNoLevel1Paths() {
+    return !this.level1Paths || this.level1Paths.length === 0;
+  }
+
+  get hasNoLevel2Paths() {
+    return !this.level2Paths || this.level2Paths.length === 0;
+  }
+
+  get hasNoLevel3Paths() {
+    return !this.level3Paths || this.level3Paths.length === 0;
   }
 
   @wire(getEscalationPaths)
@@ -252,7 +265,6 @@ export default class EscalationPathConfig extends LightningElement {
   handleError(error) {
     const message = error.body?.message || error.message || "An error occurred";
     this.showToast("Error", message, "error");
-    // toast already shown above
   }
 
   handleRefresh() {
