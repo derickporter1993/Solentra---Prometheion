@@ -30,7 +30,8 @@ public class ElaroClaudeAPIMock implements HttpCalloutMock {
      * @description Default constructor - returns successful response
      */
     public ElaroClaudeAPIMock() {
-        this(ResponseType.SUCCESS);
+        this.responseType = ResponseType.SUCCESS;
+        configureResponse();
     }
     
     /**
