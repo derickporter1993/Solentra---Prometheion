@@ -640,7 +640,7 @@ echo "=== All checks passed ==="
 | DML in loop               | Manual review            | Collect records, single DML     |
 | Unused catch variable     | ESLint warning           | Use `catch { }` or `catch (_e)` |
 | Missing test coverage     | sf apex run test         | Add test methods                |
-| Wrong API version         | grep apiVersion          | Update to 63.0                  |
+| Wrong API version         | grep apiVersion          | Update to 65.0                  |
 
 ---
 
