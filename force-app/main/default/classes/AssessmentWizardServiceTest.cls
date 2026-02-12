@@ -348,4 +348,136 @@ private class AssessmentWizardServiceTest {
                 'Stage ' + stage.stageOrder + ' should have steps');
         }
     }
+
+    @IsTest
+    static void shouldExecuteAutoScanWithValidControls() {
+        Id sessionId = AssessmentWizardService.createSession('SOC2_Assessment', 'SOC2');
+
+        Test.startTest();
+        Map<String, String> results = AssessmentWizardService.executeAutoScan(
+            sessionId,
+            new List<String>{'SOC2-CC6.1', 'SOC2-CC6.2'}
+        );
+        Test.stopTest();
+
+        Assert.isNotNull(results, 'Should return scan results');
+        Assert.areEqual(2, results.size(), 'Should scan 2 controls');
+        Assert.isTrue(results.containsKey('SOC2-CC6.1'), 'Should have CC6.1 result');
+        Assert.isTrue(results.containsKey('SOC2-CC6.2'), 'Should have CC6.2 result');
+
+        // Verify results are valid
+        for (String controlRef : results.keySet()) {
+            String result = results.get(controlRef);
+            Assert.isTrue(
+                result == 'PASS' || result == 'FAIL' || result == 'NOT_APPLICABLE',
+                'Result should be PASS, FAIL, or NOT_APPLICABLE, got: ' + result
+            );
+        }
+
+        // Verify session state was updated
+        Compliance_Assessment_Session__c session = [
+            SELECT Id, Session_State__c
+            FROM Compliance_Assessment_Session__c
+            WHERE Id = :sessionId
+            WITH USER_MODE
+        ];
+        Assert.isTrue(
+            session.Session_State__c.contains('autoScanResults'),
+            'Session state should contain autoScanResults'
+        );
+    }
+
+    @IsTest
+    static void shouldHandleUnknownControlReferences() {
+        Id sessionId = AssessmentWizardService.createSession('HIPAA_Assessment', 'HIPAA');
+
+        Test.startTest();
+        Map<String, String> results = AssessmentWizardService.executeAutoScan(
+            sessionId,
+            new List<String>{'UNKNOWN-001', 'INVALID-002'}
+        );
+        Test.stopTest();
+
+        Assert.isNotNull(results, 'Should return results even for unknown controls');
+        Assert.areEqual(2, results.size(), 'Should process all controls');
+        Assert.areEqual('NOT_APPLICABLE', results.get('UNKNOWN-001'),
+            'Unknown control should be NOT_APPLICABLE');
+        Assert.areEqual('NOT_APPLICABLE', results.get('INVALID-002'),
+            'Invalid control should be NOT_APPLICABLE');
+    }
+
+    @IsTest
+    static void shouldRejectAutoScanWithInvalidSession() {
+        Test.startTest();
+        try {
+            AssessmentWizardService.executeAutoScan(
+                null,
+                new List<String>{'SOC2-CC6.1'}
+            );
+            Assert.fail('Should throw exception for invalid session');
+        } catch (AuraHandledException e) {
+            Assert.isTrue(e.getMessage().contains('Invalid session'),
+                'Should indicate invalid session');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void shouldEvaluatePermissionSetRequirements() {
+        // Create test data: overly permissive permission set
+        PermissionSet ps = new PermissionSet(
+            Label = 'Test Admin',
+            Name = 'Test_Admin',
+            PermissionsModifyAllData = true
+        );
+        insert as user ps;
+
+        ElaroFrameworkEngine.FrameworkRequirement req = new ElaroFrameworkEngine.FrameworkRequirement(
+            'SOC2-CC6.1',
+            'Logical and physical access controls',
+            'PERMISSION_SET'
+        );
+
+        Test.startTest();
+        String result = AssessmentWizardService.evaluateControlRequirement(req, 'SOC2');
+        Test.stopTest();
+
+        Assert.areEqual('FAIL', result,
+            'Should FAIL when overly permissive permission sets exist');
+    }
+
+    @IsTest
+    static void shouldEvaluateUserRequirements() {
+        ElaroFrameworkEngine.FrameworkRequirement req = new ElaroFrameworkEngine.FrameworkRequirement(
+            'SOC2-CC6.6',
+            'Access removal for terminated users',
+            'USER'
+        );
+
+        Test.startTest();
+        String result = AssessmentWizardService.evaluateControlRequirement(req, 'SOC2');
+        Test.stopTest();
+
+        // Result depends on org data, verify valid response
+        Assert.isTrue(
+            result == 'PASS' || result == 'FAIL',
+            'User requirement should return PASS or FAIL, got: ' + result
+        );
+    }
+
+    @IsTest
+    static void shouldHandleUnsupportedEntityTypes() {
+        ElaroFrameworkEngine.FrameworkRequirement req = new ElaroFrameworkEngine.FrameworkRequirement(
+            'CUSTOM-001',
+            'Custom requirement',
+            'UNSUPPORTED_TYPE'
+        );
+
+        Test.startTest();
+        String result = AssessmentWizardService.evaluateControlRequirement(req, 'CUSTOM');
+        Test.stopTest();
+
+        Assert.areEqual('NOT_APPLICABLE', result,
+            'Unsupported entity types should return NOT_APPLICABLE');
+    }
 }
