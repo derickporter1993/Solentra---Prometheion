@@ -19,17 +19,32 @@ public with sharing class AccessReviewScheduler implements Schedulable {
      * Schedulable execute method
      */
     public void execute(SchedulableContext ctx) {
-        // Run in future context to avoid governor limits
-        runAccessReviewAsync();
+        // Run in Queueable context for better error handling and monitoring
+        if (!Test.isRunningTest()) {
+            System.enqueueJob(new AccessReviewQueueable());
+        } else {
+            // Run synchronously in tests
+            performAccessReview();
+        }
     }
 
     /**
-     * Async method to perform access review
+     * Queueable implementation for access review processing
+     * Provides better error handling, chaining, and monitoring than @future
      */
-    @future
-    private static void runAccessReviewAsync() {
-        AccessReviewScheduler scheduler = new AccessReviewScheduler();
-        scheduler.performAccessReview();
+    public class AccessReviewQueueable implements Queueable {
+        public void execute(QueueableContext context) {
+            try {
+                AccessReviewScheduler scheduler = new AccessReviewScheduler();
+                scheduler.performAccessReview();
+                
+                ElaroLogger.info('AccessReviewScheduler.AccessReviewQueueable',
+                    'Successfully completed access review processing');
+            } catch (Exception e) {
+                ElaroLogger.error('AccessReviewScheduler.AccessReviewQueueable',
+                    e.getMessage(), e.getStackTraceString());
+            }
+        }
     }
 
     /**

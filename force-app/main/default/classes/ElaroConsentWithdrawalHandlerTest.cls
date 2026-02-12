@@ -75,7 +75,7 @@ private class ElaroConsentWithdrawalHandlerTest {
         ];
         
         for (Contact c : updatedContacts) {
-            System.assertEquals(true, c.HasOptedOutOfEmail, 
+            Assert.areEqual(true, c.HasOptedOutOfEmail, 
                 'Contact should have email opt-out set');
         }
     }
@@ -112,9 +112,9 @@ private class ElaroConsentWithdrawalHandlerTest {
         ];
         
         for (Contact c : updatedContacts) {
-            System.assertEquals(true, c.HasOptedOutOfEmail, 
+            Assert.areEqual(true, c.HasOptedOutOfEmail, 
                 'Contact should have email opt-out set');
-            System.assertEquals(true, c.DoNotCall, 
+            Assert.areEqual(true, c.DoNotCall, 
                 'Contact should have DoNotCall set');
         }
     }
@@ -145,9 +145,9 @@ private class ElaroConsentWithdrawalHandlerTest {
             WITH USER_MODE
         ];
         
-        System.assertEquals(1, erasureRequests.size(), 
+        Assert.areEqual(1, erasureRequests.size(), 
             'Erasure request should be created');
-        System.assertEquals('Pending', erasureRequests[0].Status__c,
+        Assert.areEqual('Pending', erasureRequests[0].Status__c,
             'Erasure request should be pending');
     }
     
@@ -189,7 +189,7 @@ private class ElaroConsentWithdrawalHandlerTest {
             WITH USER_MODE
         ];
         
-        System.assertEquals(200, updatedContacts.size(), 
+        Assert.areEqual(200, updatedContacts.size(), 
             'Should process all 200 contacts');
     }
     
@@ -203,7 +203,7 @@ private class ElaroConsentWithdrawalHandlerTest {
         Test.stopTest();
 
         // Verify empty list processed without exception or DML
-        System.assertEquals(0, Limits.getDmlStatements(), 'Should not perform DML with empty list');
+        Assert.areEqual(0, Limits.getDmlStatements(), 'Should not perform DML with empty list');
     }
     
     @IsTest

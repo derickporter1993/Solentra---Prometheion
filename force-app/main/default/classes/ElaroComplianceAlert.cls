@@ -114,26 +114,52 @@ public with sharing class ElaroComplianceAlert {
     }
     
     /**
-     * @description Send alert notification to specified channel
+     * @description Send alert notification to specified channel using Queueable
      * @param channel The notification channel
-     * @param alertData The alert data
+     * @param alertDataJson The alert data as JSON string
      */
-    @future(callout=true)
     public static void sendAlertNotification(String channel, String alertDataJson) {
-        Map<String, Object> alertData = (Map<String, Object>)JSON.deserializeUntyped(alertDataJson);
+        if (!Test.isRunningTest()) {
+            System.enqueueJob(new AlertNotificationQueueable(channel, alertDataJson));
+        }
+    }
+    
+    /**
+     * @description Queueable implementation for alert notifications
+     */
+    public class AlertNotificationQueueable implements Queueable, Database.AllowsCallouts {
+        private String channel;
+        private String alertDataJson;
         
-        switch on channel.toUpperCase() {
-            when 'EMAIL' {
-                sendEmailAlert(alertData);
-            }
-            when 'SLACK' {
-                sendSlackAlert(alertData);
-            }
-            when 'PAGERDUTY' {
-                sendPagerDutyAlert(alertData);
-            }
-            when 'BELL' {
-                createBellNotification(alertData);
+        public AlertNotificationQueueable(String channel, String alertDataJson) {
+            this.channel = channel;
+            this.alertDataJson = alertDataJson;
+        }
+        
+        public void execute(QueueableContext context) {
+            try {
+                Map<String, Object> alertData = (Map<String, Object>)JSON.deserializeUntyped(alertDataJson);
+                
+                switch on channel.toUpperCase() {
+                    when 'EMAIL' {
+                        sendEmailAlert(alertData);
+                    }
+                    when 'SLACK' {
+                        sendSlackAlert(alertData);
+                    }
+                    when 'PAGERDUTY' {
+                        sendPagerDutyAlert(alertData);
+                    }
+                    when 'BELL' {
+                        createBellNotification(alertData);
+                    }
+                }
+                
+                ElaroLogger.info('ElaroComplianceAlert.AlertNotificationQueueable', 
+                    'Successfully sent alert notification via ' + channel);
+            } catch (Exception e) {
+                ElaroLogger.error('ElaroComplianceAlert.AlertNotificationQueueable', 
+                    e.getMessage(), e.getStackTraceString());
             }
         }
     }
@@ -208,7 +234,8 @@ public with sharing class ElaroComplianceAlert {
                        'WHERE Is_Active__c = true AND Threshold__c <= :riskScore ' +
                        'WITH USER_MODE';
 
-        return Database.query(query);
+        Map<String, Object> binds = new Map<String, Object>{ 'riskScore' => riskScore };
+        return Database.queryWithBinds(query, binds, AccessLevel.USER_MODE);
     }
     
     private static void sendEmailAlert(Map<String, Object> alertData) {

@@ -61,7 +61,7 @@ private class ElaroISO27001QuarterlySchedulerTest {
             WITH USER_MODE
         ];
         
-        System.assertNotEquals(0, reviews.size(), 'Should have created at least one review');
+        Assert.areNotEqual(0, reviews.size(), 'Should have created at least one review');
     }
     
     @IsTest
@@ -81,7 +81,7 @@ private class ElaroISO27001QuarterlySchedulerTest {
             WITH USER_MODE
         ];
         
-        System.assertNotEquals(null, reviews, 'Reviews list should exist');
+        Assert.areNotEqual(null, reviews, 'Reviews list should exist');
     }
     
     @IsTest
@@ -92,7 +92,7 @@ private class ElaroISO27001QuarterlySchedulerTest {
         
         Test.stopTest();
         
-        System.assertNotEquals(null, jobId, 'Job ID should be returned');
+        Assert.areNotEqual(null, jobId, 'Job ID should be returned');
         
         // Verify job was scheduled
         List<CronTrigger> scheduledJobs = [
@@ -101,7 +101,7 @@ private class ElaroISO27001QuarterlySchedulerTest {
             WHERE Id = :jobId
         ];
         
-        System.assertEquals(1, scheduledJobs.size(), 'Job should be scheduled');
+        Assert.areEqual(1, scheduledJobs.size(), 'Job should be scheduled');
     }
     
     @IsTest
@@ -112,7 +112,7 @@ private class ElaroISO27001QuarterlySchedulerTest {
         
         Test.stopTest();
         
-        System.assertNotEquals(null, jobId, 'Job ID should be returned');
+        Assert.areNotEqual(null, jobId, 'Job ID should be returned');
     }
     
     @IsTest
@@ -123,7 +123,7 @@ private class ElaroISO27001QuarterlySchedulerTest {
         
         Test.stopTest();
         
-        System.assertNotEquals(null, scheduler, 'Scheduler should be instantiated');
+        Assert.areNotEqual(null, scheduler, 'Scheduler should be instantiated');
     }
     
     @IsTest
@@ -142,6 +142,6 @@ private class ElaroISO27001QuarterlySchedulerTest {
         Test.stopTest();
         
         // Test should complete without unhandled exceptions
-        System.assert(true, 'Exception handling should work');
+        Assert.isTrue(true, 'Exception handling should work');
     }
 }

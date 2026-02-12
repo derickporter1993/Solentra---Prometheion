@@ -73,7 +73,7 @@ private class ElaroSharingViolationTest {
                 SELECT Id FROM Account WHERE Id = :owner1Account.Id
                 WITH USER_MODE
             ];
-            System.assertEquals(1, ownAccounts.size(), 'Owner1 should see their own account');
+            Assert.areEqual(1, ownAccounts.size(), 'Owner1 should see their own account');
             
             // Owner1 should NOT be able to see Owner2's account (sharing violation)
             List<Account> otherAccounts = [
@@ -104,7 +104,7 @@ private class ElaroSharingViolationTest {
                 WITH USER_MODE
             ];
             
-            System.assertNotEquals(null, accounts, 'Accounts list should not be null');
+            Assert.areNotEqual(null, accounts, 'Accounts list should not be null');
             System.assert(accounts.size() >= 0, 'Should return accounts respecting sharing');
         }
         Test.stopTest();
@@ -128,8 +128,8 @@ private class ElaroSharingViolationTest {
                 accounts
             );
             
-            System.assertNotEquals(null, stripped, 'Stripped list should not be null');
-            System.assertEquals(1, stripped.size(), 'Should return accessible records');
+            Assert.areNotEqual(null, stripped, 'Stripped list should not be null');
+            Assert.areEqual(1, stripped.size(), 'Should return accessible records');
         }
         Test.stopTest();
     }
@@ -158,7 +158,7 @@ private class ElaroSharingViolationTest {
                     'Should not return records due to sharing violation');
             } catch (QueryException e) {
                 // QueryException may be thrown for sharing violations
-                System.assert(true, 'Expected sharing violation: ' + e.getMessage());
+                Assert.isTrue(true, 'Expected sharing violation: ' + e.getMessage());
             }
         }
         Test.stopTest();

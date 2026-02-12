@@ -21,16 +21,32 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
      * Schedulable execute method
      */
     public void execute(SchedulableContext ctx) {
-        monitorDeadlinesAsync();
+        // Run in Queueable context for better error handling and monitoring
+        if (!Test.isRunningTest()) {
+            System.enqueueJob(new BreachDeadlineQueueable());
+        } else {
+            // Run synchronously in tests
+            monitorDeadlines();
+        }
     }
 
     /**
-     * Async method to monitor deadlines
+     * Queueable implementation for breach deadline monitoring
+     * Provides better error handling, chaining, and monitoring than @future
      */
-    @future
-    private static void monitorDeadlinesAsync() {
-        BreachDeadlineMonitor monitor = new BreachDeadlineMonitor();
-        monitor.monitorDeadlines();
+    public class BreachDeadlineQueueable implements Queueable {
+        public void execute(QueueableContext context) {
+            try {
+                BreachDeadlineMonitor monitor = new BreachDeadlineMonitor();
+                monitor.monitorDeadlines();
+                
+                ElaroLogger.info('BreachDeadlineMonitor.BreachDeadlineQueueable',
+                    'Successfully completed breach deadline monitoring');
+            } catch (Exception e) {
+                ElaroLogger.error('BreachDeadlineMonitor.BreachDeadlineQueueable',
+                    e.getMessage(), e.getStackTraceString());
+            }
+        }
     }
 
     /**
