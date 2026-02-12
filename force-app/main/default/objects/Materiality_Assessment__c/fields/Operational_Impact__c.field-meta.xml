@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Operational_Impact__c</fullName>
+    <label>Operational Impact</label>
+    <type>Picklist</type>
+    <required>false</required>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>None</fullName><default>false</default><label>None</label></value>
+            <value><fullName>Minor</fullName><default>false</default><label>Minor</label></value>
+            <value><fullName>Moderate</fullName><default>false</default><label>Moderate</label></value>
+            <value><fullName>Significant</fullName><default>false</default><label>Significant</label></value>
+            <value><fullName>Severe</fullName><default>false</default><label>Severe</label></value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

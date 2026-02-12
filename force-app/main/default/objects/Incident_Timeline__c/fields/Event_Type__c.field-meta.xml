@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Event_Type__c</fullName>
+    <label>Event Type</label>
+    <type>Picklist</type>
+    <required>true</required>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>Detection</fullName><default>false</default><label>Detection</label></value>
+            <value><fullName>Containment</fullName><default>false</default><label>Containment</label></value>
+            <value><fullName>Investigation</fullName><default>false</default><label>Investigation</label></value>
+            <value><fullName>Notification</fullName><default>false</default><label>Notification</label></value>
+            <value><fullName>Remediation</fullName><default>false</default><label>Remediation</label></value>
+            <value><fullName>Verification</fullName><default>false</default><label>Verification</label></value>
+            <value><fullName>Closure</fullName><default>false</default><label>Closure</label></value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Form_Type__c</fullName>
+    <label>Form Type</label>
+    <type>Picklist</type>
+    <required>true</required>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>8-K</fullName><default>false</default><label>8-K</label></value>
+            <value><fullName>10-K</fullName><default>false</default><label>10-K</label></value>
+            <value><fullName>20-F</fullName><default>false</default><label>20-F</label></value>
+            <value><fullName>6-K</fullName><default>false</default><label>6-K</label></value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

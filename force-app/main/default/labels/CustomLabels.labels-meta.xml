@@ -574,4 +574,215 @@
         <shortDescription>No Sessions Empty State</shortDescription>
         <value>No assessments in progress. Select a wizard to begin.</value>
     </labels>
+    <!-- SEC Cybersecurity Disclosure Module Labels -->
+    <labels>
+        <fullName>SEC_ModuleTitle</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SEC module title</shortDescription>
+        <value>SEC Cybersecurity Disclosure</value>
+    </labels>
+    <labels>
+        <fullName>SEC_MaterialityAssessment</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Materiality assessment title</shortDescription>
+        <value>Materiality Assessment</value>
+    </labels>
+    <labels>
+        <fullName>SEC_NewAssessment</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>New assessment button label</shortDescription>
+        <value>New Assessment</value>
+    </labels>
+    <labels>
+        <fullName>SEC_IncidentDescription</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Incident description field label</shortDescription>
+        <value>Incident Description</value>
+    </labels>
+    <labels>
+        <fullName>SEC_DiscoveryDate</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Discovery date field label</shortDescription>
+        <value>Discovery Date</value>
+    </labels>
+    <labels>
+        <fullName>SEC_DeterminationDate</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Determination date field label</shortDescription>
+        <value>Determination Date</value>
+    </labels>
+    <labels>
+        <fullName>SEC_FilingDeadline</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Filing deadline field label</shortDescription>
+        <value>Filing Deadline</value>
+    </labels>
+    <labels>
+        <fullName>SEC_AGDelay</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>AG delay label</shortDescription>
+        <value>AG Delay</value>
+    </labels>
+    <labels>
+        <fullName>SEC_RequestDelay</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Request AG delay button label</shortDescription>
+        <value>Request AG Delay</value>
+    </labels>
+    <labels>
+        <fullName>SEC_DelayDays</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Delay duration days field label</shortDescription>
+        <value>Delay Duration (Days)</value>
+    </labels>
+    <labels>
+        <fullName>SEC_Material</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Material determination result</shortDescription>
+        <value>Material</value>
+    </labels>
+    <labels>
+        <fullName>SEC_NotMaterial</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Not material determination result</shortDescription>
+        <value>Not Material</value>
+    </labels>
+    <labels>
+        <fullName>SEC_UnderReview</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Under review status label</shortDescription>
+        <value>Under Review</value>
+    </labels>
+    <labels>
+        <fullName>SEC_Pending</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Pending status label</shortDescription>
+        <value>Pending</value>
+    </labels>
+    <labels>
+        <fullName>SEC_DisclosureWorkflow</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Disclosure workflow title</shortDescription>
+        <value>Disclosure Workflow</value>
+    </labels>
+    <labels>
+        <fullName>SEC_FormType</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Form type field label</shortDescription>
+        <value>Form Type</value>
+    </labels>
+    <labels>
+        <fullName>SEC_EDGARNumber</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>EDGAR filing number field label</shortDescription>
+        <value>EDGAR Filing Number</value>
+    </labels>
+    <labels>
+        <fullName>SEC_AdvanceWorkflow</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Advance workflow button label</shortDescription>
+        <value>Advance Workflow</value>
+    </labels>
+    <labels>
+        <fullName>SEC_RecordFiling</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Record filing button label</shortDescription>
+        <value>Record Filing</value>
+    </labels>
+    <labels>
+        <fullName>SEC_BoardGovernance</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Board governance report title</shortDescription>
+        <value>Board Governance Report</value>
+    </labels>
+    <labels>
+        <fullName>SEC_ReportPeriod</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Report period field label</shortDescription>
+        <value>Report Period</value>
+    </labels>
+    <labels>
+        <fullName>SEC_ApproveReport</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Approve report button label</shortDescription>
+        <value>Approve Report</value>
+    </labels>
+    <labels>
+        <fullName>SEC_IncidentTimeline</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Incident timeline title</shortDescription>
+        <value>Incident Timeline</value>
+    </labels>
+    <labels>
+        <fullName>SEC_AddEvent</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Add timeline event button label</shortDescription>
+        <value>Add Timeline Event</value>
+    </labels>
+    <labels>
+        <fullName>SEC_EventType</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Event type field label</shortDescription>
+        <value>Event Type</value>
+    </labels>
+    <labels>
+        <fullName>SEC_SLAStatus</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>SLA status field label</shortDescription>
+        <value>SLA Status</value>
+    </labels>
+    <labels>
+        <fullName>SEC_OnTrack</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>On track SLA status value</shortDescription>
+        <value>On Track</value>
+    </labels>
+    <labels>
+        <fullName>SEC_AtRisk</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>At risk SLA status value</shortDescription>
+        <value>At Risk</value>
+    </labels>
+    <labels>
+        <fullName>SEC_Breached</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Breached SLA status value</shortDescription>
+        <value>Breached</value>
+    </labels>
+    <labels>
+        <fullName>SEC_OpenAssessments</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Open assessments metric label</shortDescription>
+        <value>Open Assessments</value>
+    </labels>
 </CustomLabels>
