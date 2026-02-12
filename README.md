@@ -665,11 +665,37 @@ Elaro is under active development. Contributions welcome!
 **Priority areas for v3.0+**:
 
 - Improved drift detection rules
-- Test coverage improvements (target 75%+)
+- Test coverage improvements (target 85%+)
 - Enhanced error handling and logging
-- Performance optimizations
+- Governor limit optimizations
+- Security enhancements
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+**Before contributing**, please read our comprehensive [CONTRIBUTING.md](CONTRIBUTING.md) guide which covers:
+
+- Development setup and workflow
+- Coding standards (Apex security, bulkification, LWC patterns)
+- Testing requirements (85% coverage, governor limit tests)
+- Pull request process and review checklist
+- Issue reporting templates
+
+**Quick Start for Contributors**:
+
+```bash
+# 1. Fork and clone the repo
+git clone https://github.com/derickporter1993/Elaro.git
+cd Elaro
+
+# 2. Install dependencies
+npm install
+
+# 3. Create a scratch org
+./scripts/orgInit.sh
+
+# 4. Run quality checks before committing
+npm run precommit  # Runs formatting, linting, and unit tests
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for complete guidelines.
 
 ---
 
