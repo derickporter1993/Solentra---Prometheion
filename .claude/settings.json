@@ -1,11 +1,11 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "customInstructions": "You are working on Elaro, an enterprise Salesforce compliance platform. Always prioritize security (use ElaroSecurityUtils), follow Salesforce best practices, and maintain test coverage above 75%. When making changes to Apex classes, ensure all SOQL queries include WITH SECURITY_ENFORCED. Use SF CLI v2 syntax (sf not sfdx). Before deploying, always run tests and preview changes. Read claude.me for full project context.",
+  "customInstructions": "You are working on Elaro, an enterprise Salesforce compliance platform. Always prioritize security (use ElaroSecurityUtils), follow Salesforce best practices, and maintain test coverage above 75%. When making changes to Apex classes, ensure all SOQL queries use WITH USER_MODE and all DML uses 'as user' or AccessLevel.USER_MODE. Use SF CLI v2 syntax (sf not sfdx). Before deploying, always run tests and preview changes. Read CLAUDE.md for full project context and agent_docs/ for review checklists.",
 
   "rules": [
     {
       "name": "Security-First Development",
-      "description": "All Apex code must use ElaroSecurityUtils for CRUD/FLS checks and include WITH SECURITY_ENFORCED in SOQL queries",
+      "description": "All Apex code must use ElaroSecurityUtils for CRUD/FLS checks. SOQL must use WITH USER_MODE. DML must use 'as user' or AccessLevel.USER_MODE. Never use WITH SECURITY_ENFORCED (outdated).",
       "pattern": "**/*.cls",
       "enabled": true
     },

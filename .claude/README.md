@@ -8,10 +8,13 @@ This directory contains Claude Code configuration files that enhance AI-assisted
 .claude/
 ├── README.md                    # This file
 ├── settings.json               # Core Claude configuration
+├── agents/                     # Claude Code agents
+│   └── agent-8-integration-qa-launch.md
 └── commands/                   # Custom slash commands
     ├── sfcontext.md           # Load project context
     ├── deploy.md              # Safe deployment workflow
     ├── newclass.md            # Create new Apex class
+    ├── review.md              # Salesforce code review with weighted scorecard
     ├── test.md                # Run tests
     └── scratchorg.md          # Scratch org management
 ```
@@ -29,6 +32,7 @@ Access helpful workflows with slash commands:
 - `/deploy` - Safe deployment workflow
 - `/test` - Run tests with coverage
 - `/newclass` - Create new Apex class
+- `/review` - Salesforce code review with weighted scorecard
 - `/scratchorg` - Manage scratch orgs
 
 ## ⚙️ Configuration Overview
@@ -110,6 +114,19 @@ Access helpful workflows with slash commands:
 
 **When to use:** Creating any new Apex class
 
+### /review - Salesforce Code Review
+**Purpose:** Run a comprehensive code review with weighted scorecard
+
+**What it does:**
+1. Reads the full review checklist from `agent_docs/apex-review-checklist.md`
+2. Checks all 8 auto-fail gates (CRUD/FLS, SOQL injection, sharing, etc.)
+3. Scores across 8 weighted categories (Security 25%, Performance 20%, etc.)
+4. Produces findings table with severity, line numbers, and fix suggestions
+5. Computes weighted total and letter grade (A/B/C/D/F)
+6. Assesses AppExchange security review readiness
+
+**When to use:** Before PRs, before AppExchange submission, periodic codebase audits
+
 ### /scratchorg - Scratch Org Management
 **Purpose:** Create and manage scratch orgs
 
@@ -141,7 +158,8 @@ Access helpful workflows with slash commands:
 ### Security-First Development
 
 All Apex code must:
-- Use `WITH SECURITY_ENFORCED` in SOQL
+- Use `WITH USER_MODE` in SOQL (NOT `WITH SECURITY_ENFORCED`)
+- Use `as user` or `AccessLevel.USER_MODE` for DML
 - Use ElaroSecurityUtils for CRUD/FLS checks
 - Include `with sharing` (unless documented exception)
 - Pass security violation tests
@@ -151,7 +169,7 @@ All Apex code must:
 ### 1. Security-First Development
 - Pattern: `**/*.cls`
 - All Apex must use ElaroSecurityUtils
-- All SOQL must include WITH SECURITY_ENFORCED
+- All SOQL must use WITH USER_MODE (not WITH SECURITY_ENFORCED)
 
 ### 2. Test Coverage Requirement
 - Pattern: `force-app/main/default/classes/**`
