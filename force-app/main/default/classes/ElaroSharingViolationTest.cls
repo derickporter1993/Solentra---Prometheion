@@ -71,14 +71,14 @@ private class ElaroSharingViolationTest {
             // Owner1 should be able to see their own account
             List<Account> ownAccounts = [
                 SELECT Id FROM Account WHERE Id = :owner1Account.Id
-                WITH SECURITY_ENFORCED
+                WITH USER_MODE
             ];
             System.assertEquals(1, ownAccounts.size(), 'Owner1 should see their own account');
             
             // Owner1 should NOT be able to see Owner2's account (sharing violation)
             List<Account> otherAccounts = [
                 SELECT Id FROM Account WHERE Id = :owner2Account.Id
-                WITH SECURITY_ENFORCED
+                WITH USER_MODE
             ];
             // With sharing enforced, query may return empty or throw exception
             System.assert(otherAccounts.isEmpty() || otherAccounts.size() == 0, 
@@ -88,7 +88,7 @@ private class ElaroSharingViolationTest {
     }
     
     /**
-     * Test sharing with WITH SECURITY_ENFORCED
+     * Test sharing with WITH USER_MODE
      */
     @IsTest
     static void testSharingWithSecurityEnforced() {
@@ -97,11 +97,11 @@ private class ElaroSharingViolationTest {
         
         Test.startTest();
         System.runAs(owner1) {
-            // Query with WITH SECURITY_ENFORCED should respect sharing
+            // Query with WITH USER_MODE should respect sharing
             List<Account> accounts = [
                 SELECT Id, Name FROM Account
                 WHERE Id = :owner1Account.Id
-                WITH SECURITY_ENFORCED
+                WITH USER_MODE
             ];
             
             System.assertNotEquals(null, accounts, 'Accounts list should not be null');
@@ -151,7 +151,7 @@ private class ElaroSharingViolationTest {
             try {
                 List<Account> accounts = [
                     SELECT Id FROM Account WHERE Id = :owner2Account.Id
-                    WITH SECURITY_ENFORCED
+                    WITH USER_MODE
                 ];
                 // Query may return empty due to sharing
                 System.assert(accounts.isEmpty() || accounts.size() == 0, 
@@ -176,7 +176,7 @@ private class ElaroSharingViolationTest {
             // Query all accounts (may be limited by sharing)
             List<Account> allAccounts = [
                 SELECT Id, Name FROM Account
-                WITH SECURITY_ENFORCED
+                WITH USER_MODE
             ];
             
             // Should return at least owner1's account

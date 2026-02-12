@@ -31,7 +31,7 @@ private class ElaroBulkOperationTest {
         // Verify all records were inserted
         List<Account> insertedAccounts = [
             SELECT Id, Name FROM Account WHERE Name LIKE 'Bulk Test Account%'
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
         System.assertEquals(200, insertedAccounts.size(), 'Should have inserted all 200 accounts');
     }
@@ -62,7 +62,7 @@ private class ElaroBulkOperationTest {
         // Verify all records were updated
         List<Account> updatedAccounts = [
             SELECT Id, BillingCity FROM Account WHERE Name LIKE 'Bulk Update Account%'
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
         System.assertEquals(200, updatedAccounts.size(), 'Should have updated all 200 accounts');
         for (Account acc : updatedAccounts) {
@@ -91,7 +91,7 @@ private class ElaroBulkOperationTest {
         // Verify all records were deleted
         List<Account> deletedAccounts = [
             SELECT Id FROM Account WHERE Name LIKE 'Bulk Delete Account%'
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
             ALL ROWS
         ];
         System.assertEquals(0, deletedAccounts.size(), 'All accounts should be deleted');
@@ -114,7 +114,7 @@ private class ElaroBulkOperationTest {
         Test.startTest();
         List<Account> queriedAccounts = [
             SELECT Id, Name FROM Account WHERE Name LIKE 'Bulk SOQL Account%'
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
         Test.stopTest();
         
@@ -136,10 +136,10 @@ private class ElaroBulkOperationTest {
         Test.startTest();
         insert accounts;
         
-        // Query with WITH SECURITY_ENFORCED
+        // Query with WITH USER_MODE
         List<Account> queriedAccounts = [
             SELECT Id, Name FROM Account WHERE Name LIKE 'Bulk Security Account%'
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
         
         // Strip inaccessible fields
@@ -172,7 +172,7 @@ private class ElaroBulkOperationTest {
         
         List<Account> queriedAccounts = [
             SELECT Id, Name FROM Account WHERE Name LIKE 'Bulk Limits Account%'
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
         
         Integer endQueries = Limits.getQueries();
@@ -216,7 +216,7 @@ private class ElaroBulkOperationTest {
         List<Account> accountsWithContacts = [
             SELECT Id, Name, (SELECT Id, LastName FROM Contacts)
             FROM Account WHERE Name LIKE 'Bulk Contact Account%'
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
         Test.stopTest();
         
@@ -251,7 +251,7 @@ private class ElaroBulkOperationTest {
         
         List<Account> insertedAccounts = [
             SELECT Id FROM Account WHERE Name LIKE 'Bulk Negative Account%'
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
         System.assertEquals(200, insertedAccounts.size(), 'Should have inserted all 200 accounts');
     }

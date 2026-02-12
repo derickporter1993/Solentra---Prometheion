@@ -232,23 +232,23 @@ private class ElaroSecurityUtilsTest {
         String secureQuery = ElaroSecurityUtils.buildSecureQuery(baseQuery);
         Test.stopTest();
         
-        System.assert(secureQuery.contains('WITH SECURITY_ENFORCED'), 
-            'Should add WITH SECURITY_ENFORCED');
+        System.assert(secureQuery.contains('WITH USER_MODE'), 
+            'Should add WITH USER_MODE');
         System.assert(secureQuery.contains('SELECT Id, Name FROM Account'), 
             'Should preserve original query');
     }
     
     @IsTest
     static void testBuildSecureQuery_AlreadyHasSecurityEnforced() {
-        String baseQuery = 'SELECT Id, Name FROM Account WITH SECURITY_ENFORCED';
+        String baseQuery = 'SELECT Id, Name FROM Account WITH USER_MODE';
 
         Test.startTest();
         String secureQuery = ElaroSecurityUtils.buildSecureQuery(baseQuery);
         Test.stopTest();
 
-        // Should only have one WITH SECURITY_ENFORCED
-        Integer count = secureQuery.split('WITH SECURITY_ENFORCED', -1).size() - 1;
-        System.assertEquals(1, count, 'Should have exactly one WITH SECURITY_ENFORCED');
+        // Should only have one WITH USER_MODE
+        Integer count = secureQuery.split('WITH USER_MODE', -1).size() - 1;
+        System.assertEquals(1, count, 'Should have exactly one WITH USER_MODE');
     }
 
     @IsTest
@@ -400,8 +400,8 @@ private class ElaroSecurityUtilsTest {
         String secureQuery = ElaroSecurityUtils.buildSecureQuery(baseQuery);
         Test.stopTest();
 
-        System.assert(secureQuery.contains('WITH SECURITY_ENFORCED'),
-            'Should add WITH SECURITY_ENFORCED');
+        System.assert(secureQuery.contains('WITH USER_MODE'),
+            'Should add WITH USER_MODE');
         System.assert(secureQuery.contains('WHERE Name != null'),
             'Should preserve WHERE clause');
     }
@@ -416,7 +416,7 @@ private class ElaroSecurityUtilsTest {
 
         // Should handle case-insensitive removal
         Integer count = secureQuery.toLowerCase().split('with security_enforced', -1).size() - 1;
-        System.assertEquals(1, count, 'Should have exactly one WITH SECURITY_ENFORCED');
+        System.assertEquals(1, count, 'Should have exactly one WITH USER_MODE');
     }
 
     @IsTest

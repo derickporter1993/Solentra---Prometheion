@@ -33,7 +33,7 @@ private class MetadataChangeTrackerTest {
             SELECT Id, Change_Type__c, Metadata_Type__c, Metadata_Name__c
             FROM Metadata_Change__c
             WHERE Id = :changeId
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
         System.assertEquals(1, changes.size(), 'Change should be inserted');
         System.assertEquals('UPDATE', changes[0].Change_Type__c, 'Change type should match');

@@ -58,7 +58,7 @@ private class ElaroISO27001QuarterlySchedulerTest {
         List<Access_Review__c> reviews = [
             SELECT Id, Review_Type__c, Review_Status__c, User__c
             FROM Access_Review__c
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
         
         System.assertNotEquals(0, reviews.size(), 'Should have created at least one review');
@@ -78,7 +78,7 @@ private class ElaroISO27001QuarterlySchedulerTest {
             SELECT Id, Review_Type__c, Is_Privileged_User__c
             FROM Access_Review__c
             WHERE Is_Privileged_User__c = true
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
         
         System.assertNotEquals(null, reviews, 'Reviews list should exist');

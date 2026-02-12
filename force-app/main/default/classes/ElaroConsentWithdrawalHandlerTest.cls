@@ -50,7 +50,7 @@ private class ElaroConsentWithdrawalHandlerTest {
             SELECT Id, Contact__c, Consent_Type__c
             FROM Consent__c
             WHERE Consent_Type__c = 'Marketing'
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
             LIMIT 3
         ];
         
@@ -71,7 +71,7 @@ private class ElaroConsentWithdrawalHandlerTest {
             SELECT Id, HasOptedOutOfEmail
             FROM Contact
             WHERE Id IN (SELECT Contact__c FROM Consent__c WHERE Id IN :consents)
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
         
         for (Contact c : updatedContacts) {
@@ -87,7 +87,7 @@ private class ElaroConsentWithdrawalHandlerTest {
             SELECT Id, Contact__c, Consent_Type__c
             FROM Consent__c
             WHERE Consent_Type__c = 'Data Processing'
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
             LIMIT 2
         ];
         
@@ -108,7 +108,7 @@ private class ElaroConsentWithdrawalHandlerTest {
             SELECT Id, HasOptedOutOfEmail, DoNotCall
             FROM Contact
             WHERE Id IN (SELECT Contact__c FROM Consent__c WHERE Id IN :consents)
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
         
         for (Contact c : updatedContacts) {
@@ -122,7 +122,7 @@ private class ElaroConsentWithdrawalHandlerTest {
     @IsTest
     static void testProcessWithdrawalsAllDataProcessing() {
         // Create consent for full data processing withdrawal
-        Contact testContact = [SELECT Id FROM Contact LIMIT 1 WITH SECURITY_ENFORCED];
+        Contact testContact = [SELECT Id FROM Contact LIMIT 1 WITH USER_MODE];
         Consent__c fullConsent = new Consent__c(
             Contact__c = testContact.Id,
             Consent_Type__c = 'All Data Processing',
@@ -142,7 +142,7 @@ private class ElaroConsentWithdrawalHandlerTest {
             SELECT Id, Contact__c, Status__c, Request_Reason__c
             FROM GDPR_Erasure_Request__c
             WHERE Contact__c = :testContact.Id
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
         
         System.assertEquals(1, erasureRequests.size(), 
@@ -186,7 +186,7 @@ private class ElaroConsentWithdrawalHandlerTest {
             SELECT Id, HasOptedOutOfEmail
             FROM Contact
             WHERE Id IN (SELECT Contact__c FROM Consent__c WHERE Id IN :consents)
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
         
         System.assertEquals(200, updatedContacts.size(), 
@@ -212,7 +212,7 @@ private class ElaroConsentWithdrawalHandlerTest {
         List<Consent__c> consents = [
             SELECT Id, Contact__c, Consent_Type__c
             FROM Consent__c
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
             LIMIT 2
         ];
         

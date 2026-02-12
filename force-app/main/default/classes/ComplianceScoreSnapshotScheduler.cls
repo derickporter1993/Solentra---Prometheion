@@ -112,7 +112,7 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
                 FROM Compliance_Gap__c
                 WHERE Framework__c = :framework
                 AND Status__c NOT IN ('VERIFIED', 'ACCEPTED_RISK')
-                WITH SECURITY_ENFORCED
+                WITH USER_MODE
             ];
 
             // Get previous score for comparison
@@ -120,7 +120,7 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
                 SELECT Score__c
                 FROM Compliance_Score__c
                 WHERE Framework__c = :framework
-                WITH SECURITY_ENFORCED
+                WITH USER_MODE
                 ORDER BY Evaluation_Date__c DESC
                 LIMIT 1
             ];
@@ -335,7 +335,7 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
             SELECT Id, CronJobDetail.Name
             FROM CronTrigger
             WHERE CronJobDetail.Name LIKE :('%' + JOB_NAME + '%')
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
 
         for (CronTrigger job : jobs) {
@@ -369,7 +369,7 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
             FROM Compliance_Score__c
             WHERE Framework__c = :framework
             AND Evaluation_Date__c >= :startDate
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
             ORDER BY Evaluation_Date__c ASC
         ];
 

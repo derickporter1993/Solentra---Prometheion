@@ -79,7 +79,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
             FROM Access_Review__c
             WHERE Review_Date__c >= :reviewCutoff
             AND Status__c IN ('Completed', 'Approved')
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ]) {
             if (review.User__c != null) {
                 recentlyReviewedUserIds.add(review.User__c);
@@ -95,7 +95,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
             AND Id NOT IN :recentlyReviewedUserIds
             AND Profile.Name != 'Chatter Free User'
             AND Profile.Name != 'Chatter External User'
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
             ORDER BY LastLoginDate DESC NULLS LAST
             LIMIT 500
         ];
@@ -146,7 +146,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
             FROM PermissionSetAssignment
             WHERE AssigneeId IN :userIds
             AND PermissionSet.IsOwnedByProfile = false
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
 
         // Log permission set counts for review
@@ -248,7 +248,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
             SELECT Id, CronJobDetail.Name
             FROM CronTrigger
             WHERE CronJobDetail.Name LIKE :('%' + JOB_NAME + '%')
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
 
         for (CronTrigger job : jobs) {
@@ -266,7 +266,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
             SELECT Id, CronJobDetail.Name, State, NextFireTime, PreviousFireTime
             FROM CronTrigger
             WHERE CronJobDetail.Name LIKE :('%' + JOB_NAME + '%')
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
 
         for (CronTrigger job : jobs) {

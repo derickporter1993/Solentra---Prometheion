@@ -27,7 +27,7 @@ private class EvidenceCollectionServiceTest {
             SELECT Id, Framework__c, Evidence_Type__c
             FROM Compliance_Evidence__c
             WHERE Framework__c = 'SOX'
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
         System.assert(!insertedEvidence.isEmpty(), 'Evidence should be inserted');
     }
