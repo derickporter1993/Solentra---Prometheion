@@ -18,8 +18,8 @@ private class ElaroRealtimeMonitorTest {
         Test.stopTest();
         
         // Login base score is 20, may have additional factors
-        System.assert(riskScore &gt;= 20, 'Login event should have minimum score of 20');
-        System.assert(riskScore &lt;= 100, 'Score should not exceed 100');
+        Assert.isTrue(riskScore &gt;= 20, 'Login event should have minimum score of 20');
+        Assert.isTrue(riskScore &lt;= 100, 'Score should not exceed 100');
     }
     
     @isTest
@@ -31,7 +31,7 @@ private class ElaroRealtimeMonitorTest {
         Test.stopTest();
         
         // LoginAs base score is 70
-        System.assert(riskScore &gt;= 70, 'LoginAs event should have minimum score of 70');
+        Assert.isTrue(riskScore &gt;= 70, 'LoginAs event should have minimum score of 70');
     }
     
     @isTest
@@ -44,7 +44,7 @@ private class ElaroRealtimeMonitorTest {
         Test.stopTest();
         
         // API base (40) + volume factor (20 for &gt;10000 rows)
-        System.assert(riskScore &gt;= 60, 'High volume should add 20 to score');
+        Assert.isTrue(riskScore &gt;= 60, 'High volume should add 20 to score');
     }
     
     @isTest
@@ -57,7 +57,7 @@ private class ElaroRealtimeMonitorTest {
         Test.stopTest();
         
         // Login base (20) + location factor (15)
-        System.assert(riskScore &gt;= 35, 'Non-US location should add 15 to score');
+        Assert.isTrue(riskScore &gt;= 35, 'Non-US location should add 15 to score');
     }
     
     @isTest
@@ -70,7 +70,7 @@ private class ElaroRealtimeMonitorTest {
         Integer riskScore = ElaroRealtimeMonitor.calculateRiskScore(eventData);
         Test.stopTest();
         
-        System.assert(riskScore &gt;= 35, 'Non-US geo location should add 15 to score');
+        Assert.isTrue(riskScore &gt;= 35, 'Non-US geo location should add 15 to score');
     }
     
     @isTest
@@ -87,7 +87,7 @@ private class ElaroRealtimeMonitorTest {
         Integer riskScore = ElaroRealtimeMonitor.calculateRiskScore(eventData);
         Test.stopTest();
         
-        System.assert(riskScore &lt;= 100, 'Score should be capped at 100');
+        Assert.isTrue(riskScore &lt;= 100, 'Score should be capped at 100');
     }
     
     @isTest
@@ -96,7 +96,7 @@ private class ElaroRealtimeMonitorTest {
         Integer riskScore = ElaroRealtimeMonitor.calculateRiskScore(null);
         Test.stopTest();
         
-        System.assertEquals(0, riskScore, 'Null event data should return 0');
+        Assert.areEqual(0, riskScore, 'Null event data should return 0');
     }
     
     @isTest
@@ -108,7 +108,7 @@ private class ElaroRealtimeMonitorTest {
         Test.stopTest();
         
         // Unknown event type defaults to 10
-        System.assert(riskScore &gt;= 0, 'Empty event should return base score');
+        Assert.isTrue(riskScore &gt;= 0, 'Empty event should return base score');
     }
     
     @isTest
@@ -123,7 +123,7 @@ private class ElaroRealtimeMonitorTest {
         Test.stopTest();
         
         // API base (40) + volume factor (10 for &gt;1000 rows)
-        System.assert(riskScore &gt;= 50, 'Medium volume should add factor');
+        Assert.isTrue(riskScore &gt;= 50, 'Medium volume should add factor');
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -140,7 +140,7 @@ private class ElaroRealtimeMonitorTest {
         Test.stopTest();
         
         // Verify event was processed (check for Platform Event publication)
-        System.assert(true, 'Low risk event should process without alert');
+        Assert.isTrue(true, 'Low risk event should process without alert');
     }
     
     @isTest
@@ -152,7 +152,7 @@ private class ElaroRealtimeMonitorTest {
         Test.stopTest();
         
         // High risk events should trigger alert (would need to verify via mock)
-        System.assert(true, 'High risk event should trigger alert');
+        Assert.isTrue(true, 'High risk event should trigger alert');
     }
     
     @isTest
@@ -162,7 +162,7 @@ private class ElaroRealtimeMonitorTest {
         ElaroRealtimeMonitor.processRealtimeEvent(null);
         Test.stopTest();
         
-        System.assert(true, 'Should handle null gracefully');
+        Assert.isTrue(true, 'Should handle null gracefully');
     }
     
     @isTest
@@ -172,7 +172,7 @@ private class ElaroRealtimeMonitorTest {
         ElaroRealtimeMonitor.processRealtimeEvent(new Map&lt;String, Object&gt;());
         Test.stopTest();
         
-        System.assert(true, 'Should handle empty event gracefully');
+        Assert.isTrue(true, 'Should handle empty event gracefully');
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -185,11 +185,11 @@ private class ElaroRealtimeMonitorTest {
         Map&lt;String, Object&gt; stats = ElaroRealtimeMonitor.getRealtimeStats(60);
         Test.stopTest();
         
-        System.assertNotEquals(null, stats, 'Should return stats map');
-        System.assert(stats.containsKey('totalEvents'), 'Should contain totalEvents');
-        System.assert(stats.containsKey('criticalEvents'), 'Should contain criticalEvents');
-        System.assert(stats.containsKey('highRiskEvents'), 'Should contain highRiskEvents');
-        System.assert(stats.containsKey('timeWindow'), 'Should contain timeWindow');
+        Assert.areNotEqual(null, stats, 'Should return stats map');
+        Assert.isTrue(stats.containsKey('totalEvents'), 'Should contain totalEvents');
+        Assert.isTrue(stats.containsKey('criticalEvents'), 'Should contain criticalEvents');
+        Assert.isTrue(stats.containsKey('highRiskEvents'), 'Should contain highRiskEvents');
+        Assert.isTrue(stats.containsKey('timeWindow'), 'Should contain timeWindow');
     }
     
     @isTest
@@ -202,7 +202,7 @@ private class ElaroRealtimeMonitorTest {
         Map&lt;String, Object&gt; stats = ElaroRealtimeMonitor.getRealtimeStats(60);
         Test.stopTest();
         
-        System.assertNotEquals(null, stats, 'Should return stats');
+        Assert.areNotEqual(null, stats, 'Should return stats');
         // Note: totalEvents may be 0 if evidence items created more than 60 minutes ago
     }
     
@@ -224,7 +224,7 @@ private class ElaroRealtimeMonitorTest {
         Test.stopTest();
         
         // Verify alert was queued (would check custom object or mock)
-        System.assert(true, 'Critical alert should be triggered');
+        Assert.isTrue(true, 'Critical alert should be triggered');
     }
     
     @isTest
@@ -240,7 +240,7 @@ private class ElaroRealtimeMonitorTest {
         );
         Test.stopTest();
         
-        System.assert(true, 'High severity alert should be triggered');
+        Assert.isTrue(true, 'High severity alert should be triggered');
     }
     
     @isTest
@@ -256,7 +256,7 @@ private class ElaroRealtimeMonitorTest {
         );
         Test.stopTest();
         
-        System.assert(true, 'Alert at threshold should be triggered');
+        Assert.isTrue(true, 'Alert at threshold should be triggered');
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -265,9 +265,9 @@ private class ElaroRealtimeMonitorTest {
     
     @isTest
     static void testThresholdConstants() {
-        System.assertEquals(80, ElaroRealtimeMonitor.HIGH_RISK_THRESHOLD, 
+        Assert.areEqual(80, ElaroRealtimeMonitor.HIGH_RISK_THRESHOLD, 
             'High risk threshold should be 80');
-        System.assertEquals(95, ElaroRealtimeMonitor.CRITICAL_RISK_THRESHOLD, 
+        Assert.areEqual(95, ElaroRealtimeMonitor.CRITICAL_RISK_THRESHOLD, 
             'Critical risk threshold should be 95');
     }
     
@@ -287,7 +287,7 @@ private class ElaroRealtimeMonitorTest {
         Test.stopTest();
         
         // Should handle invalid number gracefully
-        System.assert(riskScore &gt;= 0, 'Should handle invalid rows gracefully');
+        Assert.isTrue(riskScore &gt;= 0, 'Should handle invalid rows gracefully');
     }
     
     @isTest
@@ -300,6 +300,6 @@ private class ElaroRealtimeMonitorTest {
         Test.stopTest();
         
         // Should add time factor
-        System.assert(riskScore &gt; 20, 'Outside business hours should add risk');
+        Assert.isTrue(riskScore &gt; 20, 'Outside business hours should add risk');
     }
 }

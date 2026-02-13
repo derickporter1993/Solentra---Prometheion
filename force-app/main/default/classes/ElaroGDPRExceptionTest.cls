@@ -16,7 +16,7 @@ private class ElaroGDPRExceptionTest {
         try {
             throw new ElaroGDPRException(errorMessage);
         } catch (ElaroGDPRException e) {
-            System.assertEquals(errorMessage, e.getMessage(), 'Exception message should match');
+            Assert.areEqual(errorMessage, e.getMessage(), 'Exception message should match');
         }
 
         Test.stopTest();
@@ -32,8 +32,8 @@ private class ElaroGDPRExceptionTest {
         try {
             throw new ElaroGDPRException(errorMessage, cause);
         } catch (ElaroGDPRException e) {
-            System.assertEquals(errorMessage, e.getMessage(), 'Exception message should match');
-            System.assertEquals(cause, e.getCause(), 'Cause should be preserved');
+            Assert.areEqual(errorMessage, e.getMessage(), 'Exception message should match');
+            Assert.areEqual(cause, e.getCause(), 'Cause should be preserved');
         }
 
         Test.stopTest();
@@ -47,7 +47,7 @@ private class ElaroGDPRExceptionTest {
 
         Test.stopTest();
 
-        System.assertNotEquals(null, e, 'Exception should be instantiated');
+        Assert.areNotEqual(null, e, 'Exception should be instantiated');
     }
 
     @IsTest
@@ -61,12 +61,12 @@ private class ElaroGDPRExceptionTest {
             simulateGDPRFailure();
         } catch (ElaroGDPRException e) {
             exceptionCaught = true;
-            System.assert(e.getMessage().contains('Contact not found'), 'Message should indicate contact not found');
+            Assert.isTrue(e.getMessage().contains('Contact not found'), 'Message should indicate contact not found');
         }
 
         Test.stopTest();
 
-        System.assert(exceptionCaught, 'Exception should have been caught');
+        Assert.isTrue(exceptionCaught, 'Exception should have been caught');
     }
 
     @IsTest
@@ -77,8 +77,8 @@ private class ElaroGDPRExceptionTest {
 
         Test.stopTest();
 
-        System.assert(gdprEx instanceof Exception, 'Should be an Exception');
-        System.assert(gdprEx instanceof ElaroGDPRException, 'Should be a ElaroGDPRException');
+        Assert.isTrue(gdprEx instanceof Exception, 'Should be an Exception');
+        Assert.isTrue(gdprEx instanceof ElaroGDPRException, 'Should be a ElaroGDPRException');
     }
 
     @IsTest
@@ -89,8 +89,8 @@ private class ElaroGDPRExceptionTest {
             throw new ElaroGDPRException('Stack trace test');
         } catch (ElaroGDPRException e) {
             String stackTrace = e.getStackTraceString();
-            System.assertNotEquals(null, stackTrace, 'Stack trace should not be null');
-            System.assert(stackTrace.length() > 0, 'Stack trace should have content');
+            Assert.areNotEqual(null, stackTrace, 'Stack trace should not be null');
+            Assert.isTrue(stackTrace.length() > 0, 'Stack trace should have content');
         }
 
         Test.stopTest();
@@ -107,9 +107,9 @@ private class ElaroGDPRExceptionTest {
                 throw new ElaroGDPRException('GDPR lookup failed', qe);
             }
         } catch (ElaroGDPRException e) {
-            System.assertEquals('GDPR lookup failed', e.getMessage(), 'Outer message should match');
-            System.assertNotEquals(null, e.getCause(), 'Should have a cause');
-            System.assert(e.getCause() instanceof QueryException, 'Cause should be QueryException');
+            Assert.areEqual('GDPR lookup failed', e.getMessage(), 'Outer message should match');
+            Assert.areNotEqual(null, e.getCause(), 'Should have a cause');
+            Assert.isTrue(e.getCause() instanceof QueryException, 'Cause should be QueryException');
         }
 
         Test.stopTest();

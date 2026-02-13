@@ -12,11 +12,11 @@ private class ElaroChangeAdvisorTest {
             ElaroChangeAdvisor.analyzeProposedChange('GRANT_ADMIN_PERMISSION', proposedConfig);
         Test.stopTest();
         
-        System.assertNotEquals(null, impact, 'Should return impact analysis');
-        System.assertNotEquals(null, impact.frameworkImpact, 'Should have framework impact');
-        System.assert(impact.overallImpact < 0, 'Should show negative impact');
-        System.assertNotEquals(null, impact.alternatives, 'Should provide alternatives');
-        System.assert(!impact.alternatives.isEmpty(), 'Should have at least one alternative');
+        Assert.areNotEqual(null, impact, 'Should return impact analysis');
+        Assert.areNotEqual(null, impact.frameworkImpact, 'Should have framework impact');
+        Assert.isTrue(impact.overallImpact < 0, 'Should show negative impact');
+        Assert.areNotEqual(null, impact.alternatives, 'Should provide alternatives');
+        Assert.isTrue(!impact.alternatives.isEmpty(), 'Should have at least one alternative');
     }
     
     @isTest
@@ -30,8 +30,8 @@ private class ElaroChangeAdvisorTest {
             ElaroChangeAdvisor.analyzeProposedChange('MODIFY_SHARING_RULE', proposedConfig);
         Test.stopTest();
         
-        System.assertNotEquals(null, impact, 'Should return impact analysis');
-        System.assert(impact.frameworkImpact.containsKey('HIPAA'), 'Should include HIPAA impact');
+        Assert.areNotEqual(null, impact, 'Should return impact analysis');
+        Assert.isTrue(impact.frameworkImpact.containsKey('HIPAA'), 'Should include HIPAA impact');
     }
     
     @isTest
@@ -53,7 +53,7 @@ private class ElaroChangeAdvisorTest {
             ElaroChangeAdvisor.analyzeProposedChange('ASSIGN_PERMISSION_SET', proposedConfig);
         Test.stopTest();
         
-        System.assertNotEquals(null, impact, 'Should return impact analysis');
+        Assert.areNotEqual(null, impact, 'Should return impact analysis');
     }
 }
 

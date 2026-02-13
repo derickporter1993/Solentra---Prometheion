@@ -77,7 +77,7 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
             AND Notification_Required__c = true
             AND (Individuals_Notified__c = false OR HHS_Notified__c = false)
             AND Status__c != 'Closed'
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
             ORDER BY Notification_Deadline__c ASC
         ];
     }
@@ -98,7 +98,7 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
             AND Notification_Required__c = true
             AND (Individuals_Notified__c = false OR HHS_Notified__c = false)
             AND Status__c != 'Closed'
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
             ORDER BY Notification_Deadline__c ASC
         ];
     }
@@ -120,7 +120,7 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
             AND Notification_Required__c = true
             AND (Individuals_Notified__c = false OR HHS_Notified__c = false)
             AND Status__c != 'Closed'
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
             ORDER BY Notification_Deadline__c ASC
         ];
     }
@@ -137,7 +137,7 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
             AND HHS_Notified__c = false
             AND Notification_Required__c = true
             AND Status__c != 'Closed'
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
     }
 
@@ -221,7 +221,7 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
                 WHERE Related_Record_Id__c IN :breachIds
                 AND Status__c NOT IN ('Verified', 'Accepted Risk')
                 AND CreatedDate >= :DateTime.now().addDays(-1)
-                WITH SECURITY_ENFORCED
+                WITH USER_MODE
             ]) {
                 existingGapBreachIds.add(existing.Related_Record_Id__c);
             }
@@ -236,7 +236,7 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
 
             if (!newGaps.isEmpty()) {
                 ElaroSecurityUtils.validateCRUDAccess('Compliance_Gap__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-                insert newGaps;
+                insert as user newGaps;
             }
         }
 
@@ -292,7 +292,7 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
 
         if (!breachesToUpdate.isEmpty()) {
             ElaroSecurityUtils.validateCRUDAccess('HIPAA_Breach__c', ElaroSecurityUtils.DmlOperation.DML_UPDATE);
-            update breachesToUpdate;
+            update as user breachesToUpdate;
         }
     }
 
@@ -313,7 +313,7 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
             log.Details__c = details;
             log.User__c = UserInfo.getUserId();
             ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert log;
+            insert as user log;
         } catch (Exception e) {
             ElaroLogger.error( 'Failed to log execution: ' + e.getMessage());
         }
@@ -330,7 +330,7 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
             log.Details__c = message;
             log.User__c = UserInfo.getUserId();
             ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert log;
+            insert as user log;
         } catch (Exception e) {
             ElaroLogger.error( 'Failed to log error: ' + e.getMessage());
         }
@@ -361,7 +361,7 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
             SELECT Id, CronJobDetail.Name
             FROM CronTrigger
             WHERE CronJobDetail.Name LIKE :('%' + JOB_NAME + '%')
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
 
         for (CronTrigger job : jobs) {

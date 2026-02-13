@@ -97,7 +97,7 @@ private class BreachDeadlineMonitorTest {
         Test.stopTest();
 
         // Should complete without errors
-        System.assert(true, 'Monitor should execute successfully');
+        Assert.isTrue(true, 'Monitor should execute successfully');
     }
 
     @IsTest
@@ -117,7 +117,7 @@ private class BreachDeadlineMonitorTest {
             AND CreatedDate = TODAY
         ];
 
-        System.assert(gaps.size() > 0, 'Should create compliance gaps for breaches');
+        Assert.isTrue(gaps.size() > 0, 'Should create compliance gaps for breaches');
     }
 
     @IsTest
@@ -128,7 +128,7 @@ private class BreachDeadlineMonitorTest {
 
         Test.stopTest();
 
-        System.assertNotEquals(null, jobId, 'Job ID should not be null');
+        Assert.areNotEqual(null, jobId, 'Job ID should not be null');
 
         // Verify job was scheduled
         List<CronTrigger> jobs = [
@@ -136,7 +136,7 @@ private class BreachDeadlineMonitorTest {
             FROM CronTrigger
             WHERE Id = :jobId
         ];
-        System.assertEquals(1, jobs.size(), 'Job should be scheduled');
+        Assert.areEqual(1, jobs.size(), 'Job should be scheduled');
     }
 
     @IsTest
@@ -148,7 +148,7 @@ private class BreachDeadlineMonitorTest {
 
         Test.stopTest();
 
-        System.assertNotEquals(null, jobId, 'Job ID should not be null');
+        Assert.areNotEqual(null, jobId, 'Job ID should not be null');
     }
 
     @IsTest
@@ -168,7 +168,7 @@ private class BreachDeadlineMonitorTest {
             FROM CronTrigger
             WHERE Id = :jobId
         ];
-        System.assertEquals(0, jobs.size(), 'Job should be aborted');
+        Assert.areEqual(0, jobs.size(), 'Job should be aborted');
     }
 
     @IsTest
@@ -180,7 +180,7 @@ private class BreachDeadlineMonitorTest {
         Test.stopTest();
 
         // Should complete without errors
-        System.assert(true, 'runNow should complete successfully');
+        Assert.isTrue(true, 'runNow should complete successfully');
     }
 
     @IsTest
@@ -191,11 +191,11 @@ private class BreachDeadlineMonitorTest {
 
         Test.stopTest();
 
-        System.assertNotEquals(null, summary, 'Should return deadline summary');
-        System.assert(summary.overdueCount >= 0, 'Overdue count should be valid');
-        System.assert(summary.criticalCount >= 0, 'Critical count should be valid');
-        System.assert(summary.upcomingCount >= 0, 'Upcoming count should be valid');
-        System.assert(summary.hhsRequiredCount >= 0, 'HHS required count should be valid');
+        Assert.areNotEqual(null, summary, 'Should return deadline summary');
+        Assert.isTrue(summary.overdueCount >= 0, 'Overdue count should be valid');
+        Assert.isTrue(summary.criticalCount >= 0, 'Critical count should be valid');
+        Assert.isTrue(summary.upcomingCount >= 0, 'Upcoming count should be valid');
+        Assert.isTrue(summary.hhsRequiredCount >= 0, 'HHS required count should be valid');
     }
 
     @IsTest
@@ -209,11 +209,11 @@ private class BreachDeadlineMonitorTest {
         summary.hhsRequiredCount = 1;
         summary.totalActiveBreaches = 10;
 
-        System.assertEquals(2, summary.overdueCount, 'Overdue count should be set');
-        System.assertEquals(3, summary.criticalCount, 'Critical count should be set');
-        System.assertEquals(5, summary.upcomingCount, 'Upcoming count should be set');
-        System.assertEquals(1, summary.hhsRequiredCount, 'HHS required count should be set');
-        System.assertEquals(10, summary.totalActiveBreaches, 'Total should be set');
+        Assert.areEqual(2, summary.overdueCount, 'Overdue count should be set');
+        Assert.areEqual(3, summary.criticalCount, 'Critical count should be set');
+        Assert.areEqual(5, summary.upcomingCount, 'Upcoming count should be set');
+        Assert.areEqual(1, summary.hhsRequiredCount, 'HHS required count should be set');
+        Assert.areEqual(10, summary.totalActiveBreaches, 'Total should be set');
     }
 
     @IsTest
@@ -229,7 +229,7 @@ private class BreachDeadlineMonitorTest {
         Test.stopTest();
 
         // Should handle empty data gracefully
-        System.assert(true, 'Should handle no breaches gracefully');
+        Assert.isTrue(true, 'Should handle no breaches gracefully');
     }
 
     @IsTest
@@ -260,7 +260,7 @@ private class BreachDeadlineMonitorTest {
         Test.stopTest();
 
         // Should handle bulk data without governor limit issues
-        System.assert(Limits.getQueries() < 100, 'Should stay under SOQL limit');
-        System.assert(Limits.getDmlStatements() < 150, 'Should stay under DML limit');
+        Assert.isTrue(Limits.getQueries() < 100, 'Should stay under SOQL limit');
+        Assert.isTrue(Limits.getDmlStatements() < 150, 'Should stay under DML limit');
     }
 }

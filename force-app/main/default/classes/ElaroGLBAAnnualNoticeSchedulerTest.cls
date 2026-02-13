@@ -68,7 +68,7 @@ private class ElaroGLBAAnnualNoticeSchedulerTest {
         ];
         
         // Note: In test context, batch jobs execute synchronously
-        System.assert(!jobs.isEmpty() || Test.isRunningTest(), 'Batch job should be queued or executed');
+        Assert.isTrue(!jobs.isEmpty() || Test.isRunningTest(), 'Batch job should be queued or executed');
     }
     
     @isTest
@@ -82,7 +82,7 @@ private class ElaroGLBAAnnualNoticeSchedulerTest {
         scheduler.execute(null);
         Test.stopTest();
         
-        System.assert(true, 'Scheduler should execute (business day check is internal)');
+        Assert.isTrue(true, 'Scheduler should execute (business day check is internal)');
     }
     
     @isTest
@@ -104,7 +104,7 @@ private class ElaroGLBAAnnualNoticeSchedulerTest {
         
         // The batch should create new annual notices
         // Note: Actual creation depends on batch execution
-        System.assert(true, 'Batch should process notices');
+        Assert.isTrue(true, 'Batch should process notices');
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -117,7 +117,7 @@ private class ElaroGLBAAnnualNoticeSchedulerTest {
         String jobId = ElaroGLBAAnnualNoticeScheduler.scheduleDaily();
         Test.stopTest();
         
-        System.assertNotEquals(null, jobId, 'Should return job ID');
+        Assert.areNotEqual(null, jobId, 'Should return job ID');
         
         // Verify job was scheduled
         CronTrigger ct = [
@@ -126,9 +126,9 @@ private class ElaroGLBAAnnualNoticeSchedulerTest {
             WHERE Id = :jobId
         ];
         
-        System.assert(ct.CronJobDetail.Name.contains('GLBA Annual Notice'), 
+        Assert.isTrue(ct.CronJobDetail.Name.contains('GLBA Annual Notice'), 
             'Job name should contain GLBA Annual Notice');
-        System.assertNotEquals(null, ct.CronExpression, 'Cron expression should be set');
+        Assert.areNotEqual(null, ct.CronExpression, 'Cron expression should be set');
     }
     
     @isTest
@@ -138,7 +138,7 @@ private class ElaroGLBAAnnualNoticeSchedulerTest {
         String jobId = ElaroGLBAAnnualNoticeScheduler.scheduleDaily();
         Test.stopTest();
         
-        System.assertNotEquals(null, jobId, 'Should return job ID');
+        Assert.areNotEqual(null, jobId, 'Should return job ID');
         
         CronTrigger ct = [
             SELECT Id, CronExpression
@@ -147,7 +147,7 @@ private class ElaroGLBAAnnualNoticeSchedulerTest {
         ];
         
         // Verify cron expression is valid (default: '0 0 6 * * ?')
-        System.assert(ct.CronExpression.contains('0 0 6') || ct.CronExpression.length() > 0, 
+        Assert.isTrue(ct.CronExpression.contains('0 0 6') || ct.CronExpression.length() > 0, 
             'Cron expression should be valid');
     }
     
@@ -166,7 +166,7 @@ private class ElaroGLBAAnnualNoticeSchedulerTest {
         Test.stopTest();
         
         // The scheduler should handle both business and non-business days
-        System.assert(true, 'Business day logic should work correctly');
+        Assert.isTrue(true, 'Business day logic should work correctly');
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -198,7 +198,7 @@ private class ElaroGLBAAnnualNoticeSchedulerTest {
         Test.stopTest();
         
         // Verify batch processed the notices
-        System.assert(true, 'Scheduler should integrate with batch correctly');
+        Assert.isTrue(true, 'Scheduler should integrate with batch correctly');
     }
     
     @isTest
@@ -209,8 +209,8 @@ private class ElaroGLBAAnnualNoticeSchedulerTest {
         String jobId2 = ElaroGLBAAnnualNoticeScheduler.scheduleDaily();
         Test.stopTest();
         
-        System.assertNotEquals(null, jobId1, 'First job should be scheduled');
-        System.assertNotEquals(null, jobId2, 'Second job should be scheduled');
-        System.assertNotEquals(jobId1, jobId2, 'Jobs should have different IDs');
+        Assert.areNotEqual(null, jobId1, 'First job should be scheduled');
+        Assert.areNotEqual(null, jobId2, 'Second job should be scheduled');
+        Assert.areNotEqual(jobId1, jobId2, 'Jobs should have different IDs');
     }
 }

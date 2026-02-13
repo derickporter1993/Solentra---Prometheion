@@ -65,7 +65,7 @@ public without sharing class ElaroAuditTrailPoller implements Schedulable {
         List<CronTrigger> jobs = [
             SELECT Id FROM CronTrigger
             WHERE CronJobDetail.Name = :JOB_NAME
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
         
         for (CronTrigger job : jobs) {
@@ -89,7 +89,7 @@ public without sharing class ElaroAuditTrailPoller implements Schedulable {
                 SELECT Action, CreatedBy.Username, CreatedDate, Display, Section
                 FROM SetupAuditTrail
                 WHERE CreatedDate >= :startTime AND CreatedDate <= :endTime
-                WITH SECURITY_ENFORCED
+                WITH USER_MODE
                 ORDER BY CreatedDate DESC
                 LIMIT :BATCH_SIZE
             ]) {
@@ -139,7 +139,7 @@ public without sharing class ElaroAuditTrailPoller implements Schedulable {
             }
             settings.Last_Audit_Trail_Poll__c = pollTime;
             ElaroSecurityUtils.validateCRUDAccess('Elaro_Settings__c', ElaroSecurityUtils.DmlOperation.DML_UPSERT);
-            upsert settings;
+            upsert as user settings;
         } catch (Exception e) {
             ElaroLogger.error( 'ElaroAuditTrailPoller: Failed to update last poll time: ' + e.getMessage());
             // Don't throw - logging failure shouldn't break the poller

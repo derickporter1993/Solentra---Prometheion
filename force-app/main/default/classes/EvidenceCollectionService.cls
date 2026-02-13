@@ -47,7 +47,7 @@ public with sharing class EvidenceCollectionService {
             ElaroSecurityUtils.validateCRUDAccess('Compliance_Evidence__c',
                 ElaroSecurityUtils.DmlOperation.DML_INSERT);
             try {
-                insert evidenceList;
+                insert as user evidenceList;
             } catch (DmlException e) {
                 throw new AuraHandledException('Error collecting evidence: ' + getSafeDmlMessage(e));
             }
@@ -120,7 +120,7 @@ public with sharing class EvidenceCollectionService {
             SELECT COUNT()
             FROM PermissionSet
             WHERE IsCustom = true
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
         
         Compliance_Evidence__c ev = new Compliance_Evidence__c(

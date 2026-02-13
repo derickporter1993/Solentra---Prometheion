@@ -34,10 +34,10 @@ private class ElaroComplianceCopilotServiceTest {
             ElaroComplianceCopilotService.analyzeEventPattern(eventIds);
         Test.stopTest();
         
-        System.assertNotEquals(null, rec, 'Should return recommendation');
-        System.assertNotEquals(null, rec.recommendation, 'Should have recommendation text');
-        System.assertNotEquals(null, rec.severity, 'Should have severity');
-        System.assert(rec.confidence &gt;= 0 &amp;&amp; rec.confidence &lt;= 100, 'Confidence should be 0-100');
+        Assert.areNotEqual(null, rec, 'Should return recommendation');
+        Assert.areNotEqual(null, rec.recommendation, 'Should have recommendation text');
+        Assert.areNotEqual(null, rec.severity, 'Should have severity');
+        Assert.isTrue(rec.confidence &gt;= 0 &amp;&amp; rec.confidence &lt;= 100, 'Confidence should be 0-100');
     }
     
     @isTest
@@ -49,8 +49,8 @@ private class ElaroComplianceCopilotServiceTest {
             ElaroComplianceCopilotService.analyzeEventPattern(new List&lt;String&gt;());
         Test.stopTest();
         
-        System.assertNotEquals(null, rec, 'Should return recommendation even for empty list');
-        System.assert(rec.recommendation.contains('No events'), 'Should indicate no events');
+        Assert.areNotEqual(null, rec, 'Should return recommendation even for empty list');
+        Assert.isTrue(rec.recommendation.contains('No events'), 'Should indicate no events');
     }
     
     @isTest
@@ -62,7 +62,7 @@ private class ElaroComplianceCopilotServiceTest {
             ElaroComplianceCopilotService.analyzeEventPattern(null);
         Test.stopTest();
         
-        System.assertNotEquals(null, rec, 'Should return recommendation for null list');
+        Assert.areNotEqual(null, rec, 'Should return recommendation for null list');
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -79,8 +79,8 @@ private class ElaroComplianceCopilotServiceTest {
         String summary = ElaroComplianceCopilotService.generateAuditSummary(pkg.Id);
         Test.stopTest();
         
-        System.assertNotEquals(null, summary, 'Should return summary');
-        System.assert(summary.length() &gt; 0, 'Summary should not be empty');
+        Assert.areNotEqual(null, summary, 'Should return summary');
+        Assert.isTrue(summary.length() &gt; 0, 'Summary should not be empty');
     }
     
     @isTest
@@ -90,9 +90,9 @@ private class ElaroComplianceCopilotServiceTest {
         Test.startTest();
         try {
             ElaroComplianceCopilotService.generateAuditSummary(null);
-            System.assert(false, 'Should throw exception');
+            Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should mention required');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should mention required');
         }
         Test.stopTest();
     }
@@ -104,9 +104,9 @@ private class ElaroComplianceCopilotServiceTest {
         Test.startTest();
         try {
             ElaroComplianceCopilotService.generateAuditSummary('');
-            System.assert(false, 'Should throw exception');
+            Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should mention required');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should mention required');
         }
         Test.stopTest();
     }
@@ -124,7 +124,7 @@ private class ElaroComplianceCopilotServiceTest {
             ElaroComplianceCopilotService.predictComplianceRisks('HIPAA');
         Test.stopTest();
         
-        System.assertNotEquals(null, predictions, 'Should return predictions');
+        Assert.areNotEqual(null, predictions, 'Should return predictions');
         // May be empty if no relevant data
     }
     
@@ -135,9 +135,9 @@ private class ElaroComplianceCopilotServiceTest {
         Test.startTest();
         try {
             ElaroComplianceCopilotService.predictComplianceRisks(null);
-            System.assert(false, 'Should throw exception');
+            Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should mention required');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should mention required');
         }
         Test.stopTest();
     }
@@ -164,7 +164,7 @@ private class ElaroComplianceCopilotServiceTest {
             ElaroComplianceCopilotService.categorizeEvents(eventIds, 'HIPAA');
         Test.stopTest();
         
-        System.assertNotEquals(null, mappings, 'Should return mappings');
+        Assert.areNotEqual(null, mappings, 'Should return mappings');
     }
     
     @isTest
@@ -176,7 +176,7 @@ private class ElaroComplianceCopilotServiceTest {
             ElaroComplianceCopilotService.categorizeEvents(new List&lt;String&gt;(), 'HIPAA');
         Test.stopTest();
         
-        System.assertEquals(0, mappings.size(), 'Should return empty map for empty input');
+        Assert.areEqual(0, mappings.size(), 'Should return empty map for empty input');
     }
     
     @isTest
@@ -191,7 +191,7 @@ private class ElaroComplianceCopilotServiceTest {
                 new List&lt;String&gt;{items[0].Id}, null);
         Test.stopTest();
         
-        System.assertEquals(0, mappings.size(), 'Should return empty map for null framework');
+        Assert.areEqual(0, mappings.size(), 'Should return empty map for null framework');
     }
     
     // ═══════════════════════════════════════════════════════════════

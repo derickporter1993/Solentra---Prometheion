@@ -110,7 +110,7 @@ public with sharing class MobileAlertPublisher {
             gap.Alert_Acknowledged_At__c = Datetime.now();
 
             if (Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-                update gap;
+                update as user gap;
             }
         }
 
@@ -144,7 +144,7 @@ public with sharing class MobileAlertPublisher {
             gap.Alert_Snoozed_Until__c = snoozeUntil;
 
             if (Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-                update gap;
+                update as user gap;
             }
         }
 
@@ -229,7 +229,7 @@ public with sharing class MobileAlertPublisher {
             List<CustomNotificationType> notifTypes = [
                 SELECT Id FROM CustomNotificationType
                 WHERE DeveloperName = :typeName
-                WITH SECURITY_ENFORCED
+                WITH USER_MODE
                 LIMIT 1
             ];
 
@@ -337,7 +337,7 @@ public with sharing class MobileAlertPublisher {
         List<CronTrigger> jobs = [
             SELECT Id FROM CronTrigger
             WHERE CronJobDetail.Name LIKE :('%' + jobPrefix + '%')
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
 
         for (CronTrigger job : jobs) {
@@ -407,7 +407,7 @@ public with sharing class MobileAlertPublisher {
                 SELECT Id, Name, Framework__c, Severity__c, Gap_Description__c, Alert_Snoozed_Until__c
                 FROM Compliance_Gap__c
                 WHERE Id = :alertId
-                WITH SECURITY_ENFORCED
+                WITH USER_MODE
                 LIMIT 1
             ];
 

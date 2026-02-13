@@ -18,7 +18,7 @@ public with sharing class EscalationPathController {
                    Level__c, Role__c, Notification_Method__c,
                    Escalation_Delay_Minutes__c, Active__c
             FROM Elaro_Escalation_Path__c
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
             ORDER BY Level__c ASC, Role__c ASC
             LIMIT 100
         ];
@@ -40,7 +40,7 @@ public with sharing class EscalationPathController {
         validatePath(path);
 
         if (Schema.sObjectType.Elaro_Escalation_Path__c.isCreateable()) {
-            insert path;
+            insert as user path;
             return path.Id;
         } else {
             throw new AuraHandledException('Insufficient permissions to create escalation paths');
@@ -56,7 +56,7 @@ public with sharing class EscalationPathController {
         validatePath(path);
 
         if (Schema.sObjectType.Elaro_Escalation_Path__c.isUpdateable()) {
-            update path;
+            update as user path;
         } else {
             throw new AuraHandledException('Insufficient permissions to update escalation paths');
         }

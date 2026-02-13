@@ -59,7 +59,7 @@ private class ElaroCCPASLAMonitorSchedulerTest {
         Test.stopTest();
 
         CronTrigger ct = [SELECT Id, CronExpression, State FROM CronTrigger WHERE Id = :jobId];
-        System.assertEquals(cronExpression, ct.CronExpression, 'Cron expression should match');
+        Assert.areEqual(cronExpression, ct.CronExpression, 'Cron expression should match');
     }
 
     @isTest
@@ -68,7 +68,7 @@ private class ElaroCCPASLAMonitorSchedulerTest {
         String jobId = ElaroCCPASLAMonitorScheduler.scheduleDaily();
         Test.stopTest();
 
-        System.assertNotEquals(null, jobId, 'Job ID should not be null');
+        Assert.areNotEqual(null, jobId, 'Job ID should not be null');
     }
 
     @isTest
@@ -77,7 +77,7 @@ private class ElaroCCPASLAMonitorSchedulerTest {
         String jobId = ElaroCCPASLAMonitorScheduler.scheduleHourly();
         Test.stopTest();
 
-        System.assertNotEquals(null, jobId, 'Hourly job ID should not be null');
+        Assert.areNotEqual(null, jobId, 'Hourly job ID should not be null');
     }
 
     @isTest
@@ -93,7 +93,7 @@ private class ElaroCCPASLAMonitorSchedulerTest {
             SELECT Id, Status__c FROM CCPA_Request__c
             WHERE Status__c = 'Overdue'
         ];
-        System.assert(overdueRequests.size() > 0, 'Overdue requests should be marked');
+        Assert.isTrue(overdueRequests.size() > 0, 'Overdue requests should be marked');
     }
 
     @isTest
@@ -106,6 +106,6 @@ private class ElaroCCPASLAMonitorSchedulerTest {
         scheduler.execute(null);
         Test.stopTest();
 
-        System.assert(true, 'Should handle no requests gracefully');
+        Assert.isTrue(true, 'Should handle no requests gracefully');
     }
 }

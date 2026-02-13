@@ -36,10 +36,10 @@ private class RemediationOrchestratorTest {
         Id caseId = RemediationOrchestrator.createRemediationCase(evidence.Id, 'High');
         Test.stopTest();
 
-        System.assertNotEquals(null, caseId, 'Case should be created');
+        Assert.areNotEqual(null, caseId, 'Case should be created');
         Case remedCase = [SELECT Subject, Priority, Status FROM Case WHERE Id = :caseId];
-        System.assertEquals('High', remedCase.Priority, 'Priority should match');
-        System.assertEquals('New', remedCase.Status, 'Status should be New');
+        Assert.areEqual('High', remedCase.Priority, 'Priority should match');
+        Assert.areEqual('New', remedCase.Status, 'Status should be New');
     }
 
     @isTest
@@ -51,7 +51,7 @@ private class RemediationOrchestratorTest {
         Test.stopTest();
 
         Case remedCase = [SELECT Priority FROM Case WHERE Id = :caseId];
-        System.assertEquals('High', remedCase.Priority, 'Default priority should be High');
+        Assert.areEqual('High', remedCase.Priority, 'Default priority should be High');
     }
 
     @isTest
@@ -59,9 +59,9 @@ private class RemediationOrchestratorTest {
         Test.startTest();
         try {
             RemediationOrchestrator.createRemediationCase('', 'Medium');
-            System.assert(false, 'Should throw exception');
+            Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Error message should indicate missing ID');
+            Assert.isTrue(e.getMessage().contains('required'), 'Error message should indicate missing ID');
         }
         Test.stopTest();
     }
@@ -72,15 +72,15 @@ private class RemediationOrchestratorTest {
         List<RemediationOrchestrator.ActionOption> actions = RemediationOrchestrator.getAvailableActions('LoginAs');
         Test.stopTest();
 
-        System.assert(actions.size() >= 2, 'Should have multiple actions available');
+        Assert.isTrue(actions.size() >= 2, 'Should have multiple actions available');
         Boolean hasRevoke = false;
         Boolean hasLock = false;
         for (RemediationOrchestrator.ActionOption action : actions) {
             if (action.value == 'REVOKE_PERMISSION') hasRevoke = true;
             if (action.value == 'LOCK_USER') hasLock = true;
         }
-        System.assert(hasRevoke, 'LoginAs should have REVOKE_PERMISSION action');
-        System.assert(hasLock, 'LoginAs should have LOCK_USER action');
+        Assert.isTrue(hasRevoke, 'LoginAs should have REVOKE_PERMISSION action');
+        Assert.isTrue(hasLock, 'LoginAs should have LOCK_USER action');
     }
 
     @isTest
@@ -93,7 +93,7 @@ private class RemediationOrchestratorTest {
         for (RemediationOrchestrator.ActionOption action : actions) {
             if (action.value == 'DISABLE_API_ACCESS') hasDisableAPI = true;
         }
-        System.assert(hasDisableAPI, 'API event should have DISABLE_API_ACCESS action');
+        Assert.isTrue(hasDisableAPI, 'API event should have DISABLE_API_ACCESS action');
     }
 
     @isTest
@@ -109,8 +109,8 @@ private class RemediationOrchestratorTest {
         );
         Test.stopTest();
 
-        System.assertEquals(true, result.success, 'Action should succeed');
-        System.assertNotEquals(null, result.resultId, 'Case ID should be returned');
+        Assert.areEqual(true, result.success, 'Action should succeed');
+        Assert.areNotEqual(null, result.resultId, 'Case ID should be returned');
     }
 
     @isTest
@@ -121,7 +121,7 @@ private class RemediationOrchestratorTest {
         );
         Test.stopTest();
 
-        System.assertNotEquals(null, result.message, 'Message should be set');
+        Assert.areNotEqual(null, result.message, 'Message should be set');
     }
 
     @isTest
@@ -129,9 +129,9 @@ private class RemediationOrchestratorTest {
         Test.startTest();
         try {
             RemediationOrchestrator.executeRemediationAction('INVALID_ACTION', null, new Map<String, Object>());
-            System.assert(false, 'Should throw exception');
+            Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Invalid'), 'Error should indicate invalid action');
+            Assert.isTrue(e.getMessage().contains('Invalid'), 'Error should indicate invalid action');
         }
         Test.stopTest();
     }
@@ -144,7 +144,7 @@ private class RemediationOrchestratorTest {
         );
         Test.stopTest();
 
-        System.assertEquals(true, result.success, 'Quarantine action should succeed');
+        Assert.areEqual(true, result.success, 'Quarantine action should succeed');
     }
 
     @isTest
@@ -155,6 +155,6 @@ private class RemediationOrchestratorTest {
         List<RemediationOrchestrator.RemediationResult> history = RemediationOrchestrator.getRemediationHistory(evidence.Id);
         Test.stopTest();
 
-        System.assertNotEquals(null, history, 'History should not be null');
+        Assert.areNotEqual(null, history, 'History should not be null');
     }
 }

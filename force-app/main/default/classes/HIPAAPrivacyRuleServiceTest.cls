@@ -41,7 +41,7 @@ public class HIPAAPrivacyRuleServiceTest {
         String frameworkName = service.getFrameworkName();
         Test.stopTest();
 
-        System.assertEquals('HIPAA', frameworkName, 'Framework name should be HIPAA');
+        Assert.areEqual('HIPAA', frameworkName, 'Framework name should be HIPAA');
     }
 
     @isTest
@@ -52,7 +52,7 @@ public class HIPAAPrivacyRuleServiceTest {
         List<ComplianceServiceBase.Violation> violations = service.getViolations();
         Test.stopTest();
 
-        System.assertNotEquals(null, violations, 'Violations should not be null');
+        Assert.areNotEqual(null, violations, 'Violations should not be null');
     }
 
     @isTest
@@ -63,7 +63,7 @@ public class HIPAAPrivacyRuleServiceTest {
         Decimal score = service.getComplianceScore();
         Test.stopTest();
 
-        System.assert(score >= 0 && score <= 100, 'Score should be between 0 and 100');
+        Assert.isTrue(score >= 0 && score <= 100, 'Score should be between 0 and 100');
     }
 
     @isTest
@@ -73,8 +73,8 @@ public class HIPAAPrivacyRuleServiceTest {
             HIPAAPrivacyRuleService.identifyPHIObjects();
         Test.stopTest();
 
-        System.assertNotEquals(null, phiObjects, 'PHI objects list should not be null');
-        System.assert(phiObjects.size() > 0, 'Should identify at least one PHI object');
+        Assert.areNotEqual(null, phiObjects, 'PHI objects list should not be null');
+        Assert.isTrue(phiObjects.size() > 0, 'Should identify at least one PHI object');
     }
 
     @isTest
@@ -84,9 +84,9 @@ public class HIPAAPrivacyRuleServiceTest {
             HIPAAPrivacyRuleService.evaluateMinimumNecessary();
         Test.stopTest();
 
-        System.assertNotEquals(null, result, 'Result should not be null');
-        System.assertNotEquals(null, result.evaluationDate, 'Evaluation date should be set');
-        System.assertNotEquals(null, result.profileAssessments, 'Profile assessments should not be null');
+        Assert.areNotEqual(null, result, 'Result should not be null');
+        Assert.areNotEqual(null, result.evaluationDate, 'Evaluation date should be set');
+        Assert.areNotEqual(null, result.profileAssessments, 'Profile assessments should not be null');
     }
 
     @isTest
@@ -96,7 +96,7 @@ public class HIPAAPrivacyRuleServiceTest {
             HIPAAPrivacyRuleService.getPHIAccessAudit(30);
         Test.stopTest();
 
-        System.assertNotEquals(null, accessRecords, 'Access records should not be null');
+        Assert.areNotEqual(null, accessRecords, 'Access records should not be null');
     }
 
     @isTest
@@ -106,7 +106,7 @@ public class HIPAAPrivacyRuleServiceTest {
             HIPAAPrivacyRuleService.getPHIAccessAudit(null);
         Test.stopTest();
 
-        System.assertNotEquals(null, accessRecords, 'Access records should not be null with null days');
+        Assert.areNotEqual(null, accessRecords, 'Access records should not be null with null days');
     }
 
     @isTest
@@ -118,10 +118,10 @@ public class HIPAAPrivacyRuleServiceTest {
         );
         Test.stopTest();
 
-        System.assertNotEquals(null, docId, 'Document ID should not be null');
+        Assert.areNotEqual(null, docId, 'Document ID should not be null');
 
         ContentDocument doc = [SELECT Title FROM ContentDocument WHERE Id = :docId];
-        System.assert(doc.Title.contains('PHI_Disclosure_Log'), 'Title should contain PHI_Disclosure_Log');
+        Assert.isTrue(doc.Title.contains('PHI_Disclosure_Log'), 'Title should contain PHI_Disclosure_Log');
     }
 
     @isTest
@@ -130,7 +130,7 @@ public class HIPAAPrivacyRuleServiceTest {
         Id docId = HIPAAPrivacyRuleService.generatePHIDisclosureLog(null, null);
         Test.stopTest();
 
-        System.assertNotEquals(null, docId, 'Document ID should not be null with default dates');
+        Assert.areNotEqual(null, docId, 'Document ID should not be null with default dates');
     }
 
     @isTest
@@ -151,7 +151,7 @@ public class HIPAAPrivacyRuleServiceTest {
             HIPAAPrivacyRuleService.identifyPHIObjects();
         Test.stopTest();
 
-        System.assertNotEquals(null, phiObjects, 'Should handle bulk data');
+        Assert.areNotEqual(null, phiObjects, 'Should handle bulk data');
     }
 
     @isTest
@@ -166,7 +166,7 @@ public class HIPAAPrivacyRuleServiceTest {
         Decimal score = service.getComplianceScore();
         Test.stopTest();
 
-        System.assertNotEquals(null, violations, 'Violations should not be null');
-        System.assert(score >= 0, 'Score should be non-negative');
+        Assert.areNotEqual(null, violations, 'Violations should not be null');
+        Assert.isTrue(score >= 0, 'Score should be non-negative');
     }
 }

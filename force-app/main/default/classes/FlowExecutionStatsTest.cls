@@ -29,8 +29,8 @@ private class FlowExecutionStatsTest {
         List<FlowExecutionStats.ExecAgg> results = FlowExecutionStats.getTopFlows(5);
         Test.stopTest();
         
-        System.assertNotEquals(null, results, 'Results should not be null');
-        System.assert(!results.isEmpty(), 'Should return at least one result');
+        Assert.areNotEqual(null, results, 'Results should not be null');
+        Assert.isTrue(!results.isEmpty(), 'Should return at least one result');
     }
     
     @IsTest
@@ -39,7 +39,7 @@ private class FlowExecutionStatsTest {
         List<FlowExecutionStats.ExecAgg> results = FlowExecutionStats.getTopFlows(2);
         Test.stopTest();
         
-        System.assert(results.size() <= 2, 'Should respect limit');
+        Assert.isTrue(results.size() <= 2, 'Should respect limit');
     }
     
     @IsTest
@@ -50,8 +50,8 @@ private class FlowExecutionStatsTest {
         
         // Verify fault counts are included
         for (FlowExecutionStats.ExecAgg agg : results) {
-            System.assertNotEquals(null, agg.faults, 'Fault count should not be null');
-            System.assert(agg.faults >= 0, 'Fault count should be non-negative');
+            Assert.areNotEqual(null, agg.faults, 'Fault count should not be null');
+            Assert.isTrue(agg.faults >= 0, 'Fault count should be non-negative');
         }
     }
     
@@ -62,7 +62,7 @@ private class FlowExecutionStatsTest {
         Test.stopTest();
         
         // Should default to at least 1
-        System.assert(results.size() >= 1, 'Should return at least 1 result even with 0 limit');
+        Assert.isTrue(results.size() >= 1, 'Should return at least 1 result even with 0 limit');
     }
     
     @IsTest
@@ -72,7 +72,7 @@ private class FlowExecutionStatsTest {
         Test.stopTest();
         
         // Should default to at least 1
-        System.assert(results.size() >= 1, 'Should return at least 1 result even with negative limit');
+        Assert.isTrue(results.size() >= 1, 'Should return at least 1 result even with negative limit');
     }
     
     @IsTest
@@ -84,6 +84,6 @@ private class FlowExecutionStatsTest {
         List<FlowExecutionStats.ExecAgg> results = FlowExecutionStats.getTopFlows(5);
         Test.stopTest();
         
-        System.assertEquals(0, results.size(), 'Should return empty list when no data');
+        Assert.areEqual(0, results.size(), 'Should return empty list when no data');
     }
 }

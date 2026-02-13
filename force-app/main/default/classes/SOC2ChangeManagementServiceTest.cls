@@ -35,7 +35,7 @@ public class SOC2ChangeManagementServiceTest {
         String frameworkName = service.getFrameworkName();
         Test.stopTest();
 
-        System.assertEquals('SOC2', frameworkName, 'Framework name should be SOC2');
+        Assert.areEqual('SOC2', frameworkName, 'Framework name should be SOC2');
     }
 
     @isTest
@@ -45,10 +45,10 @@ public class SOC2ChangeManagementServiceTest {
             SOC2ChangeManagementService.evaluateChangeControls();
         Test.stopTest();
 
-        System.assertNotEquals(null, result, 'Result should not be null');
-        System.assertNotEquals(null, result.evaluationDate, 'Evaluation date should be set');
-        System.assertNotEquals(null, result.controlResults, 'Control results should not be null');
-        System.assert(result.controlResults.size() > 0, 'Should have control results');
+        Assert.areNotEqual(null, result, 'Result should not be null');
+        Assert.areNotEqual(null, result.evaluationDate, 'Evaluation date should be set');
+        Assert.areNotEqual(null, result.controlResults, 'Control results should not be null');
+        Assert.isTrue(result.controlResults.size() > 0, 'Should have control results');
     }
 
     @isTest
@@ -58,8 +58,8 @@ public class SOC2ChangeManagementServiceTest {
             SOC2ChangeManagementService.getUnauthorizedChanges(30);
         Test.stopTest();
 
-        System.assertNotEquals(null, changes, 'Changes list should not be null');
-        System.assert(changes.size() > 0, 'Should find unauthorized changes from test data');
+        Assert.areNotEqual(null, changes, 'Changes list should not be null');
+        Assert.isTrue(changes.size() > 0, 'Should find unauthorized changes from test data');
     }
 
     @isTest
@@ -69,7 +69,7 @@ public class SOC2ChangeManagementServiceTest {
             SOC2ChangeManagementService.getUnauthorizedChanges(null);
         Test.stopTest();
 
-        System.assertNotEquals(null, changes, 'Changes list should not be null with null days');
+        Assert.areNotEqual(null, changes, 'Changes list should not be null with null days');
     }
 
     @isTest
@@ -86,7 +86,7 @@ public class SOC2ChangeManagementServiceTest {
         Test.stopTest();
 
         change = [SELECT Ticket_Reference__c FROM Metadata_Change__c WHERE Id = :change.Id];
-        System.assertEquals('JIRA-999', change.Ticket_Reference__c, 'Ticket should be linked');
+        Assert.areEqual('JIRA-999', change.Ticket_Reference__c, 'Ticket should be linked');
     }
 
     @isTest
@@ -96,9 +96,9 @@ public class SOC2ChangeManagementServiceTest {
         Test.startTest();
         try {
             SOC2ChangeManagementService.linkChangeToTicket(change.Id, '');
-            System.assert(false, 'Should have thrown exception');
+            Assert.fail( 'Should have thrown exception');
         } catch (ComplianceServiceBase.ComplianceServiceException e) {
-            System.assert(e.getMessage().contains('blank'), 'Should mention blank ticket');
+            Assert.isTrue(e.getMessage().contains('blank'), 'Should mention blank ticket');
         }
         Test.stopTest();
     }
@@ -109,7 +109,7 @@ public class SOC2ChangeManagementServiceTest {
         List<Metadata_Change__c> changes = SOC2ChangeManagementService.getChangesRequiringApproval();
         Test.stopTest();
 
-        System.assertNotEquals(null, changes, 'Changes list should not be null');
+        Assert.areNotEqual(null, changes, 'Changes list should not be null');
     }
 
     @isTest
@@ -121,11 +121,11 @@ public class SOC2ChangeManagementServiceTest {
         );
         Test.stopTest();
 
-        System.assertNotEquals(null, docId, 'Document ID should not be null');
+        Assert.areNotEqual(null, docId, 'Document ID should not be null');
 
         // Verify document was created
         ContentDocument doc = [SELECT Title FROM ContentDocument WHERE Id = :docId];
-        System.assert(doc.Title.contains('SOC2_Change_Report'), 'Title should contain SOC2_Change_Report');
+        Assert.isTrue(doc.Title.contains('SOC2_Change_Report'), 'Title should contain SOC2_Change_Report');
     }
 
     @isTest
@@ -134,7 +134,7 @@ public class SOC2ChangeManagementServiceTest {
         Id docId = SOC2ChangeManagementService.generateChangeReport(null, null);
         Test.stopTest();
 
-        System.assertNotEquals(null, docId, 'Document ID should not be null with default dates');
+        Assert.areNotEqual(null, docId, 'Document ID should not be null with default dates');
     }
 
     @isTest
@@ -145,7 +145,7 @@ public class SOC2ChangeManagementServiceTest {
         List<ComplianceServiceBase.Violation> violations = service.getViolations();
         Test.stopTest();
 
-        System.assertNotEquals(null, violations, 'Violations should not be null');
+        Assert.areNotEqual(null, violations, 'Violations should not be null');
     }
 
     @isTest
@@ -156,7 +156,7 @@ public class SOC2ChangeManagementServiceTest {
         Decimal score = service.getComplianceScore();
         Test.stopTest();
 
-        System.assert(score >= 0 && score <= 100, 'Score should be between 0 and 100');
+        Assert.isTrue(score >= 0 && score <= 100, 'Score should be between 0 and 100');
     }
 
     @isTest
@@ -180,6 +180,6 @@ public class SOC2ChangeManagementServiceTest {
             SOC2ChangeManagementService.evaluateChangeControls();
         Test.stopTest();
 
-        System.assertNotEquals(null, result, 'Result should not be null for bulk test');
+        Assert.areNotEqual(null, result, 'Result should not be null for bulk test');
     }
 }

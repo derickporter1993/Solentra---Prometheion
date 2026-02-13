@@ -18,7 +18,7 @@ public with sharing class OnCallScheduleController {
                    Rotation_Name__c, Start_Time__c, End_Time__c,
                    Timezone__c, Notification_Methods__c, Active__c
             FROM Elaro_On_Call_Schedule__c
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
             ORDER BY Start_Time__c DESC
             LIMIT 200
         ];
@@ -40,7 +40,7 @@ public with sharing class OnCallScheduleController {
         validateSchedule(schedule);
 
         if (Schema.sObjectType.Elaro_On_Call_Schedule__c.isCreateable()) {
-            insert schedule;
+            insert as user schedule;
             return schedule.Id;
         } else {
             throw new AuraHandledException('Insufficient permissions to create schedules');
@@ -56,7 +56,7 @@ public with sharing class OnCallScheduleController {
         validateSchedule(schedule);
 
         if (Schema.sObjectType.Elaro_On_Call_Schedule__c.isUpdateable()) {
-            update schedule;
+            update as user schedule;
         } else {
             throw new AuraHandledException('Insufficient permissions to update schedules');
         }

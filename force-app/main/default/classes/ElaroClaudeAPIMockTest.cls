@@ -24,9 +24,9 @@ private class ElaroClaudeAPIMockTest {
         Test.stopTest();
         
         // Verify response
-        System.assertEquals(200, res.getStatusCode(), 'Should return 200 for success');
-        System.assert(res.getBody().contains('recommendation'), 'Should contain recommendation in response');
-        System.assert(res.getBody().contains('claude-sonnet'), 'Should contain model information');
+        Assert.areEqual(200, res.getStatusCode(), 'Should return 200 for success');
+        Assert.isTrue(res.getBody().contains('recommendation'), 'Should contain recommendation in response');
+        Assert.isTrue(res.getBody().contains('claude-sonnet'), 'Should contain model information');
     }
     
     @isTest
@@ -46,8 +46,8 @@ private class ElaroClaudeAPIMockTest {
         Test.stopTest();
         
         // Verify error response
-        System.assertEquals(400, res.getStatusCode(), 'Should return 400 for error');
-        System.assert(res.getBody().contains('invalid_request_error'), 'Should contain error type');
+        Assert.areEqual(400, res.getStatusCode(), 'Should return 400 for error');
+        Assert.isTrue(res.getBody().contains('invalid_request_error'), 'Should contain error type');
     }
     
     @isTest
@@ -64,8 +64,8 @@ private class ElaroClaudeAPIMockTest {
         
         Test.stopTest();
         
-        System.assertEquals(429, res.getStatusCode(), 'Should return 429 for rate limit');
-        System.assert(res.getBody().contains('rate_limit_error'), 'Should indicate rate limiting');
+        Assert.areEqual(429, res.getStatusCode(), 'Should return 429 for rate limit');
+        Assert.isTrue(res.getBody().contains('rate_limit_error'), 'Should indicate rate limiting');
     }
     
     @isTest
@@ -82,8 +82,8 @@ private class ElaroClaudeAPIMockTest {
         
         Test.stopTest();
         
-        System.assertEquals(504, res.getStatusCode(), 'Should return 504 for timeout');
-        System.assert(res.getBody().contains('timeout_error'), 'Should indicate timeout');
+        Assert.areEqual(504, res.getStatusCode(), 'Should return 504 for timeout');
+        Assert.isTrue(res.getBody().contains('timeout_error'), 'Should indicate timeout');
     }
     
     @isTest
@@ -101,7 +101,7 @@ private class ElaroClaudeAPIMockTest {
         
         Test.stopTest();
         
-        System.assertEquals(201, res.getStatusCode(), 'Should return custom status code');
-        System.assertEquals(customBody, res.getBody(), 'Should return custom body');
+        Assert.areEqual(201, res.getStatusCode(), 'Should return custom status code');
+        Assert.areEqual(customBody, res.getBody(), 'Should return custom body');
     }
 }

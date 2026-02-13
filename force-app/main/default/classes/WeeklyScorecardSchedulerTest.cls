@@ -18,8 +18,8 @@ private class WeeklyScorecardSchedulerTest {
         Test.stopTest();
         
         // Assert result contains expected confirmation text
-        System.assertNotEquals(null, result, 'Schedule should return a result message');
-        System.assert(result.contains('Weekly scorecard scheduled') || result.contains('Elaro Weekly Scorecard'), 
+        Assert.areNotEqual(null, result, 'Schedule should return a result message');
+        Assert.isTrue(result.contains('Weekly scorecard scheduled') || result.contains('Elaro Weekly Scorecard'), 
             'Result should confirm scheduling: ' + result);
         
         // Verify job was actually scheduled
@@ -28,7 +28,7 @@ private class WeeklyScorecardSchedulerTest {
             FROM CronTrigger 
             WHERE CronJobDetail.Name LIKE 'Elaro Weekly Scorecard%'
         ];
-        System.assert(!scheduledJobs.isEmpty(), 'At least one scheduled job should exist');
+        Assert.isTrue(!scheduledJobs.isEmpty(), 'At least one scheduled job should exist');
     }
     
     /**
@@ -45,7 +45,7 @@ private class WeeklyScorecardSchedulerTest {
         Test.stopTest();
 
         // Verify Slack webhook callout completed successfully
-        System.assert(Limits.getCallouts() <= Limits.getLimitCallouts(), 'Should stay within callout limits');
+        Assert.isTrue(Limits.getCallouts() <= Limits.getLimitCallouts(), 'Should stay within callout limits');
     }
     
     /**
@@ -60,7 +60,7 @@ private class WeeklyScorecardSchedulerTest {
         Test.stopTest();
 
         // Verify Teams webhook callout completed successfully
-        System.assert(Limits.getCallouts() <= Limits.getLimitCallouts(), 'Should stay within callout limits');
+        Assert.isTrue(Limits.getCallouts() <= Limits.getLimitCallouts(), 'Should stay within callout limits');
     }
     
     /**
@@ -75,7 +75,7 @@ private class WeeklyScorecardSchedulerTest {
         Test.stopTest();
 
         // Verify both Slack and Teams webhooks were called
-        System.assert(Limits.getCallouts() <= Limits.getLimitCallouts(), 'Should stay within callout limits for both channels');
+        Assert.isTrue(Limits.getCallouts() <= Limits.getLimitCallouts(), 'Should stay within callout limits for both channels');
     }
     
     /**
@@ -97,14 +97,14 @@ private class WeeklyScorecardSchedulerTest {
         Test.stopTest();
         
         // Verify job was scheduled
-        System.assertNotEquals(null, jobId, 'Job ID should not be null');
+        Assert.areNotEqual(null, jobId, 'Job ID should not be null');
         
         CronTrigger ct = [
             SELECT Id, CronExpression, TimesTriggered
             FROM CronTrigger
             WHERE Id = :jobId
         ];
-        System.assertEquals('0 0 9 ? * MON *', ct.CronExpression, 'Cron expression should match');
+        Assert.areEqual('0 0 9 ? * MON *', ct.CronExpression, 'Cron expression should match');
     }
     
     /**
@@ -119,7 +119,7 @@ private class WeeklyScorecardSchedulerTest {
         Test.stopTest();
 
         // Verify test scorecard executed successfully
-        System.assert(Limits.getCallouts() <= Limits.getLimitCallouts(), 'Should stay within callout limits');
+        Assert.isTrue(Limits.getCallouts() <= Limits.getLimitCallouts(), 'Should stay within callout limits');
     }
     
     /**
@@ -127,9 +127,9 @@ private class WeeklyScorecardSchedulerTest {
      */
     @isTest
     static void testChannelConstants() {
-        System.assertEquals('Slack', WeeklyScorecardScheduler.SLACK, 'SLACK constant should be "Slack"');
-        System.assertEquals('Teams', WeeklyScorecardScheduler.TEAMS, 'TEAMS constant should be "Teams"');
-        System.assertEquals('Both', WeeklyScorecardScheduler.BOTH, 'BOTH constant should be "Both"');
+        Assert.areEqual('Slack', WeeklyScorecardScheduler.SLACK, 'SLACK constant should be "Slack"');
+        Assert.areEqual('Teams', WeeklyScorecardScheduler.TEAMS, 'TEAMS constant should be "Teams"');
+        Assert.areEqual('Both', WeeklyScorecardScheduler.BOTH, 'BOTH constant should be "Both"');
     }
     
     /**
@@ -147,11 +147,11 @@ private class WeeklyScorecardSchedulerTest {
             WeeklyScorecardScheduler.sendWeeklyScorecard('InvalidChannel');
             completedSuccessfully = true;
         } catch (Exception e) {
-            System.assert(false, 'Should not throw exception for invalid channel: ' + e.getMessage());
+            Assert.fail( 'Should not throw exception for invalid channel: ' + e.getMessage());
         }
         Test.stopTest();
 
-        System.assert(completedSuccessfully, 'Invalid channel should be handled gracefully without exception');
+        Assert.isTrue(completedSuccessfully, 'Invalid channel should be handled gracefully without exception');
     }
     
     /**

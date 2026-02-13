@@ -17,8 +17,8 @@ private class PCIDataProtectionServiceTest {
         String encryptedData = service.encryptCHD(cardholderData);
         Test.stopTest();
         
-        System.assertNotEquals(null, encryptedData, 'Encrypted data should not be null');
-        System.assertNotEquals(cardholderData, encryptedData, 'Encrypted data should differ from original');
+        Assert.areNotEqual(null, encryptedData, 'Encrypted data should not be null');
+        Assert.areNotEqual(cardholderData, encryptedData, 'Encrypted data should differ from original');
     }
     
     @IsTest
@@ -41,7 +41,7 @@ private class PCIDataProtectionServiceTest {
         }
         Test.stopTest();
         
-        System.assert(encryptedDataList.size() > 0, 'Should process bulk encryption');
+        Assert.isTrue(encryptedDataList.size() > 0, 'Should process bulk encryption');
     }
     
     @IsTest
@@ -53,9 +53,9 @@ private class PCIDataProtectionServiceTest {
         String token = service.tokenizeData(cardholderData);
         Test.stopTest();
         
-        System.assertNotEquals(null, token, 'Token should not be null');
-        System.assertNotEquals(cardholderData, token, 'Token should differ from original');
-        System.assert(token.startsWith('TOKEN-'), 'Token should have TOKEN prefix');
+        Assert.areNotEqual(null, token, 'Token should not be null');
+        Assert.areNotEqual(cardholderData, token, 'Token should differ from original');
+        Assert.isTrue(token.startsWith('TOKEN-'), 'Token should have TOKEN prefix');
     }
     
     @IsTest
@@ -78,7 +78,7 @@ private class PCIDataProtectionServiceTest {
         }
         Test.stopTest();
         
-        System.assert(tokens.size() > 0, 'Should process bulk tokenization');
+        Assert.isTrue(tokens.size() > 0, 'Should process bulk tokenization');
     }
     
     @IsTest
@@ -92,8 +92,8 @@ private class PCIDataProtectionServiceTest {
         Map<String, Object> result = service.validateEncryption(encryptedData);
         Test.stopTest();
         
-        System.assertNotEquals(null, result, 'Validation result should not be null');
-        System.assert(result.containsKey('isValid'), 'Should include validation status');
+        Assert.areNotEqual(null, result, 'Validation result should not be null');
+        Assert.isTrue(result.containsKey('isValid'), 'Should include validation status');
     }
     
     @IsTest
@@ -105,7 +105,7 @@ private class PCIDataProtectionServiceTest {
         Map<String, Object> result = service.validateEncryption(invalidEncryptedData);
         Test.stopTest();
         
-        System.assertNotEquals(null, result, 'Validation result should not be null');
+        Assert.areNotEqual(null, result, 'Validation result should not be null');
     }
     
     @IsTest
@@ -117,8 +117,8 @@ private class PCIDataProtectionServiceTest {
         Map<String, Object> result = service.keyManagement(operation, null);
         Test.stopTest();
         
-        System.assertEquals(true, result.get('success'), 'Key generation should succeed');
-        System.assertEquals(operation, result.get('operation'), 'Operation should match');
+        Assert.areEqual(true, result.get('success'), 'Key generation should succeed');
+        Assert.areEqual(operation, result.get('operation'), 'Operation should match');
     }
     
     @IsTest
@@ -131,8 +131,8 @@ private class PCIDataProtectionServiceTest {
         Map<String, Object> result = service.keyManagement(operation, keyId);
         Test.stopTest();
         
-        System.assertEquals(true, result.get('success'), 'Key rotation should succeed');
-        System.assertEquals(keyId, result.get('keyId'), 'Key ID should match');
+        Assert.areEqual(true, result.get('success'), 'Key rotation should succeed');
+        Assert.areEqual(keyId, result.get('keyId'), 'Key ID should match');
     }
     
     @IsTest
@@ -145,7 +145,7 @@ private class PCIDataProtectionServiceTest {
         Map<String, Object> result = service.keyManagement(operation, keyId);
         Test.stopTest();
         
-        System.assertEquals(true, result.get('success'), 'Key revocation should succeed');
+        Assert.areEqual(true, result.get('success'), 'Key revocation should succeed');
     }
     
     @IsTest
@@ -154,9 +154,9 @@ private class PCIDataProtectionServiceTest {
         PCIDataProtectionService service = new PCIDataProtectionService();
         try {
             service.encryptCHD(null);
-            System.assert(false, 'Should throw exception for null data');
+            Assert.fail( 'Should throw exception for null data');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }
@@ -167,9 +167,9 @@ private class PCIDataProtectionServiceTest {
         PCIDataProtectionService service = new PCIDataProtectionService();
         try {
             service.tokenizeData(null);
-            System.assert(false, 'Should throw exception for null data');
+            Assert.fail( 'Should throw exception for null data');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }
@@ -180,9 +180,9 @@ private class PCIDataProtectionServiceTest {
         PCIDataProtectionService service = new PCIDataProtectionService();
         try {
             service.validateEncryption(null);
-            System.assert(false, 'Should throw exception for null data');
+            Assert.fail( 'Should throw exception for null data');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }
@@ -193,9 +193,9 @@ private class PCIDataProtectionServiceTest {
         PCIDataProtectionService service = new PCIDataProtectionService();
         try {
             service.keyManagement(null, null);
-            System.assert(false, 'Should throw exception for null operation');
+            Assert.fail( 'Should throw exception for null operation');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }

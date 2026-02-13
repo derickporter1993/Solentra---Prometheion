@@ -29,8 +29,8 @@ private class ComplianceServiceBaseTest {
         Test.stopTest();
 
         // Base 5.0 + 3.0 (modifyAll) = 8.0, then * multiplier (0.95) = 7.6
-        System.assert(score > 5, 'Score should be elevated for ModifyAll permission');
-        System.assert(score <= 10, 'Score should not exceed 10');
+        Assert.isTrue(score > 5, 'Score should be elevated for ModifyAll permission');
+        Assert.isTrue(score <= 10, 'Score should not exceed 10');
     }
 
     @IsTest
@@ -49,7 +49,7 @@ private class ComplianceServiceBaseTest {
         Test.stopTest();
 
         // Base 5.0 + 2.0 (viewAll) = 7.0, then * multiplier
-        System.assert(score > 5, 'Score should be elevated for ViewAll permission');
+        Assert.isTrue(score > 5, 'Score should be elevated for ViewAll permission');
     }
 
     @IsTest
@@ -68,7 +68,7 @@ private class ComplianceServiceBaseTest {
         Test.stopTest();
 
         // Base 5.0 + 3.0 + 2.0 = 10.0 (capped), then * multiplier
-        System.assert(score > 7, 'Score should be high for both permissions');
+        Assert.isTrue(score > 7, 'Score should be high for both permissions');
     }
 
     @IsTest
@@ -86,7 +86,7 @@ private class ComplianceServiceBaseTest {
         Test.stopTest();
 
         // Base 5.0 + 2.0 (Edit) = 7.0, then * multiplier
-        System.assert(score > 5, 'Score should be elevated for Edit access');
+        Assert.isTrue(score > 5, 'Score should be elevated for Edit access');
     }
 
     @IsTest
@@ -104,7 +104,7 @@ private class ComplianceServiceBaseTest {
         Test.stopTest();
 
         // Base 5.0 + 3.0 (All) = 8.0, then * multiplier
-        System.assert(score > 6, 'Score should be elevated for All access');
+        Assert.isTrue(score > 6, 'Score should be elevated for All access');
     }
 
     @IsTest
@@ -123,7 +123,7 @@ private class ComplianceServiceBaseTest {
         Test.stopTest();
 
         // Base 5.0 + 3.0 (sensitive+unencrypted) = 8.0, then * multiplier
-        System.assert(score > 6, 'Score should be elevated for sensitive unencrypted field');
+        Assert.isTrue(score > 6, 'Score should be elevated for sensitive unencrypted field');
     }
 
     @IsTest
@@ -142,7 +142,7 @@ private class ComplianceServiceBaseTest {
         Test.stopTest();
 
         // Base 5.0 (no penalty for encrypted), then * multiplier
-        System.assert(score <= 5, 'Score should be base level for encrypted sensitive field');
+        Assert.isTrue(score <= 5, 'Score should be base level for encrypted sensitive field');
     }
 
     @IsTest
@@ -158,8 +158,8 @@ private class ComplianceServiceBaseTest {
         Test.stopTest();
 
         // Base 5.0 * multiplier
-        System.assert(score >= 0, 'Score should be non-negative');
-        System.assert(score <= 10, 'Score should not exceed 10');
+        Assert.isTrue(score >= 0, 'Score should be non-negative');
+        Assert.isTrue(score <= 10, 'Score should not exceed 10');
     }
 
     // =============================================
@@ -181,7 +181,7 @@ private class ComplianceServiceBaseTest {
         );
 
         // Score >= 9 * multiplier means critical range
-        System.assert(highScore > 7, 'High-risk entity should produce high score');
+        Assert.isTrue(highScore > 7, 'High-risk entity should produce high score');
     }
 
     // =============================================
@@ -196,7 +196,7 @@ private class ComplianceServiceBaseTest {
         String name = service.getFrameworkName();
         Test.stopTest();
 
-        System.assertEquals('HIPAA', name, 'Framework name should be HIPAA for HIPAASecurityRuleService');
+        Assert.areEqual('HIPAA', name, 'Framework name should be HIPAA for HIPAASecurityRuleService');
     }
 
     // =============================================
@@ -216,12 +216,12 @@ private class ComplianceServiceBaseTest {
         );
         Test.stopTest();
 
-        System.assertEquals('Test Title', violation.title, 'Title should match');
-        System.assertEquals('Test Description', violation.description, 'Description should match');
-        System.assertEquals('HIGH', violation.severity, 'Severity should match');
-        System.assertEquals('164.312(a)', violation.policyReference, 'Policy reference should match');
-        System.assertEquals('Fix the issue', violation.remediation, 'Remediation should match');
-        System.assertEquals(8.5, violation.riskScore, 'Risk score should match');
+        Assert.areEqual('Test Title', violation.title, 'Title should match');
+        Assert.areEqual('Test Description', violation.description, 'Description should match');
+        Assert.areEqual('HIGH', violation.severity, 'Severity should match');
+        Assert.areEqual('164.312(a)', violation.policyReference, 'Policy reference should match');
+        Assert.areEqual('Fix the issue', violation.remediation, 'Remediation should match');
+        Assert.areEqual(8.5, violation.riskScore, 'Risk score should match');
     }
 
     @IsTest
@@ -235,8 +235,8 @@ private class ComplianceServiceBaseTest {
         violation.entityId = '0PSxx000000test';
         Test.stopTest();
 
-        System.assertEquals('PERMISSION_SET', violation.entityType, 'Entity type should match');
-        System.assertEquals('0PSxx000000test', violation.entityId, 'Entity ID should match');
+        Assert.areEqual('PERMISSION_SET', violation.entityType, 'Entity type should match');
+        Assert.areEqual('0PSxx000000test', violation.entityId, 'Entity ID should match');
     }
 
     // =============================================
@@ -249,7 +249,7 @@ private class ComplianceServiceBaseTest {
         try {
             throw new ComplianceServiceBase.ComplianceServiceException('Test error message');
         } catch (ComplianceServiceBase.ComplianceServiceException e) {
-            System.assertEquals('Test error message', e.getMessage(), 'Exception message should match');
+            Assert.areEqual('Test error message', e.getMessage(), 'Exception message should match');
         }
         Test.stopTest();
     }

@@ -16,9 +16,9 @@ private class PerformanceAlertPublisherTest {
             FROM Performance_Alert_History__c
             WHERE Metric__c = 'CPU'
         ];
-        System.assertEquals(1, alerts.size(), 'Expected one alert to be saved');
-        System.assertEquals(8500, alerts[0].Value__c, 'Value should match');
-        System.assertEquals(10000, alerts[0].Threshold__c, 'Threshold should match');
+        Assert.areEqual(1, alerts.size(), 'Expected one alert to be saved');
+        Assert.areEqual(8500, alerts[0].Value__c, 'Value should match');
+        Assert.areEqual(10000, alerts[0].Threshold__c, 'Threshold should match');
     }
 
     @isTest
@@ -29,10 +29,10 @@ private class PerformanceAlertPublisherTest {
             PerformanceAlertPublisher.publish(null, 8500, 10000, null, null);
         } catch (AuraHandledException e) {
             exceptionThrown = true;
-            System.assert(e.getMessage().contains('Metric cannot be blank'), 'Expected validation error');
+            Assert.isTrue(e.getMessage().contains('Metric cannot be blank'), 'Expected validation error');
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Expected AuraHandledException to be thrown');
+        Assert.isTrue(exceptionThrown, 'Expected AuraHandledException to be thrown');
     }
 
     @isTest
@@ -43,10 +43,10 @@ private class PerformanceAlertPublisherTest {
             PerformanceAlertPublisher.publish('', 8500, 10000, null, null);
         } catch (AuraHandledException e) {
             exceptionThrown = true;
-            System.assert(e.getMessage().contains('Metric cannot be blank'), 'Expected validation error');
+            Assert.isTrue(e.getMessage().contains('Metric cannot be blank'), 'Expected validation error');
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Expected AuraHandledException to be thrown');
+        Assert.isTrue(exceptionThrown, 'Expected AuraHandledException to be thrown');
     }
 
     @isTest
@@ -57,10 +57,10 @@ private class PerformanceAlertPublisherTest {
             PerformanceAlertPublisher.publish('CPU', null, 10000, null, null);
         } catch (AuraHandledException e) {
             exceptionThrown = true;
-            System.assert(e.getMessage().contains('Value cannot be null'), 'Expected validation error');
+            Assert.isTrue(e.getMessage().contains('Value cannot be null'), 'Expected validation error');
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Expected AuraHandledException to be thrown');
+        Assert.isTrue(exceptionThrown, 'Expected AuraHandledException to be thrown');
     }
 
     @isTest
@@ -71,10 +71,10 @@ private class PerformanceAlertPublisherTest {
             PerformanceAlertPublisher.publish('CPU', 8500, null, null, null);
         } catch (AuraHandledException e) {
             exceptionThrown = true;
-            System.assert(e.getMessage().contains('Threshold cannot be null'), 'Expected validation error');
+            Assert.isTrue(e.getMessage().contains('Threshold cannot be null'), 'Expected validation error');
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Expected AuraHandledException to be thrown');
+        Assert.isTrue(exceptionThrown, 'Expected AuraHandledException to be thrown');
     }
 
     @isTest
@@ -93,8 +93,8 @@ private class PerformanceAlertPublisherTest {
             FROM Performance_Alert_History__c
             WHERE Metric__c = 'HEAP'
         ];
-        System.assertEquals(1, alerts.size(), 'Expected one alert to be saved');
-        System.assert(alerts[0].Stack__c.length() <= 32768, 'Stack should be truncated');
+        Assert.areEqual(1, alerts.size(), 'Expected one alert to be saved');
+        Assert.isTrue(alerts[0].Stack__c.length() <= 32768, 'Stack should be truncated');
     }
 
     @isTest
@@ -114,9 +114,9 @@ private class PerformanceAlertPublisherTest {
             FROM Performance_Alert_History__c
             WHERE Metric__c = 'QUERIES'
         ];
-        System.assertEquals(1, alerts.size(), 'Expected one alert to be saved');
+        Assert.areEqual(1, alerts.size(), 'Expected one alert to be saved');
         // Stack should be truncated to 32768 (32765 + '...')
-        System.assert(alerts[0].Stack__c.endsWith('...'), 'Stack should end with ellipsis when truncated');
+        Assert.isTrue(alerts[0].Stack__c.endsWith('...'), 'Stack should end with ellipsis when truncated');
     }
 
     @isTest
@@ -132,11 +132,11 @@ private class PerformanceAlertPublisherTest {
             FROM Performance_Alert_History__c
             WHERE Metric__c = 'DML'
         ];
-        System.assertEquals(1, alerts.size(), 'Expected one alert to be saved');
+        Assert.areEqual(1, alerts.size(), 'Expected one alert to be saved');
         // Verify XSS characters are escaped
-        System.assert(!alerts[0].Stack__c.contains('<script>'), 'Script tags should be escaped');
-        System.assert(alerts[0].Stack__c.contains('&lt;'), 'Less than should be escaped');
-        System.assert(alerts[0].Stack__c.contains('&gt;'), 'Greater than should be escaped');
+        Assert.isTrue(!alerts[0].Stack__c.contains('<script>'), 'Script tags should be escaped');
+        Assert.isTrue(alerts[0].Stack__c.contains('&lt;'), 'Less than should be escaped');
+        Assert.isTrue(alerts[0].Stack__c.contains('&gt;'), 'Greater than should be escaped');
     }
 
     @isTest
@@ -153,8 +153,8 @@ private class PerformanceAlertPublisherTest {
             FROM Performance_Alert_History__c
             WHERE Metric__c = 'SOQL'
         ];
-        System.assertEquals(1, alerts.size(), 'Expected one alert to be saved');
-        System.assertEquals(testAccount.Id, alerts[0].Context_Record__c, 'Context record should match');
+        Assert.areEqual(1, alerts.size(), 'Expected one alert to be saved');
+        Assert.areEqual(testAccount.Id, alerts[0].Context_Record__c, 'Context record should match');
     }
 
     @isTest
@@ -168,8 +168,8 @@ private class PerformanceAlertPublisherTest {
             FROM Performance_Alert_History__c
             WHERE Metric__c = 'CPU_TIME'
         ];
-        System.assertEquals(1, alerts.size(), 'Expected one alert to be saved');
-        System.assertEquals(null, alerts[0].Stack__c, 'Stack should be null');
+        Assert.areEqual(1, alerts.size(), 'Expected one alert to be saved');
+        Assert.areEqual(null, alerts[0].Stack__c, 'Stack should be null');
     }
 
     @isTest
@@ -183,7 +183,7 @@ private class PerformanceAlertPublisherTest {
             FROM Performance_Alert_History__c
             WHERE Metric__c = 'HEAP_SIZE'
         ];
-        System.assertEquals(1, alerts.size(), 'Expected one alert to be saved');
+        Assert.areEqual(1, alerts.size(), 'Expected one alert to be saved');
     }
 
     @isTest
@@ -199,7 +199,7 @@ private class PerformanceAlertPublisherTest {
             FROM Performance_Alert_History__c
             WHERE Metric__c LIKE 'METRIC_%'
         ];
-        System.assertEquals(3, alerts.size(), 'Expected three alerts to be saved');
+        Assert.areEqual(3, alerts.size(), 'Expected three alerts to be saved');
     }
 
     @isTest
@@ -213,9 +213,9 @@ private class PerformanceAlertPublisherTest {
             FROM Performance_Alert_History__c
             WHERE Metric__c = 'DECIMAL_TEST'
         ];
-        System.assertEquals(1, alerts.size(), 'Expected one alert to be saved');
-        System.assertEquals(85.75, alerts[0].Value__c, 'Value should match decimal');
-        System.assertEquals(90.50, alerts[0].Threshold__c, 'Threshold should match decimal');
+        Assert.areEqual(1, alerts.size(), 'Expected one alert to be saved');
+        Assert.areEqual(85.75, alerts[0].Value__c, 'Value should match decimal');
+        Assert.areEqual(90.50, alerts[0].Threshold__c, 'Threshold should match decimal');
     }
 
     @isTest
@@ -229,8 +229,8 @@ private class PerformanceAlertPublisherTest {
             FROM Performance_Alert_History__c
             WHERE Metric__c = 'NEGATIVE_TEST'
         ];
-        System.assertEquals(1, alerts.size(), 'Expected one alert to be saved');
-        System.assertEquals(-10, alerts[0].Value__c, 'Negative value should be saved');
+        Assert.areEqual(1, alerts.size(), 'Expected one alert to be saved');
+        Assert.areEqual(-10, alerts[0].Value__c, 'Negative value should be saved');
     }
 
     @isTest
@@ -244,9 +244,9 @@ private class PerformanceAlertPublisherTest {
             FROM Performance_Alert_History__c
             WHERE Metric__c = 'ZERO_TEST'
         ];
-        System.assertEquals(1, alerts.size(), 'Expected one alert to be saved');
-        System.assertEquals(0, alerts[0].Value__c, 'Zero value should be saved');
-        System.assertEquals(0, alerts[0].Threshold__c, 'Zero threshold should be saved');
+        Assert.areEqual(1, alerts.size(), 'Expected one alert to be saved');
+        Assert.areEqual(0, alerts[0].Value__c, 'Zero value should be saved');
+        Assert.areEqual(0, alerts[0].Threshold__c, 'Zero threshold should be saved');
     }
 
     @isTest
@@ -260,7 +260,7 @@ private class PerformanceAlertPublisherTest {
             FROM Performance_Alert_History__c
             WHERE Metric__c = 'CPU_TIME_MS'
         ];
-        System.assertEquals(1, alerts.size(), 'Expected one alert to be saved');
+        Assert.areEqual(1, alerts.size(), 'Expected one alert to be saved');
     }
 
     @isTest
@@ -271,10 +271,10 @@ private class PerformanceAlertPublisherTest {
             PerformanceAlertPublisher.publish('   ', 8500, 10000, null, null);
         } catch (AuraHandledException e) {
             exceptionThrown = true;
-            System.assert(e.getMessage().contains('Metric cannot be blank'), 'Expected validation error');
+            Assert.isTrue(e.getMessage().contains('Metric cannot be blank'), 'Expected validation error');
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Expected AuraHandledException for whitespace metric');
+        Assert.isTrue(exceptionThrown, 'Expected AuraHandledException for whitespace metric');
     }
 
     @isTest
@@ -298,12 +298,12 @@ private class PerformanceAlertPublisherTest {
             FROM Performance_Alert_History__c
             WHERE Metric__c LIKE 'BULK_METRIC_%'
         ];
-        System.assertEquals(200, alerts.size(), 'Should save all 200 alerts');
+        Assert.areEqual(200, alerts.size(), 'Should save all 200 alerts');
 
         // Verify governor limits were not exceeded
-        System.assert(Limits.getQueries() < 100,
+        Assert.isTrue(Limits.getQueries() < 100,
             'SOQL queries should be within limits: ' + Limits.getQueries());
-        System.assert(Limits.getDmlStatements() < 150,
+        Assert.isTrue(Limits.getDmlStatements() < 150,
             'DML statements should be within limits: ' + Limits.getDmlStatements());
     }
 
@@ -331,12 +331,12 @@ private class PerformanceAlertPublisherTest {
         Test.stopTest();
 
         // Should have created 25 * 8 = 200 alerts
-        System.assertEquals(200, alertCount, 'Should publish 200 alerts');
+        Assert.areEqual(200, alertCount, 'Should publish 200 alerts');
 
         List<Performance_Alert_History__c> alerts = [
             SELECT Id FROM Performance_Alert_History__c
             WHERE Metric__c LIKE '%_BULK_%'
         ];
-        System.assertEquals(200, alerts.size(), 'All 200 mixed alerts should be saved');
+        Assert.areEqual(200, alerts.size(), 'All 200 mixed alerts should be saved');
     }
 }

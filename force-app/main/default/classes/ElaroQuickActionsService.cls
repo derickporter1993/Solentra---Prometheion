@@ -70,7 +70,7 @@ public with sharing class ElaroQuickActionsService {
                 )
                 AND Profile.Name != 'System Administrator'
                 AND IsActive = true
-                WITH SECURITY_ENFORCED
+                WITH USER_MODE
                 LIMIT 50 // Governor limit protection
             ];
         } catch (SecurityException e) {
@@ -105,7 +105,7 @@ public with sharing class ElaroQuickActionsService {
                 FROM PermissionSetAssignment
                 WHERE AssigneeId IN :adminUserIds
                 AND PermissionSet.PermissionsModifyAllData = true
-                WITH SECURITY_ENFORCED
+                WITH USER_MODE
             ]) {
                 if (!modAllByUser.containsKey(psa.AssigneeId)) {
                     modAllByUser.put(psa.AssigneeId, new List<PermissionSetAssignment>());
@@ -145,7 +145,7 @@ public with sharing class ElaroQuickActionsService {
                         AccessType.CREATABLE,
                         newAssignments
                     );
-                    insert decision.getRecords();
+                    insert as user decision.getRecords();
                 }
             } catch (DmlException e) {
                 ElaroLogger.error( '[ElaroQuickActionsService] DML exception inserting assignments: ' + e.getMessage());
@@ -159,7 +159,7 @@ public with sharing class ElaroQuickActionsService {
                 if (!Schema.sObjectType.PermissionSetAssignment.isDeletable()) {
                     result.messages.add('Insufficient permissions to delete permission set assignments');
                 } else {
-                    delete assignmentsToRemove;
+                    delete as user assignmentsToRemove;
                     result.assignmentsRemoved.addAll(assignmentsToRemove);
                 }
             } catch (DmlException e) {
@@ -188,7 +188,7 @@ public with sharing class ElaroQuickActionsService {
                 FROM User
                 WHERE IsActive = true
                 AND (LastLoginDate = null OR LastLoginDate < LAST_N_DAYS:90)
-                WITH SECURITY_ENFORCED
+                WITH USER_MODE
                 LIMIT 100
             ];
         } catch (SecurityException e) {
@@ -220,7 +220,7 @@ public with sharing class ElaroQuickActionsService {
                         AccessType.UPDATABLE,
                         inactiveUsers
                     );
-                    update decision.getRecords();
+                    update as user decision.getRecords();
                 }
             } catch (DmlException e) {
                 ElaroLogger.error( '[ElaroQuickActionsService] DML exception updating users: ' + e.getMessage());
@@ -259,12 +259,12 @@ public with sharing class ElaroQuickActionsService {
                     SELECT Id
                     FROM PermissionSetAssignment
                     WHERE PermissionSetId IN :new Map<Id, PermissionSet>(setsToRemove).keySet()
-                    WITH SECURITY_ENFORCED
+                    WITH USER_MODE
                 ];
                 
                 if (!assignments.isEmpty()) {
                     if (Schema.sObjectType.PermissionSetAssignment.isDeletable()) {
-                        delete assignments;
+                        delete as user assignments;
                     } else {
                         result.messages.add('Insufficient permissions to delete permission set assignments');
                     }
@@ -279,7 +279,7 @@ public with sharing class ElaroQuickActionsService {
                 if (!Schema.sObjectType.PermissionSet.isDeletable()) {
                     result.messages.add('Insufficient permissions to delete permission sets');
                 } else {
-                    delete setsToRemove;
+                    delete as user setsToRemove;
                 }
             } catch (DmlException e) {
                 ElaroLogger.error( '[ElaroQuickActionsService] DML exception deleting permission sets: ' + e.getMessage());
@@ -313,7 +313,7 @@ public with sharing class ElaroQuickActionsService {
                 SELECT AssigneeId, COUNT(Id) assignmentCount
                 FROM PermissionSetAssignment
                 WHERE AssigneeId IN (SELECT Id FROM User WHERE IsActive = true)
-                WITH SECURITY_ENFORCED
+                WITH USER_MODE
                 GROUP BY AssigneeId
                 HAVING COUNT(Id) > 10
             ];
@@ -341,7 +341,7 @@ public with sharing class ElaroQuickActionsService {
                     SELECT Id, AssigneeId, PermissionSetId, PermissionSet.Name
                     FROM PermissionSetAssignment
                     WHERE AssigneeId IN :userIds
-                    WITH SECURITY_ENFORCED
+                    WITH USER_MODE
                     ORDER BY AssigneeId
                 ];
             } catch (SecurityException e) {
@@ -376,7 +376,7 @@ public with sharing class ElaroQuickActionsService {
                 if (!Schema.sObjectType.PermissionSetAssignment.isDeletable()) {
                     result.messages.add('Insufficient permissions to delete permission set assignments');
                 } else {
-                    delete toRemove;
+                    delete as user toRemove;
                     result.assignmentsRemoved.addAll(toRemove);
                     result.messages.add('Removed ' + toRemove.size() +
                         ' excessive permission set assignments.');
@@ -402,7 +402,7 @@ public with sharing class ElaroQuickActionsService {
             Name = 'Elaro_Least_Privilege_' + String.valueOf(DateTime.now().getTime()),
             Label = 'Elaro Least Privilege Template'
         );
-        insert ps;
+        insert as user ps;
         
         // Note: Object and field permissions would be added here
         // This is a simplified version - full implementation would
@@ -428,7 +428,7 @@ public with sharing class ElaroQuickActionsService {
                 FROM PermissionSetAssignment
                 WHERE AssigneeId IN :userIds
                 AND PermissionSet.PermissionsModifyAllData = true
-                WITH SECURITY_ENFORCED
+                WITH USER_MODE
             ];
 
             if (assignments.isEmpty()) {
@@ -443,8 +443,8 @@ public with sharing class ElaroQuickActionsService {
                 result.message = result.errorMessage;
                 return result;
             }
-            delete assignments;
-            
+            delete as user assignments;
+
             result.success = true;
             result.affectedRecords = assignments.size();
             result.message = 'Revoked Modify All Data permission from ' + 
@@ -478,7 +478,7 @@ public with sharing class ElaroQuickActionsService {
                 FROM User
                 WHERE IsActive = true
                 AND (LastLoginDate = null OR LastLoginDate < :cutoffDate)
-                WITH SECURITY_ENFORCED
+                WITH USER_MODE
                 LIMIT 200
             ];
 
@@ -499,7 +499,7 @@ public with sharing class ElaroQuickActionsService {
                 u.IsActive = false;
             }
 
-            update inactiveUsers;
+            update as user inactiveUsers;
             
             result.success = true;
             result.affectedRecords = inactiveUsers.size();
@@ -531,7 +531,7 @@ public with sharing class ElaroQuickActionsService {
                 SELECT Id, AssigneeId, PermissionSet.Name
                 FROM PermissionSetAssignment
                 WHERE Id = :assignmentId
-                WITH SECURITY_ENFORCED
+                WITH USER_MODE
             ];
 
             if (!Schema.sObjectType.PermissionSetAssignment.isDeletable()) {
@@ -540,7 +540,7 @@ public with sharing class ElaroQuickActionsService {
                 result.message = result.errorMessage;
                 return result;
             }
-            delete psa;
+            delete as user psa;
             
             result.success = true;
             result.affectedRecords = 1;

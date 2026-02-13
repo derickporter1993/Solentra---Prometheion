@@ -41,8 +41,8 @@ private class PCIAccessControlServiceTest {
         Map<String, Object> result = service.enforceRBAC(testUser.Id, resourceName);
         Test.stopTest();
         
-        System.assertNotEquals(null, result, 'RBAC result should not be null');
-        System.assert(result.containsKey('hasAccess'), 'Should include access decision');
+        Assert.areNotEqual(null, result, 'RBAC result should not be null');
+        Assert.isTrue(result.containsKey('hasAccess'), 'Should include access decision');
     }
     
     @IsTest
@@ -62,7 +62,7 @@ private class PCIAccessControlServiceTest {
         }
         Test.stopTest();
         
-        System.assert(results.size() > 0, 'Should process bulk RBAC checks');
+        Assert.isTrue(results.size() > 0, 'Should process bulk RBAC checks');
     }
     
     @IsTest
@@ -72,7 +72,7 @@ private class PCIAccessControlServiceTest {
         List<Map<String, Object>> reviews = service.reviewPrivilegedAccess();
         Test.stopTest();
         
-        System.assertNotEquals(null, reviews, 'Reviews list should not be null');
+        Assert.areNotEqual(null, reviews, 'Reviews list should not be null');
     }
     
     @IsTest
@@ -84,8 +84,8 @@ private class PCIAccessControlServiceTest {
         Map<String, Object> result = service.rotateCredentials(testUser.Id);
         Test.stopTest();
         
-        System.assertEquals(true, result.get('success'), 'Credential rotation should succeed');
-        System.assertNotEquals(null, result.get('rotationDate'), 'Rotation date should be set');
+        Assert.areEqual(true, result.get('success'), 'Credential rotation should succeed');
+        Assert.areNotEqual(null, result.get('rotationDate'), 'Rotation date should be set');
     }
     
     @IsTest
@@ -99,8 +99,8 @@ private class PCIAccessControlServiceTest {
         Map<String, Object> result = service.auditAccessChanges(testUser.Id, action, resourceName);
         Test.stopTest();
         
-        System.assertEquals(true, result.get('success'), 'Access audit should succeed');
-        System.assertEquals(action, result.get('action'), 'Action should match');
+        Assert.areEqual(true, result.get('success'), 'Access audit should succeed');
+        Assert.areEqual(action, result.get('action'), 'Action should match');
     }
     
     @IsTest
@@ -109,9 +109,9 @@ private class PCIAccessControlServiceTest {
         PCIAccessControlService service = new PCIAccessControlService();
         try {
             service.enforceRBAC(null, 'Resource');
-            System.assert(false, 'Should throw exception for null user');
+            Assert.fail( 'Should throw exception for null user');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }
@@ -122,9 +122,9 @@ private class PCIAccessControlServiceTest {
         PCIAccessControlService service = new PCIAccessControlService();
         try {
             service.rotateCredentials(null);
-            System.assert(false, 'Should throw exception for null user');
+            Assert.fail( 'Should throw exception for null user');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }
@@ -144,6 +144,6 @@ private class PCIAccessControlServiceTest {
         }
         Test.stopTest();
         
-        System.assertEquals(4, results.size(), 'Should audit all actions');
+        Assert.areEqual(4, results.size(), 'Should audit all actions');
     }
 }

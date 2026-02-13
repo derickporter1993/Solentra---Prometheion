@@ -51,7 +51,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
             // Insert review records
             if (!reviews.isEmpty()) {
                 ElaroSecurityUtils.validateCRUDAccess('Access_Review__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-                insert reviews;
+                insert as user reviews;
             }
 
             // Check for stale permissions
@@ -79,7 +79,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
             FROM Access_Review__c
             WHERE Review_Date__c >= :reviewCutoff
             AND Status__c IN ('Completed', 'Approved')
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ]) {
             if (review.User__c != null) {
                 recentlyReviewedUserIds.add(review.User__c);
@@ -95,7 +95,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
             AND Id NOT IN :recentlyReviewedUserIds
             AND Profile.Name != 'Chatter Free User'
             AND Profile.Name != 'Chatter External User'
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
             ORDER BY LastLoginDate DESC NULLS LAST
             LIMIT 500
         ];
@@ -146,7 +146,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
             FROM PermissionSetAssignment
             WHERE AssigneeId IN :userIds
             AND PermissionSet.IsOwnedByProfile = false
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
 
         // Log permission set counts for review
@@ -182,7 +182,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
             gap.Due_Date__c = Date.today().addDays(30);
 
             ElaroSecurityUtils.validateCRUDAccess('Compliance_Gap__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert gap;
+            insert as user gap;
         } catch (Exception e) {
             ElaroLogger.error( 'Failed to create compliance gap: ' + e.getMessage());
         }
@@ -199,7 +199,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
             log.Details__c = message + '. Records processed: ' + recordsProcessed;
             log.User__c = UserInfo.getUserId();
             ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert log;
+            insert as user log;
         } catch (Exception e) {
             ElaroLogger.error( 'Failed to log execution: ' + e.getMessage());
         }
@@ -216,7 +216,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
             log.Details__c = message;
             log.User__c = UserInfo.getUserId();
             ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert log;
+            insert as user log;
         } catch (Exception e) {
             ElaroLogger.error( 'Failed to log error: ' + e.getMessage());
         }
@@ -248,7 +248,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
             SELECT Id, CronJobDetail.Name
             FROM CronTrigger
             WHERE CronJobDetail.Name LIKE :('%' + JOB_NAME + '%')
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
 
         for (CronTrigger job : jobs) {
@@ -266,7 +266,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
             SELECT Id, CronJobDetail.Name, State, NextFireTime, PreviousFireTime
             FROM CronTrigger
             WHERE CronJobDetail.Name LIKE :('%' + JOB_NAME + '%')
-            WITH SECURITY_ENFORCED
+            WITH USER_MODE
         ];
 
         for (CronTrigger job : jobs) {

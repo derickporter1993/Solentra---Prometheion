@@ -15,14 +15,14 @@ private class AlertHistoryServiceTest {
         Test.stopTest();
 
         // Verify exact count
-        System.assertEquals(1, rows.size(), 'Should return exactly 1 alert');
+        Assert.areEqual(1, rows.size(), 'Should return exactly 1 alert');
 
         // Verify field values
-        System.assertEquals('CPU', rows[0].metric, 'Metric should be CPU');
-        System.assertEquals(9000, rows[0].value, 'Value should be 9000');
-        System.assertEquals(8000, rows[0].threshold, 'Threshold should be 8000');
-        System.assertEquals(UserInfo.getUserId(), rows[0].contextRecordId, 'Context should match');
-        System.assertNotEquals(null, rows[0].createdDate, 'Created date should be populated');
+        Assert.areEqual('CPU', rows[0].metric, 'Metric should be CPU');
+        Assert.areEqual(9000, rows[0].value, 'Value should be 9000');
+        Assert.areEqual(8000, rows[0].threshold, 'Threshold should be 8000');
+        Assert.areEqual(UserInfo.getUserId(), rows[0].contextRecordId, 'Context should match');
+        Assert.areNotEqual(null, rows[0].createdDate, 'Created date should be populated');
     }
 
     @IsTest
@@ -56,16 +56,16 @@ private class AlertHistoryServiceTest {
         List<AlertHistoryService.AlertRow> rows = AlertHistoryService.getRecentAlerts(10);
         Test.stopTest();
 
-        System.assertEquals(3, rows.size(), 'Should return all 3 alerts');
+        Assert.areEqual(3, rows.size(), 'Should return all 3 alerts');
 
         // Verify different metrics are returned
         Set<String> metrics = new Set<String>();
         for (AlertHistoryService.AlertRow row : rows) {
             metrics.add(row.metric);
         }
-        System.assert(metrics.contains('CPU'), 'Should include CPU metric');
-        System.assert(metrics.contains('HEAP'), 'Should include HEAP metric');
-        System.assert(metrics.contains('SOQL'), 'Should include SOQL metric');
+        Assert.isTrue(metrics.contains('CPU'), 'Should include CPU metric');
+        Assert.isTrue(metrics.contains('HEAP'), 'Should include HEAP metric');
+        Assert.isTrue(metrics.contains('SOQL'), 'Should include SOQL metric');
     }
 
     @IsTest
@@ -87,7 +87,7 @@ private class AlertHistoryServiceTest {
         List<AlertHistoryService.AlertRow> rows = AlertHistoryService.getRecentAlerts(5);
         Test.stopTest();
 
-        System.assertEquals(5, rows.size(), 'Should respect limit of 5');
+        Assert.areEqual(5, rows.size(), 'Should respect limit of 5');
     }
 
     @IsTest
@@ -97,7 +97,7 @@ private class AlertHistoryServiceTest {
         List<AlertHistoryService.AlertRow> rows = AlertHistoryService.getRecentAlerts(5);
         Test.stopTest();
 
-        System.assertEquals(0, rows.size(), 'Should return empty list when no history');
+        Assert.areEqual(0, rows.size(), 'Should return empty list when no history');
     }
 
     @IsTest
@@ -120,9 +120,9 @@ private class AlertHistoryServiceTest {
         Test.stopTest();
 
         // Verify descending order by created date (most recent first)
-        System.assertEquals(3, rows.size(), 'Should return all 3 alerts');
+        Assert.areEqual(3, rows.size(), 'Should return all 3 alerts');
         for (Integer i = 0; i < rows.size() - 1; i++) {
-            System.assert(
+            Assert.isTrue(
                 rows[i].createdDate >= rows[i + 1].createdDate,
                 'Alerts should be ordered by CreatedDate DESC'
             );
