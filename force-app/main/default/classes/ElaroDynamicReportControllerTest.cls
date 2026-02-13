@@ -47,7 +47,7 @@ private class ElaroDynamicReportControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for invalid object');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for invalid object');
     }
 
     @isTest
@@ -124,7 +124,7 @@ private class ElaroDynamicReportControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for invalid object');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for invalid object');
     }
 
     @isTest
@@ -137,7 +137,7 @@ private class ElaroDynamicReportControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for empty config');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for empty config');
     }
 
     @isTest
@@ -150,7 +150,7 @@ private class ElaroDynamicReportControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for null config');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for null config');
     }
 
     @isTest
@@ -163,7 +163,7 @@ private class ElaroDynamicReportControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for invalid JSON');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for invalid JSON');
     }
 
     @isTest
@@ -183,7 +183,7 @@ private class ElaroDynamicReportControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for empty fields');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for empty fields');
     }
 
     @isTest
@@ -203,7 +203,7 @@ private class ElaroDynamicReportControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for null fields');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for null fields');
     }
 
     @isTest
@@ -223,7 +223,7 @@ private class ElaroDynamicReportControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for invalid field');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for invalid field');
     }
 
     @isTest
@@ -249,7 +249,7 @@ private class ElaroDynamicReportControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for invalid operator');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for invalid operator');
     }
 
     @isTest
@@ -269,7 +269,7 @@ private class ElaroDynamicReportControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for max rows exceeded');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for max rows exceeded');
     }
 
     @isTest
@@ -611,6 +611,6 @@ private class ElaroDynamicReportControllerTest {
             new ElaroDynamicReportController.FieldMetadata();
         fm2.label = 'Beta';
 
-        System.assert(fm1.compareTo(fm2) < 0, 'Alpha should be before Beta');
+        Assert.isTrue(fm1.compareTo(fm2) < 0, 'Alpha should be before Beta');
     }
 }

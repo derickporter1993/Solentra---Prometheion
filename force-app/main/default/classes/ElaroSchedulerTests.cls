@@ -94,7 +94,7 @@ private class ElaroSchedulerTests {
             WHERE Status__c = 'Overdue'
         ];
 
-        System.assertEquals(1, overdueRequests.size(), 'Should have 1 overdue request');
+        Assert.areEqual(1, overdueRequests.size(), 'Should have 1 overdue request');
     }
 
     @IsTest
@@ -105,7 +105,7 @@ private class ElaroSchedulerTests {
 
         Test.stopTest();
 
-        System.assertNotEquals(null, jobId, 'Job ID should not be null');
+        Assert.areNotEqual(null, jobId, 'Job ID should not be null');
 
         // Verify job was scheduled
         List<CronTrigger> jobs = [
@@ -113,7 +113,7 @@ private class ElaroSchedulerTests {
             FROM CronTrigger
             WHERE Id = :jobId
         ];
-        System.assertEquals(1, jobs.size(), 'Job should be scheduled');
+        Assert.areEqual(1, jobs.size(), 'Job should be scheduled');
     }
 
     @IsTest
@@ -124,7 +124,7 @@ private class ElaroSchedulerTests {
 
         Test.stopTest();
 
-        System.assertNotEquals(null, jobId, 'Job ID should not be null');
+        Assert.areNotEqual(null, jobId, 'Job ID should not be null');
     }
 
     @IsTest
@@ -140,7 +140,7 @@ private class ElaroSchedulerTests {
         Test.stopTest();
 
         // Should complete without errors
-        System.assert(true, 'Scheduler should handle empty data gracefully');
+        Assert.isTrue(true, 'Scheduler should handle empty data gracefully');
     }
 
     // ========================================
@@ -157,7 +157,7 @@ private class ElaroSchedulerTests {
         Test.stopTest();
 
         // Scheduler should complete without errors
-        System.assert(true, 'Scheduler should execute successfully');
+        Assert.isTrue(true, 'Scheduler should execute successfully');
     }
 
     @IsTest
@@ -168,7 +168,7 @@ private class ElaroSchedulerTests {
 
         Test.stopTest();
 
-        System.assertNotEquals(null, jobId, 'Job ID should not be null');
+        Assert.areNotEqual(null, jobId, 'Job ID should not be null');
 
         // Verify job was scheduled
         List<CronTrigger> jobs = [
@@ -176,7 +176,7 @@ private class ElaroSchedulerTests {
             FROM CronTrigger
             WHERE Id = :jobId
         ];
-        System.assertEquals(1, jobs.size(), 'Job should be scheduled');
+        Assert.areEqual(1, jobs.size(), 'Job should be scheduled');
     }
 
     @IsTest
@@ -192,7 +192,7 @@ private class ElaroSchedulerTests {
 
         Test.stopTest();
 
-        System.assert(true, 'Scheduler should handle no dormant users gracefully');
+        Assert.isTrue(true, 'Scheduler should handle no dormant users gracefully');
     }
 
     // ========================================
@@ -209,7 +209,7 @@ private class ElaroSchedulerTests {
         Test.stopTest();
 
         // Should complete without errors
-        System.assert(true, 'Scheduler should execute successfully');
+        Assert.isTrue(true, 'Scheduler should execute successfully');
     }
 
     @IsTest
@@ -220,7 +220,7 @@ private class ElaroSchedulerTests {
 
         Test.stopTest();
 
-        System.assertNotEquals(null, jobId, 'Job ID should not be null');
+        Assert.areNotEqual(null, jobId, 'Job ID should not be null');
 
         // Verify job was scheduled
         List<CronTrigger> jobs = [
@@ -228,7 +228,7 @@ private class ElaroSchedulerTests {
             FROM CronTrigger
             WHERE Id = :jobId
         ];
-        System.assertEquals(1, jobs.size(), 'Job should be scheduled');
+        Assert.areEqual(1, jobs.size(), 'Job should be scheduled');
     }
 
     // ========================================
@@ -245,7 +245,7 @@ private class ElaroSchedulerTests {
         Test.stopTest();
 
         // Should complete without errors
-        System.assert(true, 'Scheduler should execute successfully');
+        Assert.isTrue(true, 'Scheduler should execute successfully');
     }
 
     @IsTest
@@ -258,7 +258,7 @@ private class ElaroSchedulerTests {
         Test.stopTest();
 
         // Should complete without errors
-        System.assert(true, 'Privileged scheduler should execute successfully');
+        Assert.isTrue(true, 'Privileged scheduler should execute successfully');
     }
 
     @IsTest
@@ -269,7 +269,7 @@ private class ElaroSchedulerTests {
 
         Test.stopTest();
 
-        System.assertNotEquals(null, jobId, 'Job ID should not be null');
+        Assert.areNotEqual(null, jobId, 'Job ID should not be null');
     }
 
     @IsTest
@@ -280,7 +280,7 @@ private class ElaroSchedulerTests {
 
         Test.stopTest();
 
-        System.assertNotEquals(null, jobId, 'Job ID should not be null');
+        Assert.areNotEqual(null, jobId, 'Job ID should not be null');
     }
 
     @IsTest
@@ -292,7 +292,7 @@ private class ElaroSchedulerTests {
         Test.stopTest();
 
         // Default should run quarterly reviews
-        System.assert(true, 'Default constructor should work');
+        Assert.isTrue(true, 'Default constructor should work');
     }
 
     // ========================================
@@ -309,7 +309,7 @@ private class ElaroSchedulerTests {
         Test.stopTest();
 
         // Should complete without errors
-        System.assert(true, 'Default scheduler should execute successfully');
+        Assert.isTrue(true, 'Default scheduler should execute successfully');
     }
 
     @IsTest
@@ -322,7 +322,7 @@ private class ElaroSchedulerTests {
         Test.stopTest();
 
         // Should complete without errors
-        System.assert(true, 'Parameterized scheduler should execute successfully');
+        Assert.isTrue(true, 'Parameterized scheduler should execute successfully');
     }
 
     @IsTest
@@ -335,7 +335,7 @@ private class ElaroSchedulerTests {
         Test.stopTest();
 
         // Should use defaults and complete without errors
-        System.assert(true, 'Scheduler should handle null parameters gracefully');
+        Assert.isTrue(true, 'Scheduler should handle null parameters gracefully');
     }
 
     // ========================================
@@ -367,7 +367,7 @@ private class ElaroSchedulerTests {
 
         // Verify some requests were marked overdue
         Integer overdueCount = [SELECT COUNT() FROM CCPA_Request__c WHERE Status__c = 'Overdue'];
-        System.assert(overdueCount > 0, 'Should have some overdue requests');
+        Assert.isTrue(overdueCount > 0, 'Should have some overdue requests');
     }
 
     // ========================================
@@ -392,7 +392,7 @@ private class ElaroSchedulerTests {
 
         Test.stopTest();
 
-        System.assert(true, 'All schedulers should handle empty data gracefully');
+        Assert.isTrue(true, 'All schedulers should handle empty data gracefully');
     }
 
     @IsTest
@@ -408,9 +408,9 @@ private class ElaroSchedulerTests {
         Test.stopTest();
 
         // All jobs should be scheduled
-        System.assertNotEquals(null, job1, 'CCPA job should be scheduled');
-        System.assertNotEquals(null, job2, 'Dormant Account job should be scheduled');
-        System.assertNotEquals(null, job3, 'GLBA job should be scheduled');
-        System.assertNotEquals(null, job4, 'ISO 27001 job should be scheduled');
+        Assert.areNotEqual(null, job1, 'CCPA job should be scheduled');
+        Assert.areNotEqual(null, job2, 'Dormant Account job should be scheduled');
+        Assert.areNotEqual(null, job3, 'GLBA job should be scheduled');
+        Assert.areNotEqual(null, job4, 'ISO 27001 job should be scheduled');
     }
 }

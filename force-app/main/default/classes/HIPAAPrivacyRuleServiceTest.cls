@@ -63,7 +63,7 @@ public class HIPAAPrivacyRuleServiceTest {
         Decimal score = service.getComplianceScore();
         Test.stopTest();
 
-        System.assert(score >= 0 && score <= 100, 'Score should be between 0 and 100');
+        Assert.isTrue(score >= 0 && score <= 100, 'Score should be between 0 and 100');
     }
 
     @isTest
@@ -74,7 +74,7 @@ public class HIPAAPrivacyRuleServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, phiObjects, 'PHI objects list should not be null');
-        System.assert(phiObjects.size() > 0, 'Should identify at least one PHI object');
+        Assert.isTrue(phiObjects.size() > 0, 'Should identify at least one PHI object');
     }
 
     @isTest
@@ -121,7 +121,7 @@ public class HIPAAPrivacyRuleServiceTest {
         Assert.areNotEqual(null, docId, 'Document ID should not be null');
 
         ContentDocument doc = [SELECT Title FROM ContentDocument WHERE Id = :docId];
-        System.assert(doc.Title.contains('PHI_Disclosure_Log'), 'Title should contain PHI_Disclosure_Log');
+        Assert.isTrue(doc.Title.contains('PHI_Disclosure_Log'), 'Title should contain PHI_Disclosure_Log');
     }
 
     @isTest
@@ -167,6 +167,6 @@ public class HIPAAPrivacyRuleServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, violations, 'Violations should not be null');
-        System.assert(score >= 0, 'Score should be non-negative');
+        Assert.isTrue(score >= 0, 'Score should be non-negative');
     }
 }

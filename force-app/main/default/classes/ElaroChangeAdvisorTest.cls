@@ -14,9 +14,9 @@ private class ElaroChangeAdvisorTest {
         
         Assert.areNotEqual(null, impact, 'Should return impact analysis');
         Assert.areNotEqual(null, impact.frameworkImpact, 'Should have framework impact');
-        System.assert(impact.overallImpact < 0, 'Should show negative impact');
+        Assert.isTrue(impact.overallImpact < 0, 'Should show negative impact');
         Assert.areNotEqual(null, impact.alternatives, 'Should provide alternatives');
-        System.assert(!impact.alternatives.isEmpty(), 'Should have at least one alternative');
+        Assert.isTrue(!impact.alternatives.isEmpty(), 'Should have at least one alternative');
     }
     
     @isTest
@@ -31,7 +31,7 @@ private class ElaroChangeAdvisorTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, impact, 'Should return impact analysis');
-        System.assert(impact.frameworkImpact.containsKey('HIPAA'), 'Should include HIPAA impact');
+        Assert.isTrue(impact.frameworkImpact.containsKey('HIPAA'), 'Should include HIPAA impact');
     }
     
     @isTest

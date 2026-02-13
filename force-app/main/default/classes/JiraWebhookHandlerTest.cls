@@ -227,8 +227,8 @@ private class JiraWebhookHandlerTest {
 
         // Verify comment was added to notes
         Compliance_Gap__c updatedGap = [SELECT Notes__c FROM Compliance_Gap__c WHERE Jira_Issue_Key__c = :MOCK_JIRA_KEY];
-        System.assert(updatedGap.Notes__c.contains('This is a test comment'), 'Notes should contain comment');
-        System.assert(updatedGap.Notes__c.contains('John Doe'), 'Notes should contain author');
+        Assert.isTrue(updatedGap.Notes__c.contains('This is a test comment'), 'Notes should contain comment');
+        Assert.isTrue(updatedGap.Notes__c.contains('John Doe'), 'Notes should contain author');
     }
 
     @isTest

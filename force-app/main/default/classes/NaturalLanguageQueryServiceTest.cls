@@ -27,7 +27,7 @@ private class NaturalLanguageQueryServiceTest {
         Assert.areNotEqual(null, result, 'Should return result');
         Assert.areNotEqual(null, result.generatedSOQL, 'Should have generated SOQL');
         Assert.areNotEqual(null, result.results, 'Should have results list');
-        System.assert(result.confidence &gt;= 0, 'Should have confidence score');
+        Assert.isTrue(result.confidence &gt;= 0, 'Should have confidence score');
     }
     
     @isTest
@@ -39,7 +39,7 @@ private class NaturalLanguageQueryServiceTest {
             NaturalLanguageQueryService.executeNaturalLanguageQuery('');
             Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should mention required');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should mention required');
         }
         Test.stopTest();
     }
@@ -53,7 +53,7 @@ private class NaturalLanguageQueryServiceTest {
             NaturalLanguageQueryService.executeNaturalLanguageQuery(null);
             Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should mention required');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should mention required');
         }
         Test.stopTest();
     }
@@ -80,7 +80,7 @@ private class NaturalLanguageQueryServiceTest {
         List&lt;String&gt; suggestions = NaturalLanguageQueryService.getQuerySuggestions('');
         Test.stopTest();
         
-        System.assert(!suggestions.isEmpty(), 'Should return example suggestions');
+        Assert.isTrue(!suggestions.isEmpty(), 'Should return example suggestions');
     }
     
     @isTest
@@ -89,7 +89,7 @@ private class NaturalLanguageQueryServiceTest {
         List&lt;String&gt; suggestions = NaturalLanguageQueryService.getQuerySuggestions(null);
         Test.stopTest();
         
-        System.assert(!suggestions.isEmpty(), 'Should return example suggestions for null');
+        Assert.isTrue(!suggestions.isEmpty(), 'Should return example suggestions for null');
     }
     
     @isTest
@@ -106,7 +106,7 @@ private class NaturalLanguageQueryServiceTest {
                 break;
             }
         }
-        System.assert(hasAdminSuggestion, 'Should include admin-related suggestions');
+        Assert.isTrue(hasAdminSuggestion, 'Should include admin-related suggestions');
     }
     
     @isTest
@@ -115,7 +115,7 @@ private class NaturalLanguageQueryServiceTest {
         List&lt;String&gt; suggestions = NaturalLanguageQueryService.getQuerySuggestions('export');
         Test.stopTest();
         
-        System.assert(!suggestions.isEmpty(), 'Should return export-related suggestions');
+        Assert.isTrue(!suggestions.isEmpty(), 'Should return export-related suggestions');
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -146,7 +146,7 @@ private class NaturalLanguageQueryServiceTest {
         Test.stopTest();
         
         Assert.areEqual(false, result.isValid, 'Should be invalid');
-        System.assert(result.message.contains('empty'), 'Should mention empty');
+        Assert.isTrue(result.message.contains('empty'), 'Should mention empty');
     }
     
     @isTest

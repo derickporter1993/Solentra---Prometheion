@@ -37,9 +37,9 @@ private class ElaroEventParserTest {
         Test.stopTest();
         
         String geoLocation = (String)parsed.get('geoLocation');
-        System.assert(geoLocation.contains('San Francisco'), 'Should contain city');
-        System.assert(geoLocation.contains('California'), 'Should contain state');
-        System.assert(geoLocation.contains('United States'), 'Should contain country');
+        Assert.isTrue(geoLocation.contains('San Francisco'), 'Should contain city');
+        Assert.isTrue(geoLocation.contains('California'), 'Should contain state');
+        Assert.isTrue(geoLocation.contains('United States'), 'Should contain country');
     }
     
     @isTest

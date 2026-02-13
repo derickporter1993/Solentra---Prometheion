@@ -68,7 +68,7 @@ private class AnomalyDetectionServiceTest {
             AnomalyDetectionService.detectAnomalies(null, 30);
             Assert.fail( 'Should have thrown IllegalArgumentException');
         } catch (IllegalArgumentException e) {
-            System.assert(e.getMessage().contains('Framework is required'),
+            Assert.isTrue(e.getMessage().contains('Framework is required'),
                 'Exception should mention framework');
         }
         Test.stopTest();
@@ -175,8 +175,8 @@ private class AnomalyDetectionServiceTest {
         Datetime afterCreate = System.now();
         Test.stopTest();
 
-        System.assert(anomaly.detectedDate >= beforeCreate, 'DetectedDate should be at or after test start');
-        System.assert(anomaly.detectedDate <= afterCreate, 'DetectedDate should be at or before test end');
+        Assert.isTrue(anomaly.detectedDate >= beforeCreate, 'DetectedDate should be at or after test start');
+        Assert.isTrue(anomaly.detectedDate <= afterCreate, 'DetectedDate should be at or before test end');
     }
 
     @IsTest

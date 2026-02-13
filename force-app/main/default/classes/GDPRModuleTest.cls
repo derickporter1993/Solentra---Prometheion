@@ -97,7 +97,7 @@ private class GDPRModuleTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, controls, 'Controls list should not be null');
-        System.assert(controls.size() > 0, 'Should have at least one control');
+        Assert.isTrue(controls.size() > 0, 'Should have at least one control');
 
         Set<String> families = new Set<String>();
         for (IComplianceModule.Control ctrl : controls) {
@@ -105,7 +105,7 @@ private class GDPRModuleTest {
             Assert.areNotEqual(null, ctrl.code, 'Control code should not be null');
             Assert.areNotEqual(null, ctrl.name, 'Control name should not be null');
         }
-        System.assert(families.size() > 1, 'Should cover multiple GDPR families');
+        Assert.isTrue(families.size() > 1, 'Should cover multiple GDPR families');
     }
 
     // =============================================
@@ -122,7 +122,7 @@ private class GDPRModuleTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, score, 'Score should not be null');
-        System.assert(score >= 0, 'Score should be >= 0');
+        Assert.isTrue(score >= 0, 'Score should be >= 0');
     }
 
     @IsTest
@@ -151,7 +151,7 @@ private class GDPRModuleTest {
 
         Assert.areNotEqual(null, gaps, 'Gaps list should not be null');
         for (IComplianceModule.Gap gap : gaps) {
-            System.assert(gap.id.startsWith('GAP-GDPR-'), 'Gap ID should start with GAP-GDPR-');
+            Assert.isTrue(gap.id.startsWith('GAP-GDPR-'), 'Gap ID should start with GAP-GDPR-');
             Assert.areNotEqual(null, gap.controlCode, 'Gap controlCode should not be null');
             Assert.areNotEqual(null, gap.recommendation, 'Gap recommendation should not be null');
         }
@@ -250,7 +250,7 @@ private class GDPRModuleTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, result, 'Result should not be null');
-        System.assert(result.passed, 'Security measures should pass');
+        Assert.isTrue(result.passed, 'Security measures should pass');
         Assert.areEqual(90, result.score, 'Score should be 90');
     }
 

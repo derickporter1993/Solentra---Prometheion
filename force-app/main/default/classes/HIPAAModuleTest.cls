@@ -90,7 +90,7 @@ private class HIPAAModuleTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, controls, 'Controls list should not be null');
-        System.assert(controls.size() > 0, 'Should have at least one control');
+        Assert.isTrue(controls.size() > 0, 'Should have at least one control');
 
         // Verify controls cover Administrative, Physical, and Technical safeguards
         Set<String> categories = new Set<String>();
@@ -100,9 +100,9 @@ private class HIPAAModuleTest {
             Assert.areNotEqual(null, ctrl.name, 'Control name should not be null');
             Assert.areNotEqual(null, ctrl.severity, 'Control severity should not be null');
         }
-        System.assert(categories.contains('Administrative'), 'Should include Administrative safeguards');
-        System.assert(categories.contains('Physical'), 'Should include Physical safeguards');
-        System.assert(categories.contains('Technical'), 'Should include Technical safeguards');
+        Assert.isTrue(categories.contains('Administrative'), 'Should include Administrative safeguards');
+        Assert.isTrue(categories.contains('Physical'), 'Should include Physical safeguards');
+        Assert.isTrue(categories.contains('Technical'), 'Should include Technical safeguards');
     }
 
     // =============================================
@@ -119,7 +119,7 @@ private class HIPAAModuleTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, score, 'Score should not be null');
-        System.assert(score >= 0, 'Score should be >= 0');
+        Assert.isTrue(score >= 0, 'Score should be >= 0');
     }
 
     @IsTest
@@ -236,7 +236,7 @@ private class HIPAAModuleTest {
         Assert.areEqual('164.312(a)', result.controlId, 'Control ID should match');
         Assert.areNotEqual(null, result.status, 'Status should not be null');
         Assert.areNotEqual(null, result.finding, 'Finding should not be null');
-        System.assert(result.score >= 0 && result.score <= 100, 'Score should be between 0 and 100');
+        Assert.isTrue(result.score >= 0 && result.score <= 100, 'Score should be between 0 and 100');
     }
 
     @IsTest
@@ -269,7 +269,7 @@ private class HIPAAModuleTest {
 
         Assert.areNotEqual(null, result, 'Result should not be null');
         Assert.areEqual('164.312(d)', result.controlId, 'Control ID should match');
-        System.assert(result.passed, 'Authentication control should pass by default');
+        Assert.isTrue(result.passed, 'Authentication control should pass by default');
         Assert.areEqual(85, result.score, 'Score should be 85');
     }
 
@@ -287,7 +287,7 @@ private class HIPAAModuleTest {
 
         Assert.areNotEqual(null, result, 'Result should not be null');
         Assert.areEqual('164.312(e)', result.controlId, 'Control ID should match');
-        System.assert(result.passed, 'Transmission security should pass (TLS enforced)');
+        Assert.isTrue(result.passed, 'Transmission security should pass (TLS enforced)');
         Assert.areEqual(100, result.score, 'Score should be 100');
         Assert.areEqual('COMPLIANT', result.status, 'Status should be COMPLIANT');
     }
@@ -306,7 +306,7 @@ private class HIPAAModuleTest {
 
         Assert.areNotEqual(null, result, 'Result should not be null');
         Assert.areEqual('164.308(a)(6)', result.controlId, 'Control ID should match');
-        System.assert(result.passed, 'Incident procedures should pass');
+        Assert.isTrue(result.passed, 'Incident procedures should pass');
     }
 
     @IsTest
@@ -368,11 +368,11 @@ private class HIPAAModuleTest {
 
         Assert.areNotEqual(null, gaps, 'Gaps list should not be null');
         // Without evidence, more gaps should be identified
-        System.assert(gaps.size() > 0, 'Should identify gaps when no evidence is present');
+        Assert.isTrue(gaps.size() > 0, 'Should identify gaps when no evidence is present');
 
         // Verify gap properties
         for (IComplianceModule.Gap gap : gaps) {
-            System.assert(gap.id.startsWith('GAP-'), 'Gap ID should start with GAP-');
+            Assert.isTrue(gap.id.startsWith('GAP-'), 'Gap ID should start with GAP-');
             Assert.areNotEqual(null, gap.description, 'Gap description should not be null');
             Assert.areNotEqual(null, gap.riskScore, 'Gap risk score should not be null');
         }
@@ -400,7 +400,7 @@ private class HIPAAModuleTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, score, 'Score should not be null even without evidence');
-        System.assert(score >= 0, 'Score should be non-negative');
+        Assert.isTrue(score >= 0, 'Score should be non-negative');
     }
 
     // =============================================
@@ -427,7 +427,7 @@ private class HIPAAModuleTest {
         Test.startTest();
         for (Elaro_Audit_Package__c pkg : packages) {
             Decimal score = module.calculateScore(pkg.Id);
-            System.assert(score >= 0, 'Score should be non-negative for package: ' + pkg.Id);
+            Assert.isTrue(score >= 0, 'Score should be non-negative for package: ' + pkg.Id);
 
             List<IComplianceModule.Gap> gaps = module.identifyGaps(pkg.Id);
             Assert.areNotEqual(null, gaps, 'Gaps should not be null for package: ' + pkg.Id);

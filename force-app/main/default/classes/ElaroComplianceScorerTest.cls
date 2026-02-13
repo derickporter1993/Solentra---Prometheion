@@ -18,7 +18,7 @@ private class ElaroComplianceScorerTest {
 
         Assert.areNotEqual(null, result, 'Should return a result');
         Assert.areNotEqual(null, result.overallScore, 'Should have an overall score');
-        System.assert(result.overallScore >= 0 && result.overallScore <= 100, 'Score should be between 0 and 100');
+        Assert.isTrue(result.overallScore >= 0 && result.overallScore <= 100, 'Score should be between 0 and 100');
         Assert.areNotEqual(null, result.rating, 'Should have a rating');
         Assert.areNotEqual(null, result.frameworkScores, 'Should have framework scores');
     }
@@ -40,9 +40,9 @@ private class ElaroComplianceScorerTest {
         ElaroComplianceScorer.ScoreResult result = ElaroComplianceScorer.calculateReadinessScore();
         Test.stopTest();
 
-        System.assert(result.overallScore > 0, 'Should have positive score with documented permission sets');
+        Assert.isTrue(result.overallScore > 0, 'Should have positive score with documented permission sets');
         Assert.areNotEqual(null, result.factors, 'Should have score factors');
-        System.assert(!result.factors.isEmpty(), 'Should have at least one factor');
+        Assert.isTrue(!result.factors.isEmpty(), 'Should have at least one factor');
     }
     
     @IsTest
@@ -63,7 +63,7 @@ private class ElaroComplianceScorerTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, result, 'Should return a result even with bulk data');
-        System.assert(result.overallScore >= 0 && result.overallScore <= 100, 'Score should be valid');
+        Assert.isTrue(result.overallScore >= 0 && result.overallScore <= 100, 'Score should be valid');
     }
     
     @IsTest

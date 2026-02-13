@@ -127,7 +127,7 @@ private class BlockchainVerificationTest {
         List<BlockchainVerification.VerificationRecord> history = BlockchainVerification.getVerificationHistory(pkg.Id);
         Test.stopTest();
 
-        System.assert(history.size() > 0, 'Should have verification records');
+        Assert.isTrue(history.size() > 0, 'Should have verification records');
     }
 
     @isTest
@@ -141,8 +141,8 @@ private class BlockchainVerificationTest {
         String certificate = BlockchainVerification.generateCertificate(cv.Id);
         Test.stopTest();
 
-        System.assert(certificate.contains('CERTIFICATE OF AUTHENTICITY'), 'Certificate should have proper header');
-        System.assert(certificate.contains('AUTHENTIC'), 'Certificate should confirm authenticity');
+        Assert.isTrue(certificate.contains('CERTIFICATE OF AUTHENTICITY'), 'Certificate should have proper header');
+        Assert.isTrue(certificate.contains('AUTHENTIC'), 'Certificate should confirm authenticity');
     }
 
     @isTest
@@ -161,7 +161,7 @@ private class BlockchainVerificationTest {
             BlockchainVerification.generateCertificate(cv.Id);
             Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('not verified'), 'Error should indicate not verified');
+            Assert.isTrue(e.getMessage().contains('not verified'), 'Error should indicate not verified');
         }
         Test.stopTest();
     }

@@ -63,7 +63,7 @@ private class ElaroIntegrationTest {
         
         // Verify alerts were created
         Assert.areEqual(true, result.warning, 'Should trigger warning');
-        System.assert(result.eventsPublished > 0, 'Should have published alerts');
+        Assert.isTrue(result.eventsPublished > 0, 'Should have published alerts');
         
         // Verify Performance_Alert_History__c records were created
         List<Performance_Alert_History__c> alerts = [
@@ -71,7 +71,7 @@ private class ElaroIntegrationTest {
             FROM Performance_Alert_History__c
             WHERE Context_Record__c = 'integrationTest'
         ];
-        System.assert(alerts.size() >= 4, 'Should have created at least 4 alert records');
+        Assert.isTrue(alerts.size() >= 4, 'Should have created at least 4 alert records');
     }
     
     /**
@@ -101,7 +101,7 @@ private class ElaroIntegrationTest {
         
         // Verify score calculation succeeded
         Assert.areNotEqual(null, scoreResult, 'Score result should not be null');
-        System.assert(scoreResult.overallScore >= 0 && scoreResult.overallScore <= 100, 
+        Assert.isTrue(scoreResult.overallScore >= 0 && scoreResult.overallScore <= 100, 
                      'Score should be between 0 and 100');
     }
     
@@ -141,7 +141,7 @@ private class ElaroIntegrationTest {
             FROM Elaro_Compliance_Graph__b
             WHERE Entity_Record_Id__c = :ps.Id
         ];
-        System.assert(nodes.size() >= 2, 'Should have created nodes for both frameworks');
+        Assert.isTrue(nodes.size() >= 2, 'Should have created nodes for both frameworks');
         
         // Verify score calculation reflects settings
         Assert.areNotEqual(null, scoreResult, 'Score result should not be null');

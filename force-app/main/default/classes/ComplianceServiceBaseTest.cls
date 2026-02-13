@@ -29,8 +29,8 @@ private class ComplianceServiceBaseTest {
         Test.stopTest();
 
         // Base 5.0 + 3.0 (modifyAll) = 8.0, then * multiplier (0.95) = 7.6
-        System.assert(score > 5, 'Score should be elevated for ModifyAll permission');
-        System.assert(score <= 10, 'Score should not exceed 10');
+        Assert.isTrue(score > 5, 'Score should be elevated for ModifyAll permission');
+        Assert.isTrue(score <= 10, 'Score should not exceed 10');
     }
 
     @IsTest
@@ -49,7 +49,7 @@ private class ComplianceServiceBaseTest {
         Test.stopTest();
 
         // Base 5.0 + 2.0 (viewAll) = 7.0, then * multiplier
-        System.assert(score > 5, 'Score should be elevated for ViewAll permission');
+        Assert.isTrue(score > 5, 'Score should be elevated for ViewAll permission');
     }
 
     @IsTest
@@ -68,7 +68,7 @@ private class ComplianceServiceBaseTest {
         Test.stopTest();
 
         // Base 5.0 + 3.0 + 2.0 = 10.0 (capped), then * multiplier
-        System.assert(score > 7, 'Score should be high for both permissions');
+        Assert.isTrue(score > 7, 'Score should be high for both permissions');
     }
 
     @IsTest
@@ -86,7 +86,7 @@ private class ComplianceServiceBaseTest {
         Test.stopTest();
 
         // Base 5.0 + 2.0 (Edit) = 7.0, then * multiplier
-        System.assert(score > 5, 'Score should be elevated for Edit access');
+        Assert.isTrue(score > 5, 'Score should be elevated for Edit access');
     }
 
     @IsTest
@@ -104,7 +104,7 @@ private class ComplianceServiceBaseTest {
         Test.stopTest();
 
         // Base 5.0 + 3.0 (All) = 8.0, then * multiplier
-        System.assert(score > 6, 'Score should be elevated for All access');
+        Assert.isTrue(score > 6, 'Score should be elevated for All access');
     }
 
     @IsTest
@@ -123,7 +123,7 @@ private class ComplianceServiceBaseTest {
         Test.stopTest();
 
         // Base 5.0 + 3.0 (sensitive+unencrypted) = 8.0, then * multiplier
-        System.assert(score > 6, 'Score should be elevated for sensitive unencrypted field');
+        Assert.isTrue(score > 6, 'Score should be elevated for sensitive unencrypted field');
     }
 
     @IsTest
@@ -142,7 +142,7 @@ private class ComplianceServiceBaseTest {
         Test.stopTest();
 
         // Base 5.0 (no penalty for encrypted), then * multiplier
-        System.assert(score <= 5, 'Score should be base level for encrypted sensitive field');
+        Assert.isTrue(score <= 5, 'Score should be base level for encrypted sensitive field');
     }
 
     @IsTest
@@ -158,8 +158,8 @@ private class ComplianceServiceBaseTest {
         Test.stopTest();
 
         // Base 5.0 * multiplier
-        System.assert(score >= 0, 'Score should be non-negative');
-        System.assert(score <= 10, 'Score should not exceed 10');
+        Assert.isTrue(score >= 0, 'Score should be non-negative');
+        Assert.isTrue(score <= 10, 'Score should not exceed 10');
     }
 
     // =============================================
@@ -181,7 +181,7 @@ private class ComplianceServiceBaseTest {
         );
 
         // Score >= 9 * multiplier means critical range
-        System.assert(highScore > 7, 'High-risk entity should produce high score');
+        Assert.isTrue(highScore > 7, 'High-risk entity should produce high score');
     }
 
     // =============================================

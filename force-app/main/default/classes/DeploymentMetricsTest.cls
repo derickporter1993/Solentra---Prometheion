@@ -33,7 +33,7 @@ private class DeploymentMetricsTest {
 
         Assert.areEqual(3, rows.size(), 'Should return 3 records');
         // Verify ordering (most recent first)
-        System.assert(rows[0].startedOn >= rows[1].startedOn, 'Should be ordered by startedOn DESC');
+        Assert.isTrue(rows[0].startedOn >= rows[1].startedOn, 'Should be ordered by startedOn DESC');
     }
 
     @IsTest

@@ -113,7 +113,7 @@ private class OnCallScheduleControllerTest {
             OnCallScheduleController.createSchedule(schedule);
             Assert.fail( 'Expected exception for missing start time');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Start time'), 'Error message should mention start time');
+            Assert.isTrue(e.getMessage().contains('Start time'), 'Error message should mention start time');
         }
         Test.stopTest();
     }
@@ -135,7 +135,7 @@ private class OnCallScheduleControllerTest {
             OnCallScheduleController.createSchedule(schedule);
             Assert.fail( 'Expected exception for missing end time');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('End time'), 'Error message should mention end time');
+            Assert.isTrue(e.getMessage().contains('End time'), 'Error message should mention end time');
         }
         Test.stopTest();
     }
@@ -157,7 +157,7 @@ private class OnCallScheduleControllerTest {
             OnCallScheduleController.createSchedule(schedule);
             Assert.fail( 'Expected exception for invalid time range');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('after start'), 'Error message should mention time order');
+            Assert.isTrue(e.getMessage().contains('after start'), 'Error message should mention time order');
         }
         Test.stopTest();
     }
@@ -177,7 +177,7 @@ private class OnCallScheduleControllerTest {
             OnCallScheduleController.createSchedule(schedule);
             Assert.fail( 'Expected exception for missing user');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('User'), 'Error message should mention user');
+            Assert.isTrue(e.getMessage().contains('User'), 'Error message should mention user');
         }
         Test.stopTest();
     }

@@ -61,7 +61,7 @@ private class RemediationOrchestratorTest {
             RemediationOrchestrator.createRemediationCase('', 'Medium');
             Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Error message should indicate missing ID');
+            Assert.isTrue(e.getMessage().contains('required'), 'Error message should indicate missing ID');
         }
         Test.stopTest();
     }
@@ -72,15 +72,15 @@ private class RemediationOrchestratorTest {
         List<RemediationOrchestrator.ActionOption> actions = RemediationOrchestrator.getAvailableActions('LoginAs');
         Test.stopTest();
 
-        System.assert(actions.size() >= 2, 'Should have multiple actions available');
+        Assert.isTrue(actions.size() >= 2, 'Should have multiple actions available');
         Boolean hasRevoke = false;
         Boolean hasLock = false;
         for (RemediationOrchestrator.ActionOption action : actions) {
             if (action.value == 'REVOKE_PERMISSION') hasRevoke = true;
             if (action.value == 'LOCK_USER') hasLock = true;
         }
-        System.assert(hasRevoke, 'LoginAs should have REVOKE_PERMISSION action');
-        System.assert(hasLock, 'LoginAs should have LOCK_USER action');
+        Assert.isTrue(hasRevoke, 'LoginAs should have REVOKE_PERMISSION action');
+        Assert.isTrue(hasLock, 'LoginAs should have LOCK_USER action');
     }
 
     @isTest
@@ -93,7 +93,7 @@ private class RemediationOrchestratorTest {
         for (RemediationOrchestrator.ActionOption action : actions) {
             if (action.value == 'DISABLE_API_ACCESS') hasDisableAPI = true;
         }
-        System.assert(hasDisableAPI, 'API event should have DISABLE_API_ACCESS action');
+        Assert.isTrue(hasDisableAPI, 'API event should have DISABLE_API_ACCESS action');
     }
 
     @isTest
@@ -131,7 +131,7 @@ private class RemediationOrchestratorTest {
             RemediationOrchestrator.executeRemediationAction('INVALID_ACTION', null, new Map<String, Object>());
             Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Invalid'), 'Error should indicate invalid action');
+            Assert.isTrue(e.getMessage().contains('Invalid'), 'Error should indicate invalid action');
         }
         Test.stopTest();
     }

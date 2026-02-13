@@ -20,7 +20,7 @@ private class EvidenceCollectionServiceTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, evidence, 'Evidence list should not be null');
-        System.assert(!evidence.isEmpty(), 'Should have collected evidence');
+        Assert.isTrue(!evidence.isEmpty(), 'Should have collected evidence');
         
         // Verify evidence was inserted
         List<Compliance_Evidence__c> insertedEvidence = [
@@ -29,7 +29,7 @@ private class EvidenceCollectionServiceTest {
             WHERE Framework__c = 'SOX'
             WITH USER_MODE
         ];
-        System.assert(!insertedEvidence.isEmpty(), 'Evidence should be inserted');
+        Assert.isTrue(!insertedEvidence.isEmpty(), 'Evidence should be inserted');
     }
     
     @IsTest
@@ -93,13 +93,13 @@ private class EvidenceCollectionServiceTest {
         }
         Test.stopTest();
         
-        System.assert(!allEvidence.isEmpty(), 'Should collect evidence for all frameworks');
+        Assert.isTrue(!allEvidence.isEmpty(), 'Should collect evidence for all frameworks');
         
         // Verify evidence was inserted for each framework
         Integer totalEvidenceCount = [
             SELECT COUNT() FROM Compliance_Evidence__c
         ];
-        System.assert(totalEvidenceCount >= frameworks.size(), 
+        Assert.isTrue(totalEvidenceCount >= frameworks.size(), 
             'Should have at least one evidence record per framework');
     }
     
@@ -115,7 +115,7 @@ private class EvidenceCollectionServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, evidence, 'Evidence list should not be null');
-        System.assert(!evidence.isEmpty(), 'Should collect evidence for large date range');
+        Assert.isTrue(!evidence.isEmpty(), 'Should collect evidence for large date range');
     }
 
     @IsTest
@@ -140,9 +140,9 @@ private class EvidenceCollectionServiceTest {
         Assert.areNotEqual(null, evidence, 'Evidence list should not be null');
 
         // Verify governor limits were not exceeded
-        System.assert(Limits.getQueries() < 100,
+        Assert.isTrue(Limits.getQueries() < 100,
             'SOQL queries should be within limits: ' + Limits.getQueries());
-        System.assert(Limits.getDmlStatements() < 150,
+        Assert.isTrue(Limits.getDmlStatements() < 150,
             'DML statements should be within limits: ' + Limits.getDmlStatements());
     }
 

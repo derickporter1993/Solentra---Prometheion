@@ -68,7 +68,7 @@ private class GDPRConsentManagementServiceTest {
         }
         Test.stopTest();
         
-        System.assert(consentIds.size() > 0, 'Should process bulk consents');
+        Assert.isTrue(consentIds.size() > 0, 'Should process bulk consents');
     }
     
     @IsTest
@@ -90,7 +90,7 @@ private class GDPRConsentManagementServiceTest {
             WHERE Contact__c = :testContact.Id 
             AND Consent_Type__c = 'Marketing'
         ];
-        System.assert(withdrawnConsents.size() > 0, 'Consents should be withdrawn');
+        Assert.isTrue(withdrawnConsents.size() > 0, 'Consents should be withdrawn');
     }
     
     @IsTest
@@ -104,7 +104,7 @@ private class GDPRConsentManagementServiceTest {
         List<Consent__c> history = service.getConsentHistory(testContact.Id);
         Test.stopTest();
         
-        System.assert(history.size() > 0, 'Should return consent history');
+        Assert.isTrue(history.size() > 0, 'Should return consent history');
     }
     
     @IsTest
@@ -162,7 +162,7 @@ private class GDPRConsentManagementServiceTest {
             service.recordConsent(null, 'Marketing', true, 'Web');
             Assert.fail( 'Should throw exception for null contact');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }

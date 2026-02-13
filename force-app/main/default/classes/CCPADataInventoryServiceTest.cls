@@ -33,7 +33,7 @@ private class CCPADataInventoryServiceTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, result, 'Categorization should not be null');
-        System.assert(result.containsKey('categories'), 'Should include categories');
+        Assert.isTrue(result.containsKey('categories'), 'Should include categories');
     }
     
     @IsTest
@@ -60,8 +60,8 @@ private class CCPADataInventoryServiceTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, result, 'Sharing data should not be null');
-        System.assert(result.containsKey('totalRecipients'), 'Should include recipient count');
-        System.assert(result.containsKey('recipientsWithDPA'), 'Should include DPA count');
+        Assert.isTrue(result.containsKey('totalRecipients'), 'Should include recipient count');
+        Assert.isTrue(result.containsKey('recipientsWithDPA'), 'Should include DPA count');
     }
     
     @IsTest
@@ -76,7 +76,7 @@ private class CCPADataInventoryServiceTest {
             Assert.areNotEqual(null, evidence, 'Evidence should not be null');
         } catch (Exception e) {
             // May fail if control doesn't exist
-            System.assert(e.getMessage().contains('Control not found') || e.getMessage().contains('required'), 
+            Assert.isTrue(e.getMessage().contains('Control not found') || e.getMessage().contains('required'), 
                 'Should handle missing control gracefully');
         }
         Test.stopTest();
@@ -132,7 +132,7 @@ private class CCPADataInventoryServiceTest {
             service.generateEvidenceReport('INVALID', parameters);
             Assert.fail( 'Should throw exception for invalid report type');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Unsupported'), 'Should throw unsupported error');
+            Assert.isTrue(e.getMessage().contains('Unsupported'), 'Should throw unsupported error');
         }
         Test.stopTest();
     }

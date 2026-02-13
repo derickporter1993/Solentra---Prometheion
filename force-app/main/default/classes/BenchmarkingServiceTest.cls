@@ -28,7 +28,7 @@ private class BenchmarkingServiceTest {
         Assert.areNotEqual(null, benchmarks, 'Should return benchmarks');
         Assert.areEqual('Healthcare', benchmarks.industry, 'Industry should match');
         Assert.areNotEqual(null, benchmarks.avgComplianceScore, 'Should have average score');
-        System.assert(benchmarks.avgComplianceScore > 0, 'Average score should be positive');
+        Assert.isTrue(benchmarks.avgComplianceScore > 0, 'Average score should be positive');
         Assert.areNotEqual(null, benchmarks.frameworkBenchmarks, 'Should have framework benchmarks');
         Assert.areNotEqual(null, benchmarks.lastUpdated, 'Should have last updated date');
     }
@@ -42,7 +42,7 @@ private class BenchmarkingServiceTest {
         
         Assert.areNotEqual(null, benchmarks, 'Should return benchmarks');
         Assert.areEqual('Financial Services', benchmarks.industry, 'Industry should match');
-        System.assert(benchmarks.avgComplianceScore > 0, 'Average score should be positive');
+        Assert.isTrue(benchmarks.avgComplianceScore > 0, 'Average score should be positive');
     }
     
     @isTest
@@ -65,7 +65,7 @@ private class BenchmarkingServiceTest {
         
         // Should default to Technology
         Assert.areNotEqual(null, benchmarks, 'Should return default benchmarks');
-        System.assert(benchmarks.avgComplianceScore > 0, 'Should have default score');
+        Assert.isTrue(benchmarks.avgComplianceScore > 0, 'Should have default score');
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -84,7 +84,7 @@ private class BenchmarkingServiceTest {
         Assert.areNotEqual(null, result.orgScore, 'Should have org score');
         Assert.areNotEqual(null, result.industryAvgScore, 'Should have industry average');
         Assert.areNotEqual(null, result.percentile, 'Should have percentile');
-        System.assert(result.percentile >= 0 && result.percentile <= 100, 'Percentile should be 0-100');
+        Assert.isTrue(result.percentile >= 0 && result.percentile <= 100, 'Percentile should be 0-100');
         Assert.areNotEqual(null, result.position, 'Should have position');
         Assert.areNotEqual(null, result.frameworkComparisons, 'Should have framework comparisons');
         Assert.areNotEqual(null, result.recommendations, 'Should have recommendations');
@@ -110,7 +110,7 @@ private class BenchmarkingServiceTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, result.frameworkComparisons, 'Should have framework comparisons');
-        System.assert(result.frameworkComparisons.size() > 0, 'Should have at least one framework comparison');
+        Assert.isTrue(result.frameworkComparisons.size() > 0, 'Should have at least one framework comparison');
         
         for (BenchmarkingService.FrameworkComparison fc : result.frameworkComparisons) {
             Assert.areNotEqual(null, fc.framework, 'Framework should be set');
@@ -136,7 +136,7 @@ private class BenchmarkingServiceTest {
         Assert.areNotEqual(null, assessment.overallLevel, 'Should have overall level');
         Assert.areNotEqual(null, assessment.overallScore, 'Should have overall score');
         Assert.areNotEqual(null, assessment.dimensions, 'Should have dimensions');
-        System.assert(assessment.dimensions.size() > 0, 'Should have at least one dimension');
+        Assert.isTrue(assessment.dimensions.size() > 0, 'Should have at least one dimension');
         Assert.areNotEqual(null, assessment.improvementRoadmap, 'Should have roadmap');
         Assert.areNotEqual(null, assessment.assessedAt, 'Should have assessment timestamp');
     }
@@ -148,23 +148,23 @@ private class BenchmarkingServiceTest {
             BenchmarkingService.assessMaturity();
         Test.stopTest();
         
-        System.assert(assessment.dimensions.size() >= 4, 'Should have at least 4 dimensions');
+        Assert.isTrue(assessment.dimensions.size() >= 4, 'Should have at least 4 dimensions');
         
         Set<String> dimensionNames = new Set<String>();
         for (BenchmarkingService.MaturityDimension dim : assessment.dimensions) {
             Assert.areNotEqual(null, dim.name, 'Dimension should have name');
             Assert.areNotEqual(null, dim.description, 'Dimension should have description');
             Assert.areNotEqual(null, dim.score, 'Dimension should have score');
-            System.assert(dim.score >= 0 && dim.score <= 100, 'Score should be 0-100');
+            Assert.isTrue(dim.score >= 0 && dim.score <= 100, 'Score should be 0-100');
             Assert.areNotEqual(null, dim.level, 'Dimension should have maturity level');
             dimensionNames.add(dim.name);
         }
         
         // Verify expected dimensions
-        System.assert(dimensionNames.contains('Process'), 'Should have Process dimension');
-        System.assert(dimensionNames.contains('Technology'), 'Should have Technology dimension');
-        System.assert(dimensionNames.contains('People'), 'Should have People dimension');
-        System.assert(dimensionNames.contains('Governance'), 'Should have Governance dimension');
+        Assert.isTrue(dimensionNames.contains('Process'), 'Should have Process dimension');
+        Assert.isTrue(dimensionNames.contains('Technology'), 'Should have Technology dimension');
+        Assert.isTrue(dimensionNames.contains('People'), 'Should have People dimension');
+        Assert.isTrue(dimensionNames.contains('Governance'), 'Should have Governance dimension');
     }
     
     @isTest
@@ -182,7 +182,7 @@ private class BenchmarkingServiceTest {
             Assert.areNotEqual(null, item.targetLevel, 'Roadmap item should have target level');
             Assert.areNotEqual(null, item.priority, 'Roadmap item should have priority');
             Assert.areNotEqual(null, item.actions, 'Roadmap item should have actions');
-            System.assert(item.actions.size() > 0, 'Roadmap item should have at least one action');
+            Assert.isTrue(item.actions.size() > 0, 'Roadmap item should have at least one action');
         }
     }
     
@@ -197,14 +197,14 @@ private class BenchmarkingServiceTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, industries, 'Should return industries list');
-        System.assert(industries.size() > 0, 'Should have at least one industry');
+        Assert.isTrue(industries.size() > 0, 'Should have at least one industry');
         
         // Verify expected industries
-        System.assert(industries.contains('Healthcare'), 'Should include Healthcare');
-        System.assert(industries.contains('Financial Services'), 'Should include Financial Services');
-        System.assert(industries.contains('Technology'), 'Should include Technology');
-        System.assert(industries.contains('Retail'), 'Should include Retail');
-        System.assert(industries.contains('Government'), 'Should include Government');
+        Assert.isTrue(industries.contains('Healthcare'), 'Should include Healthcare');
+        Assert.isTrue(industries.contains('Financial Services'), 'Should include Financial Services');
+        Assert.isTrue(industries.contains('Technology'), 'Should include Technology');
+        Assert.isTrue(industries.contains('Retail'), 'Should include Retail');
+        Assert.isTrue(industries.contains('Government'), 'Should include Government');
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -294,7 +294,7 @@ private class BenchmarkingServiceTest {
         // Recommendations should be actionable
         for (String recommendation : result.recommendations) {
             Assert.areNotEqual(null, recommendation, 'Recommendation should not be null');
-            System.assert(recommendation.length() > 0, 'Recommendation should have content');
+            Assert.isTrue(recommendation.length() > 0, 'Recommendation should have content');
         }
     }
 }

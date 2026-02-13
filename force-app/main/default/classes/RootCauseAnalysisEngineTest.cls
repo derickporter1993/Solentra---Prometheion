@@ -31,7 +31,7 @@ private class RootCauseAnalysisEngineTest {
         Assert.areNotEqual(null, result, 'Should return result');
         Assert.areEqual('SUCCESS', result.status, 'Status should be SUCCESS');
         Assert.areNotEqual(null, result.rootCause, 'Should have root cause');
-        System.assert(result.confidence &gt;= 0 &amp;&amp; result.confidence &lt;= 100, 'Confidence should be 0-100');
+        Assert.isTrue(result.confidence &gt;= 0 &amp;&amp; result.confidence &lt;= 100, 'Confidence should be 0-100');
     }
     
     @isTest
@@ -43,7 +43,7 @@ private class RootCauseAnalysisEngineTest {
             RootCauseAnalysisEngine.analyzeRootCause(null);
             Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should mention required');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should mention required');
         }
         Test.stopTest();
     }
@@ -57,7 +57,7 @@ private class RootCauseAnalysisEngineTest {
             RootCauseAnalysisEngine.analyzeRootCause('');
             Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should mention required');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should mention required');
         }
         Test.stopTest();
     }
@@ -71,7 +71,7 @@ private class RootCauseAnalysisEngineTest {
             RootCauseAnalysisEngine.analyzeRootCause('a0x000000000001AAA');
             Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('not found'), 'Should mention not found');
+            Assert.isTrue(e.getMessage().contains('not found'), 'Should mention not found');
         }
         Test.stopTest();
     }

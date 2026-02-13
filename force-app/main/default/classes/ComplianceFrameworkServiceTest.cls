@@ -74,6 +74,6 @@ private class ComplianceFrameworkServiceTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, frameworks, 'Frameworks list should not be null');
-        System.assert(!frameworks.isEmpty(), 'Should have at least one framework');
+        Assert.isTrue(!frameworks.isEmpty(), 'Should have at least one framework');
     }
 }

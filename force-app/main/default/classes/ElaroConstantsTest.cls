@@ -20,8 +20,8 @@ private class ElaroConstantsTest {
         
         // Verify ALL_FRAMEWORKS contains all frameworks (10 total: HIPAA, SOC2, NIST, FedRAMP, GDPR, SOX, PCI-DSS, CCPA, GLBA, ISO27001)
         Assert.areEqual(10, ElaroConstants.ALL_FRAMEWORKS.size(), 'ALL_FRAMEWORKS should contain 10 frameworks');
-        System.assert(ElaroConstants.ALL_FRAMEWORKS.contains('HIPAA'), 'ALL_FRAMEWORKS should contain HIPAA');
-        System.assert(ElaroConstants.ALL_FRAMEWORKS.contains('SOC2'), 'ALL_FRAMEWORKS should contain SOC2');
+        Assert.isTrue(ElaroConstants.ALL_FRAMEWORKS.contains('HIPAA'), 'ALL_FRAMEWORKS should contain HIPAA');
+        Assert.isTrue(ElaroConstants.ALL_FRAMEWORKS.contains('SOC2'), 'ALL_FRAMEWORKS should contain SOC2');
     }
     
     @IsTest
@@ -118,17 +118,17 @@ private class ElaroConstantsTest {
     @IsTest
     static void testIsValidFramework() {
         // Valid frameworks
-        System.assert(ElaroConstants.isValidFramework('HIPAA'), 'HIPAA should be valid');
-        System.assert(ElaroConstants.isValidFramework('hipaa'), 'hipaa (lowercase) should be valid');
-        System.assert(ElaroConstants.isValidFramework('SOC2'), 'SOC2 should be valid');
-        System.assert(ElaroConstants.isValidFramework('NIST'), 'NIST should be valid');
-        System.assert(ElaroConstants.isValidFramework('FedRAMP'), 'FedRAMP should be valid');
-        System.assert(ElaroConstants.isValidFramework('GDPR'), 'GDPR should be valid');
+        Assert.isTrue(ElaroConstants.isValidFramework('HIPAA'), 'HIPAA should be valid');
+        Assert.isTrue(ElaroConstants.isValidFramework('hipaa'), 'hipaa (lowercase) should be valid');
+        Assert.isTrue(ElaroConstants.isValidFramework('SOC2'), 'SOC2 should be valid');
+        Assert.isTrue(ElaroConstants.isValidFramework('NIST'), 'NIST should be valid');
+        Assert.isTrue(ElaroConstants.isValidFramework('FedRAMP'), 'FedRAMP should be valid');
+        Assert.isTrue(ElaroConstants.isValidFramework('GDPR'), 'GDPR should be valid');
         
         // Invalid frameworks
-        System.assert(!ElaroConstants.isValidFramework(null), 'Null should be invalid');
-        System.assert(!ElaroConstants.isValidFramework(''), 'Empty string should be invalid');
-        System.assert(!ElaroConstants.isValidFramework('INVALID'), 'INVALID should be invalid');
+        Assert.isTrue(!ElaroConstants.isValidFramework(null), 'Null should be invalid');
+        Assert.isTrue(!ElaroConstants.isValidFramework(''), 'Empty string should be invalid');
+        Assert.isTrue(!ElaroConstants.isValidFramework('INVALID'), 'INVALID should be invalid');
     }
     
     @IsTest

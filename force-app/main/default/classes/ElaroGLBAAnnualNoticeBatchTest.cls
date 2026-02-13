@@ -125,7 +125,7 @@ private class ElaroGLBAAnnualNoticeBatchTest {
             WHERE Delivery_Status__c = 'Pending'
         ];
 
-        System.assert(pendingCount > 0, 'New pending notices should be created');
+        Assert.isTrue(pendingCount > 0, 'New pending notices should be created');
     }
 
     @IsTest

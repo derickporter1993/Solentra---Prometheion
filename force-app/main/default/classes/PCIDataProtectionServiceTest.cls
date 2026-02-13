@@ -41,7 +41,7 @@ private class PCIDataProtectionServiceTest {
         }
         Test.stopTest();
         
-        System.assert(encryptedDataList.size() > 0, 'Should process bulk encryption');
+        Assert.isTrue(encryptedDataList.size() > 0, 'Should process bulk encryption');
     }
     
     @IsTest
@@ -55,7 +55,7 @@ private class PCIDataProtectionServiceTest {
         
         Assert.areNotEqual(null, token, 'Token should not be null');
         Assert.areNotEqual(cardholderData, token, 'Token should differ from original');
-        System.assert(token.startsWith('TOKEN-'), 'Token should have TOKEN prefix');
+        Assert.isTrue(token.startsWith('TOKEN-'), 'Token should have TOKEN prefix');
     }
     
     @IsTest
@@ -78,7 +78,7 @@ private class PCIDataProtectionServiceTest {
         }
         Test.stopTest();
         
-        System.assert(tokens.size() > 0, 'Should process bulk tokenization');
+        Assert.isTrue(tokens.size() > 0, 'Should process bulk tokenization');
     }
     
     @IsTest
@@ -93,7 +93,7 @@ private class PCIDataProtectionServiceTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, result, 'Validation result should not be null');
-        System.assert(result.containsKey('isValid'), 'Should include validation status');
+        Assert.isTrue(result.containsKey('isValid'), 'Should include validation status');
     }
     
     @IsTest
@@ -156,7 +156,7 @@ private class PCIDataProtectionServiceTest {
             service.encryptCHD(null);
             Assert.fail( 'Should throw exception for null data');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }
@@ -169,7 +169,7 @@ private class PCIDataProtectionServiceTest {
             service.tokenizeData(null);
             Assert.fail( 'Should throw exception for null data');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }
@@ -182,7 +182,7 @@ private class PCIDataProtectionServiceTest {
             service.validateEncryption(null);
             Assert.fail( 'Should throw exception for null data');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }
@@ -195,7 +195,7 @@ private class PCIDataProtectionServiceTest {
             service.keyManagement(null, null);
             Assert.fail( 'Should throw exception for null operation');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }

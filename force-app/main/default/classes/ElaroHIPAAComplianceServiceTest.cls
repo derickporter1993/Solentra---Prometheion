@@ -29,8 +29,8 @@ private class ElaroHIPAAComplianceServiceTest {
         
         // Then: Should calculate risk score
         Assert.areNotEqual(null, score, 'Risk score should not be null');
-        System.assert(score >= 0 && score <= 10, 'Risk score should be between 0 and 10');
-        System.assert(score > 3.0, 'High permission count should increase risk score');
+        Assert.isTrue(score >= 0 && score <= 10, 'Risk score should be between 0 and 10');
+        Assert.isTrue(score > 3.0, 'High permission count should increase risk score');
     }
     
     @IsTest
@@ -46,7 +46,7 @@ private class ElaroHIPAAComplianceServiceTest {
         Test.stopTest();
         
         // Then: Should have lower risk score
-        System.assert(score <= 5.0, 'Low permission count should result in lower risk');
+        Assert.isTrue(score <= 5.0, 'Low permission count should result in lower risk');
     }
     
     @IsTest

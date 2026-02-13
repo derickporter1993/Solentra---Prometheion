@@ -77,7 +77,7 @@ private class ElaroDailyDigestTest {
         ];
         
         Assert.areEqual(cronExpression, ct.CronExpression, 'Cron expression should match');
-        System.assert(ct.CronJobDetail.Name.contains('Elaro_Daily_Digest_'), 
+        Assert.isTrue(ct.CronJobDetail.Name.contains('Elaro_Daily_Digest_'), 
             'Job name should contain Elaro_Daily_Digest_');
     }
     
@@ -177,7 +177,7 @@ private class ElaroDailyDigestTest {
         
         Assert.areNotEqual(null, digest.statistics, 'Should have statistics');
         Assert.areNotEqual(null, digest.statistics.totalEvents, 'Should have total events');
-        System.assert(digest.statistics.totalEvents >= 0, 'Total events should be non-negative');
+        Assert.isTrue(digest.statistics.totalEvents >= 0, 'Total events should be non-negative');
         Assert.areNotEqual(null, digest.statistics.eventsByType, 'Should have events by type');
     }
     
@@ -226,7 +226,7 @@ private class ElaroDailyDigestTest {
         
         // Verify bulk data is handled
         ElaroDailyDigest.DigestData digest = ElaroDailyDigest.getDigestPreview();
-        System.assert(digest.statistics.totalEvents >= 200, 'Should count all evidence items');
+        Assert.isTrue(digest.statistics.totalEvents >= 200, 'Should count all evidence items');
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -276,7 +276,7 @@ private class ElaroDailyDigestTest {
         Assert.areNotEqual(null, digest.generatedAt, 'Should have generatedAt');
         Assert.areNotEqual(null, digest.periodStart, 'Should have periodStart');
         Assert.areNotEqual(null, digest.periodEnd, 'Should have periodEnd');
-        System.assert(digest.periodStart <= digest.periodEnd, 'Period start should be before end');
+        Assert.isTrue(digest.periodStart <= digest.periodEnd, 'Period start should be before end');
         Assert.areNotEqual(null, digest.trendingUp, 'Should have trendingUp');
         Assert.areNotEqual(null, digest.trendingDown, 'Should have trendingDown');
     }

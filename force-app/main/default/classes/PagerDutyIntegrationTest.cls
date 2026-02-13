@@ -172,7 +172,7 @@ private class PagerDutyIntegrationTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, dedupKey, 'Should return dedup key');
-        System.assert(dedupKey.startsWith('elaro-'), 'Dedup key should start with elaro-');
+        Assert.isTrue(dedupKey.startsWith('elaro-'), 'Dedup key should start with elaro-');
     }
     
     @isTest
@@ -274,7 +274,7 @@ private class PagerDutyIntegrationTest {
 
         // Verify bulk operations completed within governor limits
         Assert.areEqual(200, alertDataList.size(), 'Should process 200 incidents');
-        System.assert(Limits.getCallouts() <= Limits.getLimitCallouts(), 'Should stay within callout limits');
+        Assert.isTrue(Limits.getCallouts() <= Limits.getLimitCallouts(), 'Should stay within callout limits');
     }
     
     // ═══════════════════════════════════════════════════════════════

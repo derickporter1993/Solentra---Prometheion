@@ -62,6 +62,6 @@ private class MetadataChangeTrackerTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, recentChanges, 'Recent changes should not be null');
-        System.assert(!recentChanges.isEmpty(), 'Should have recent changes');
+        Assert.isTrue(!recentChanges.isEmpty(), 'Should have recent changes');
     }
 }

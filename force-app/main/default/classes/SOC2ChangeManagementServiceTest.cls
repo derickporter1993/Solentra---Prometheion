@@ -48,7 +48,7 @@ public class SOC2ChangeManagementServiceTest {
         Assert.areNotEqual(null, result, 'Result should not be null');
         Assert.areNotEqual(null, result.evaluationDate, 'Evaluation date should be set');
         Assert.areNotEqual(null, result.controlResults, 'Control results should not be null');
-        System.assert(result.controlResults.size() > 0, 'Should have control results');
+        Assert.isTrue(result.controlResults.size() > 0, 'Should have control results');
     }
 
     @isTest
@@ -59,7 +59,7 @@ public class SOC2ChangeManagementServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, changes, 'Changes list should not be null');
-        System.assert(changes.size() > 0, 'Should find unauthorized changes from test data');
+        Assert.isTrue(changes.size() > 0, 'Should find unauthorized changes from test data');
     }
 
     @isTest
@@ -98,7 +98,7 @@ public class SOC2ChangeManagementServiceTest {
             SOC2ChangeManagementService.linkChangeToTicket(change.Id, '');
             Assert.fail( 'Should have thrown exception');
         } catch (ComplianceServiceBase.ComplianceServiceException e) {
-            System.assert(e.getMessage().contains('blank'), 'Should mention blank ticket');
+            Assert.isTrue(e.getMessage().contains('blank'), 'Should mention blank ticket');
         }
         Test.stopTest();
     }
@@ -125,7 +125,7 @@ public class SOC2ChangeManagementServiceTest {
 
         // Verify document was created
         ContentDocument doc = [SELECT Title FROM ContentDocument WHERE Id = :docId];
-        System.assert(doc.Title.contains('SOC2_Change_Report'), 'Title should contain SOC2_Change_Report');
+        Assert.isTrue(doc.Title.contains('SOC2_Change_Report'), 'Title should contain SOC2_Change_Report');
     }
 
     @isTest
@@ -156,7 +156,7 @@ public class SOC2ChangeManagementServiceTest {
         Decimal score = service.getComplianceScore();
         Test.stopTest();
 
-        System.assert(score >= 0 && score <= 100, 'Score should be between 0 and 100');
+        Assert.isTrue(score >= 0 && score <= 100, 'Score should be between 0 and 100');
     }
 
     @isTest

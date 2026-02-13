@@ -53,7 +53,7 @@ public class HIPAAAuditControlServiceTest {
         Decimal score = service.getComplianceScore();
         Test.stopTest();
 
-        System.assert(score >= 0 && score <= 100, 'Score should be between 0 and 100');
+        Assert.isTrue(score >= 0 && score <= 100, 'Score should be between 0 and 100');
     }
 
     @isTest
@@ -135,7 +135,7 @@ public class HIPAAAuditControlServiceTest {
         Assert.areNotEqual(null, docId, 'Document ID should not be null');
 
         ContentDocument doc = [SELECT Title FROM ContentDocument WHERE Id = :docId];
-        System.assert(doc.Title.contains('HIPAA_Audit_Report'), 'Title should contain HIPAA_Audit_Report');
+        Assert.isTrue(doc.Title.contains('HIPAA_Audit_Report'), 'Title should contain HIPAA_Audit_Report');
     }
 
     @isTest
@@ -222,7 +222,7 @@ public class HIPAAAuditControlServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, violations, 'Violations should not be null');
-        System.assert(score >= 0, 'Score should be non-negative');
+        Assert.isTrue(score >= 0, 'Score should be non-negative');
         Assert.areNotEqual(null, result, 'Result should not be null');
     }
 }

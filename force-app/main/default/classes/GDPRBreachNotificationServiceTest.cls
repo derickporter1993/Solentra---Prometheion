@@ -58,7 +58,7 @@ private class GDPRBreachNotificationServiceTest {
         }
         Test.stopTest();
         
-        System.assert(breachIds.size() > 0, 'Should process bulk breaches');
+        Assert.isTrue(breachIds.size() > 0, 'Should process bulk breaches');
     }
     
     @IsTest
@@ -158,7 +158,7 @@ private class GDPRBreachNotificationServiceTest {
             service.reportBreach(null, 100, 'Test');
             Assert.fail( 'Should throw exception for null breach date');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }
@@ -173,7 +173,7 @@ private class GDPRBreachNotificationServiceTest {
             service.assessSeverity(fakeId);
             Assert.fail( 'Should throw exception for non-existent breach');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required') || e.getMessage().contains('not found'), 
+            Assert.isTrue(e.getMessage().contains('required') || e.getMessage().contains('not found'), 
                 'Should handle missing breach');
         }
         Test.stopTest();

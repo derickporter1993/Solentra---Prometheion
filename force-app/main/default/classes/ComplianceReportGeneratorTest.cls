@@ -161,7 +161,7 @@ private class ComplianceReportGeneratorTest {
 
         Assert.areNotEqual(null, data.scoreTrend, 'Score trend should not be null');
         // Trend points should exist if Compliance_Score__c records exist
-        System.assert(data.scoreTrend.size() >= 0, 'Score trend should be populated');
+        Assert.isTrue(data.scoreTrend.size() >= 0, 'Score trend should be populated');
     }
 
     /**
@@ -176,8 +176,8 @@ private class ComplianceReportGeneratorTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, summary, 'Summary should not be null');
-        System.assert(summary.contains('Compliance Score'), 'Summary should contain compliance score');
-        System.assert(summary.contains('Critical'), 'Summary should mention critical gaps');
+        Assert.isTrue(summary.contains('Compliance Score'), 'Summary should contain compliance score');
+        Assert.isTrue(summary.contains('Critical'), 'Summary should mention critical gaps');
     }
 
     /**
@@ -189,7 +189,7 @@ private class ComplianceReportGeneratorTest {
         String summary = ComplianceReportGenerator.generateExecutiveSummary(null);
         Test.stopTest();
 
-        System.assert(summary.contains('Unable to generate'), 'Should return error message for null data');
+        Assert.isTrue(summary.contains('Unable to generate'), 'Should return error message for null data');
     }
 
     /**
@@ -204,7 +204,7 @@ private class ComplianceReportGeneratorTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, recommendations, 'Recommendations should not be null');
-        System.assert(!recommendations.isEmpty(), 'Should have at least one recommendation');
+        Assert.isTrue(!recommendations.isEmpty(), 'Should have at least one recommendation');
     }
 
     /**
@@ -225,7 +225,7 @@ private class ComplianceReportGeneratorTest {
                 break;
             }
         }
-        System.assert(hasCriticalRecommendation, 'Should have recommendation about critical gaps');
+        Assert.isTrue(hasCriticalRecommendation, 'Should have recommendation about critical gaps');
     }
 
     /**
@@ -237,8 +237,8 @@ private class ComplianceReportGeneratorTest {
         List<String> recommendations = ComplianceReportGenerator.generateRecommendations(null);
         Test.stopTest();
 
-        System.assert(!recommendations.isEmpty(), 'Should return at least one message');
-        System.assert(recommendations[0].contains('Unable'), 'Should indicate unable to generate');
+        Assert.isTrue(!recommendations.isEmpty(), 'Should return at least one message');
+        Assert.isTrue(recommendations[0].contains('Unable'), 'Should indicate unable to generate');
     }
 
     /**
@@ -303,7 +303,7 @@ private class ComplianceReportGeneratorTest {
         Test.stopTest();
 
         // Should handle bulk data within limits (200 limit in query)
-        System.assert(data.gaps.size() <= 200, 'Should respect query limit');
+        Assert.isTrue(data.gaps.size() <= 200, 'Should respect query limit');
         Assert.areNotEqual(null, data.scoreResult, 'Should still calculate score');
     }
 

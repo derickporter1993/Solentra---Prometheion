@@ -65,7 +65,7 @@ private class PCILoggingServiceTest {
         }
         Test.stopTest();
         
-        System.assert(logIds.size() > 0, 'Should process bulk log events');
+        Assert.isTrue(logIds.size() > 0, 'Should process bulk log events');
     }
     
     @IsTest
@@ -76,8 +76,8 @@ private class PCILoggingServiceTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, result, 'Integrity check result should not be null');
-        System.assert(result.containsKey('integrityCheck'), 'Should include integrity check status');
-        System.assert(result.containsKey('logsChecked'), 'Should include logs checked count');
+        Assert.isTrue(result.containsKey('integrityCheck'), 'Should include integrity check status');
+        Assert.isTrue(result.containsKey('logsChecked'), 'Should include logs checked count');
     }
     
     @IsTest
@@ -108,7 +108,7 @@ private class PCILoggingServiceTest {
         Test.stopTest();
         
         Assert.areEqual(true, result.get('success'), 'Log archiving should succeed');
-        System.assert(result.containsKey('logsArchived'), 'Should include archived count');
+        Assert.isTrue(result.containsKey('logsArchived'), 'Should include archived count');
     }
     
     @IsTest
@@ -119,7 +119,7 @@ private class PCILoggingServiceTest {
             service.logSecurityEvent(null, null, null, null);
             Assert.fail( 'Should throw exception for null parameters');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }
@@ -132,7 +132,7 @@ private class PCILoggingServiceTest {
             service.alertOnAnomaly(null, new Map<String, Object>());
             Assert.fail( 'Should throw exception for null anomaly type');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }
@@ -145,7 +145,7 @@ private class PCILoggingServiceTest {
             service.archiveLogs(null);
             Assert.fail( 'Should throw exception for null retention days');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }

@@ -55,7 +55,7 @@ private class GDPRDataSubjectServiceTest {
         }
         Test.stopTest();
         
-        System.assert(results.size() > 0, 'Should process bulk requests');
+        Assert.isTrue(results.size() > 0, 'Should process bulk requests');
     }
     
     @IsTest
@@ -116,7 +116,7 @@ private class GDPRDataSubjectServiceTest {
             Map<String, Object> result = service.handlePortabilityRequest(requestId, testContact.Id, format);
             Assert.fail( 'Should throw exception for invalid format');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Invalid'), 'Should throw invalid format error');
+            Assert.isTrue(e.getMessage().contains('Invalid'), 'Should throw invalid format error');
         }
         Test.stopTest();
     }
@@ -161,7 +161,7 @@ private class GDPRDataSubjectServiceTest {
             service.handleAccessRequest(null, testContact.Id);
             Assert.fail( 'Should throw exception for null request ID');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }
@@ -177,7 +177,7 @@ private class GDPRDataSubjectServiceTest {
             service.handleErasureRequest(requestId, testContact.Id, null);
             Assert.fail( 'Should throw exception for null reason');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }

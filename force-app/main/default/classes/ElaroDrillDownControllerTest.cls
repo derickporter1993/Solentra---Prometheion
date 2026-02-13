@@ -111,7 +111,7 @@ private class ElaroDrillDownControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for empty context');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for empty context');
     }
 
     @isTest
@@ -124,7 +124,7 @@ private class ElaroDrillDownControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for null context');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for null context');
     }
 
     @isTest
@@ -137,7 +137,7 @@ private class ElaroDrillDownControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for invalid JSON');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for invalid JSON');
     }
 
     @isTest
@@ -158,7 +158,7 @@ private class ElaroDrillDownControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for invalid object');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for invalid object');
     }
 
     @isTest
@@ -257,7 +257,7 @@ private class ElaroDrillDownControllerTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, csv, 'CSV should not be null');
-        System.assert(csv.contains('Name'), 'CSV should contain headers');
+        Assert.isTrue(csv.contains('Name'), 'CSV should contain headers');
     }
 
     @isTest
@@ -270,7 +270,7 @@ private class ElaroDrillDownControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for empty context');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for empty context');
     }
 
     @isTest
@@ -283,7 +283,7 @@ private class ElaroDrillDownControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for null context');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for null context');
     }
 
     @isTest
@@ -296,7 +296,7 @@ private class ElaroDrillDownControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for invalid JSON');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for invalid JSON');
     }
 
     @isTest

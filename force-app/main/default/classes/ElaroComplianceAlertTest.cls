@@ -79,7 +79,7 @@ private class ElaroComplianceAlertTest {
         
         Assert.areEqual('Test Alert Config', alertConfig.Name, 'Name should match');
         Assert.areEqual(75, alertConfig.Threshold__c, 'Threshold should match');
-        System.assert(alertConfig.Channels__c.contains('EMAIL'), 'Should include EMAIL channel');
+        Assert.isTrue(alertConfig.Channels__c.contains('EMAIL'), 'Should include EMAIL channel');
     }
     
     @isTest
@@ -94,7 +94,7 @@ private class ElaroComplianceAlertTest {
             ElaroComplianceAlert.configureAlert(config);
             Assert.fail( 'Should throw exception for missing name');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('name'), 'Should mention name requirement');
+            Assert.isTrue(e.getMessage().contains('name'), 'Should mention name requirement');
         }
         Test.stopTest();
     }
@@ -111,7 +111,7 @@ private class ElaroComplianceAlertTest {
             ElaroComplianceAlert.configureAlert(config);
             Assert.fail( 'Should throw exception for invalid threshold');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Threshold'), 'Should mention threshold requirement');
+            Assert.isTrue(e.getMessage().contains('Threshold'), 'Should mention threshold requirement');
         }
         Test.stopTest();
     }
@@ -128,7 +128,7 @@ private class ElaroComplianceAlertTest {
             ElaroComplianceAlert.configureAlert(config);
             Assert.fail( 'Should throw exception for empty channels');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('channel'), 'Should mention channel requirement');
+            Assert.isTrue(e.getMessage().contains('channel'), 'Should mention channel requirement');
         }
         Test.stopTest();
     }
@@ -336,7 +336,7 @@ private class ElaroComplianceAlertTest {
         Test.stopTest();
         
         // Should have at least the pending review items from setup
-        System.assert(alerts.size() >= 0, 'Should return alerts if available');
+        Assert.isTrue(alerts.size() >= 0, 'Should return alerts if available');
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -433,7 +433,7 @@ private class ElaroComplianceAlertTest {
             }
         }
         
-        System.assert(triggeredCount > 0, 'Should trigger some alerts');
+        Assert.isTrue(triggeredCount > 0, 'Should trigger some alerts');
     }
     
     // ═══════════════════════════════════════════════════════════════

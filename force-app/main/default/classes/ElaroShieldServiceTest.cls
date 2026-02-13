@@ -37,9 +37,9 @@ private class ElaroShieldServiceTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, status, 'Should return status map');
-        System.assert(status.containsKey('shieldEnabled'), 'Should contain shieldEnabled key');
-        System.assert(status.containsKey('platformEncryption'), 'Should contain platformEncryption key');
-        System.assert(status.containsKey('eventMonitoring'), 'Should contain eventMonitoring key');
+        Assert.isTrue(status.containsKey('shieldEnabled'), 'Should contain shieldEnabled key');
+        Assert.isTrue(status.containsKey('platformEncryption'), 'Should contain platformEncryption key');
+        Assert.isTrue(status.containsKey('eventMonitoring'), 'Should contain eventMonitoring key');
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -146,9 +146,9 @@ private class ElaroShieldServiceTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, riskLevels, 'Should return risk levels map');
-        System.assert(!riskLevels.isEmpty(), 'Map should not be empty');
-        System.assert(riskLevels.containsKey('Login'), 'Should contain Login');
-        System.assert(riskLevels.containsKey('LoginAs'), 'Should contain LoginAs');
+        Assert.isTrue(!riskLevels.isEmpty(), 'Map should not be empty');
+        Assert.isTrue(riskLevels.containsKey('Login'), 'Should contain Login');
+        Assert.isTrue(riskLevels.containsKey('LoginAs'), 'Should contain LoginAs');
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -166,7 +166,7 @@ private class ElaroShieldServiceTest {
             );
             Assert.fail( 'Should have thrown exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Invalid event type'), 
+            Assert.isTrue(e.getMessage().contains('Invalid event type'), 
                 'Should mention invalid event type');
         }
         Test.stopTest();
@@ -179,7 +179,7 @@ private class ElaroShieldServiceTest {
             ElaroShieldService.getEventLogFiles('Login', null, null);
             Assert.fail( 'Should have thrown exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 
+            Assert.isTrue(e.getMessage().contains('required'), 
                 'Should mention required dates');
         }
         Test.stopTest();
@@ -196,7 +196,7 @@ private class ElaroShieldServiceTest {
             );
             Assert.fail( 'Should have thrown exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('before'), 
+            Assert.isTrue(e.getMessage().contains('before'), 
                 'Should mention date order');
         }
         Test.stopTest();
@@ -227,7 +227,7 @@ private class ElaroShieldServiceTest {
             ElaroShieldService.parseEventLogContent(null);
             Assert.fail( 'Should have thrown exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 
+            Assert.isTrue(e.getMessage().contains('required'), 
                 'Should mention required ID');
         }
         Test.stopTest();
@@ -240,7 +240,7 @@ private class ElaroShieldServiceTest {
             ElaroShieldService.parseEventLogContent('');
             Assert.fail( 'Should have thrown exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 
+            Assert.isTrue(e.getMessage().contains('required'), 
                 'Should mention required ID');
         }
         Test.stopTest();
@@ -274,7 +274,7 @@ private class ElaroShieldServiceTest {
             );
             Assert.fail( 'Should have thrown exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Invalid event type'), 
+            Assert.isTrue(e.getMessage().contains('Invalid event type'), 
                 'Should mention invalid event type');
         }
         Test.stopTest();

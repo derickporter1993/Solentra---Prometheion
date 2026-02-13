@@ -94,7 +94,7 @@ private class ElaroGLBAPrivacyNoticeServiceTest {
         Test.stopTest();
         
         // Then: Annual notices should be created
-        System.assert(!notices.isEmpty(), 'Should create annual notices');
+        Assert.isTrue(!notices.isEmpty(), 'Should create annual notices');
         for (Privacy_Notice__c notice : notices) {
             Assert.areEqual('Annual', notice.Notice_Type__c, 'Should be annual notice');
             Assert.areEqual('Pending', notice.Delivery_Status__c, 'Status should be Pending');
@@ -167,7 +167,7 @@ private class ElaroGLBAPrivacyNoticeServiceTest {
             } catch (Exception e) {
                 // Then: Permission exception should be thrown
                 // Note: InsufficientAccessException may not be available, catch generic Exception
-                System.assert(e.getMessage().contains('insufficient') || 
+                Assert.isTrue(e.getMessage().contains('insufficient') || 
                     e.getMessage().contains('access') || 
                     e.getMessage().contains('permission'), 
                     'Should throw permission-related exception: ' + e.getMessage());
@@ -186,7 +186,7 @@ private class ElaroGLBAPrivacyNoticeServiceTest {
         
         // Then: Metrics should be returned
         Assert.areNotEqual(null, metrics, 'Metrics should be returned');
-        System.assert(metrics.containsKey('totalNoticesThisYear'), 'Should have total notices metric');
+        Assert.isTrue(metrics.containsKey('totalNoticesThisYear'), 'Should have total notices metric');
     }
     
     @IsTest
@@ -227,7 +227,7 @@ private class ElaroGLBAPrivacyNoticeServiceTest {
         Test.stopTest();
         
         // Then: Should process bulk contacts
-        System.assert(annualNotices.size() >= 200, 'Should create annual notices for bulk contacts');
+        Assert.isTrue(annualNotices.size() >= 200, 'Should create annual notices for bulk contacts');
     }
     
     // Helper method to create limited user for permission testing

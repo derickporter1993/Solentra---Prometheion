@@ -27,7 +27,7 @@ private class ElaroPDFExporterTest {
         Assert.areNotEqual(null, contentVersionId, 'Should return ContentVersion ID');
         
         ContentVersion cv = [SELECT Title, FileExtension FROM ContentVersion WHERE Id = :contentVersionId];
-        System.assert(cv.Title.contains('Audit Package'), 'Title should contain Audit Package');
+        Assert.isTrue(cv.Title.contains('Audit Package'), 'Title should contain Audit Package');
         Assert.areEqual('pdf', cv.FileExtension, 'Should be PDF file');
     }
     
@@ -51,7 +51,7 @@ private class ElaroPDFExporterTest {
             ElaroPDFExporter.generateAuditPackagePDF(null);
             Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should mention required');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should mention required');
         }
         Test.stopTest();
     }
@@ -83,7 +83,7 @@ private class ElaroPDFExporterTest {
         Assert.areNotEqual(null, contentVersionId, 'Should return ContentVersion ID');
         
         ContentVersion cv = [SELECT Title FROM ContentVersion WHERE Id = :contentVersionId];
-        System.assert(cv.Title.contains('Executive Summary'), 'Title should contain Executive Summary');
+        Assert.isTrue(cv.Title.contains('Executive Summary'), 'Title should contain Executive Summary');
     }
     
     // ═══════════════════════════════════════════════════════════════
@@ -102,7 +102,7 @@ private class ElaroPDFExporterTest {
         Assert.areNotEqual(null, contentVersionId, 'Should return ContentVersion ID');
         
         ContentVersion cv = [SELECT Title FROM ContentVersion WHERE Id = :contentVersionId];
-        System.assert(cv.Title.contains('Evidence Report'), 'Title should contain Evidence Report');
+        Assert.isTrue(cv.Title.contains('Evidence Report'), 'Title should contain Evidence Report');
     }
     
     @isTest
@@ -129,8 +129,8 @@ private class ElaroPDFExporterTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, csvContent, 'Should return CSV content');
-        System.assert(csvContent.contains('Evidence ID'), 'Should contain header row');
-        System.assert(csvContent.contains(','), 'Should be comma-separated');
+        Assert.isTrue(csvContent.contains('Evidence ID'), 'Should contain header row');
+        Assert.isTrue(csvContent.contains(','), 'Should be comma-separated');
     }
     
     @isTest
@@ -177,9 +177,9 @@ private class ElaroPDFExporterTest {
         
         // Verify it's valid JSON
         Map&lt;String, Object&gt; parsed = (Map&lt;String, Object&gt;)JSON.deserializeUntyped(jsonContent);
-        System.assert(parsed.containsKey('package'), 'Should contain package data');
-        System.assert(parsed.containsKey('evidence'), 'Should contain evidence data');
-        System.assert(parsed.containsKey('exportDate'), 'Should contain export date');
+        Assert.isTrue(parsed.containsKey('package'), 'Should contain package data');
+        Assert.isTrue(parsed.containsKey('evidence'), 'Should contain evidence data');
+        Assert.isTrue(parsed.containsKey('exportDate'), 'Should contain export date');
     }
     
     @isTest
@@ -191,10 +191,10 @@ private class ElaroPDFExporterTest {
         Test.stopTest();
         
         Map&lt;String, Object&gt; parsed = (Map&lt;String, Object&gt;)JSON.deserializeUntyped(jsonContent);
-        System.assert(parsed.containsKey('metadata'), 'Should contain metadata');
+        Assert.isTrue(parsed.containsKey('metadata'), 'Should contain metadata');
         
         Map&lt;String, Object&gt; metadata = (Map&lt;String, Object&gt;)parsed.get('metadata');
-        System.assert(metadata.containsKey('generatedBy'), 'Should contain generatedBy');
+        Assert.isTrue(metadata.containsKey('generatedBy'), 'Should contain generatedBy');
     }
     
     // ═══════════════════════════════════════════════════════════════

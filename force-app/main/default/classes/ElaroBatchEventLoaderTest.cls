@@ -51,8 +51,8 @@ private class ElaroBatchEventLoaderTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, batchId, 'Batch ID should not be null');
-        System.assert(Limits.getQueries() < 100, 'Should stay under SOQL limit');
-        System.assert(Limits.getDmlStatements() < 150, 'Should stay under DML limit');
+        Assert.isTrue(Limits.getQueries() < 100, 'Should stay under SOQL limit');
+        Assert.isTrue(Limits.getDmlStatements() < 150, 'Should stay under DML limit');
     }
 
     @isTest

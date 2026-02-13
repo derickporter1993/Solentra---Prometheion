@@ -98,7 +98,7 @@ public class HIPAABreachNotificationServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, violations, 'Violations should not be null');
-        System.assert(violations.size() > 0, 'Should have violations for overdue breaches');
+        Assert.isTrue(violations.size() > 0, 'Should have violations for overdue breaches');
     }
 
     @isTest
@@ -109,7 +109,7 @@ public class HIPAABreachNotificationServiceTest {
         Decimal score = service.getComplianceScore();
         Test.stopTest();
 
-        System.assert(score >= 0 && score <= 100, 'Score should be between 0 and 100');
+        Assert.isTrue(score >= 0 && score <= 100, 'Score should be between 0 and 100');
     }
 
     @isTest
@@ -155,7 +155,7 @@ public class HIPAABreachNotificationServiceTest {
         IBreachNotificationService.BreachAssessment assessment = service.assessBreach(request);
         Test.stopTest();
 
-        System.assert(assessment.overallRiskScore < 5, 'Low risk scenario should have low score');
+        Assert.isTrue(assessment.overallRiskScore < 5, 'Low risk scenario should have low score');
     }
 
     @isTest
@@ -188,8 +188,8 @@ public class HIPAABreachNotificationServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, summary, 'Summary should not be null');
-        System.assert(summary.totalBreaches >= 4, 'Should have at least 4 breaches from test data');
-        System.assert(summary.openBreaches > 0, 'Should have open breaches');
+        Assert.isTrue(summary.totalBreaches >= 4, 'Should have at least 4 breaches from test data');
+        Assert.isTrue(summary.openBreaches > 0, 'Should have open breaches');
     }
 
     @isTest
@@ -201,7 +201,7 @@ public class HIPAABreachNotificationServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, metrics, 'Metrics should not be null');
-        System.assert(metrics.totalBreaches >= 4, 'Should have at least 4 breaches');
+        Assert.isTrue(metrics.totalBreaches >= 4, 'Should have at least 4 breaches');
         Assert.areNotEqual(null, metrics.breachesByType, 'Breaches by type should not be null');
         Assert.areNotEqual(null, metrics.breachesByRiskLevel, 'Breaches by risk level should not be null');
     }
@@ -237,7 +237,7 @@ public class HIPAABreachNotificationServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, pending, 'Pending list should not be null');
-        System.assert(pending.size() > 0, 'Should have pending breaches');
+        Assert.isTrue(pending.size() > 0, 'Should have pending breaches');
     }
 
     @isTest
@@ -304,7 +304,7 @@ public class HIPAABreachNotificationServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, timeline, 'Timeline should not be null');
-        System.assert(timeline.size() >= 3, 'Should have at least 3 events');
+        Assert.isTrue(timeline.size() >= 3, 'Should have at least 3 events');
     }
 
     @isTest
@@ -330,6 +330,6 @@ public class HIPAABreachNotificationServiceTest {
         IBreachNotificationService.BreachSummary summary = service.getBreachSummary();
         Test.stopTest();
 
-        System.assert(summary.totalBreaches >= 100, 'Should handle bulk breaches');
+        Assert.isTrue(summary.totalBreaches >= 100, 'Should handle bulk breaches');
     }
 }

@@ -52,7 +52,7 @@ private class CCPAOptOutServiceTest {
         }
         Test.stopTest();
         
-        System.assert(results.size() > 0, 'Should process bulk opt-outs');
+        Assert.isTrue(results.size() > 0, 'Should process bulk opt-outs');
     }
     
     @IsTest
@@ -127,7 +127,7 @@ private class CCPAOptOutServiceTest {
         Test.stopTest();
         
         Assert.areEqual(true, result.get('success'), 'Vendor sync should succeed');
-        System.assert(result.containsKey('vendorsSynced'), 'Should include vendor count');
+        Assert.isTrue(result.containsKey('vendorsSynced'), 'Should include vendor count');
     }
     
     @IsTest
@@ -138,7 +138,7 @@ private class CCPAOptOutServiceTest {
             service.processOptOut(null);
             Assert.fail( 'Should throw exception for null contact');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }
@@ -151,7 +151,7 @@ private class CCPAOptOutServiceTest {
             service.honorGPC(null, true);
             Assert.fail( 'Should throw exception for null contact');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }

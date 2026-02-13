@@ -165,7 +165,7 @@ private class MobileAlertPublisherTest {
             MobileAlertPublisher.publishAlertForGap('001000000000000AAA');
             Assert.fail( 'Expected exception for invalid gap ID');
         } catch (MobileAlertPublisher.MobileAlertException e) {
-            System.assert(e.getMessage().contains('not found'), 'Expected not found error');
+            Assert.isTrue(e.getMessage().contains('not found'), 'Expected not found error');
         }
         Test.stopTest();
     }
@@ -206,7 +206,7 @@ private class MobileAlertPublisherTest {
         ];
 
         Assert.areNotEqual(null, updatedGap.Alert_Snoozed_Until__c, 'Snoozed until should be set');
-        System.assert(updatedGap.Alert_Snoozed_Until__c > Datetime.now(), 'Snoozed until should be in the future');
+        Assert.isTrue(updatedGap.Alert_Snoozed_Until__c > Datetime.now(), 'Snoozed until should be in the future');
     }
 
     @isTest
@@ -218,7 +218,7 @@ private class MobileAlertPublisherTest {
             MobileAlertPublisher.snoozeAlert(gap.Id, 0);
             Assert.fail( 'Expected exception for zero duration');
         } catch (MobileAlertPublisher.MobileAlertException e) {
-            System.assert(e.getMessage().contains('between 1 and 480'), 'Expected duration validation error');
+            Assert.isTrue(e.getMessage().contains('between 1 and 480'), 'Expected duration validation error');
         }
         Test.stopTest();
     }
@@ -232,7 +232,7 @@ private class MobileAlertPublisherTest {
             MobileAlertPublisher.snoozeAlert(gap.Id, 500);
             Assert.fail( 'Expected exception for duration > 480');
         } catch (MobileAlertPublisher.MobileAlertException e) {
-            System.assert(e.getMessage().contains('between 1 and 480'), 'Expected duration validation error');
+            Assert.isTrue(e.getMessage().contains('between 1 and 480'), 'Expected duration validation error');
         }
         Test.stopTest();
     }
@@ -246,7 +246,7 @@ private class MobileAlertPublisherTest {
             MobileAlertPublisher.snoozeAlert(gap.Id, -10);
             Assert.fail( 'Expected exception for negative duration');
         } catch (MobileAlertPublisher.MobileAlertException e) {
-            System.assert(e.getMessage().contains('between 1 and 480'), 'Expected duration validation error');
+            Assert.isTrue(e.getMessage().contains('between 1 and 480'), 'Expected duration validation error');
         }
         Test.stopTest();
     }

@@ -63,7 +63,7 @@ private class SOC2ModuleTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, controls, 'Controls list should not be null');
-        System.assert(controls.size() > 0, 'Should have at least one control');
+        Assert.isTrue(controls.size() > 0, 'Should have at least one control');
 
         Set<String> families = new Set<String>();
         for (IComplianceModule.Control ctrl : controls) {
@@ -72,8 +72,8 @@ private class SOC2ModuleTest {
             Assert.areNotEqual(null, ctrl.name, 'Control name should not be null');
             Assert.areNotEqual(null, ctrl.severity, 'Control severity should not be null');
         }
-        System.assert(families.contains('CC6'), 'Should include CC6 (Logical/Physical Access)');
-        System.assert(families.contains('CC7'), 'Should include CC7 (System Operations)');
+        Assert.isTrue(families.contains('CC6'), 'Should include CC6 (Logical/Physical Access)');
+        Assert.isTrue(families.contains('CC7'), 'Should include CC7 (System Operations)');
     }
 
     // =============================================
@@ -90,7 +90,7 @@ private class SOC2ModuleTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, score, 'Score should not be null');
-        System.assert(score >= 0, 'Score should be >= 0');
+        Assert.isTrue(score >= 0, 'Score should be >= 0');
     }
 
     @IsTest
@@ -122,7 +122,7 @@ private class SOC2ModuleTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, score, 'Score should not be null even without evidence');
-        System.assert(score >= 0, 'Score should be non-negative');
+        Assert.isTrue(score >= 0, 'Score should be non-negative');
     }
 
     // =============================================
@@ -140,7 +140,7 @@ private class SOC2ModuleTest {
 
         Assert.areNotEqual(null, gaps, 'Gaps list should not be null');
         for (IComplianceModule.Gap gap : gaps) {
-            System.assert(gap.id.startsWith('GAP-SOC2-'), 'Gap ID should start with GAP-SOC2-');
+            Assert.isTrue(gap.id.startsWith('GAP-SOC2-'), 'Gap ID should start with GAP-SOC2-');
             Assert.areNotEqual(null, gap.controlCode, 'Gap controlCode should not be null');
             Assert.areNotEqual(null, gap.severity, 'Gap severity should not be null');
             Assert.areNotEqual(null, gap.recommendation, 'Gap recommendation should not be null');
@@ -165,7 +165,7 @@ private class SOC2ModuleTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, gaps, 'Gaps list should not be null');
-        System.assert(gaps.size() > 0, 'Should identify gaps when no evidence present');
+        Assert.isTrue(gaps.size() > 0, 'Should identify gaps when no evidence present');
     }
 
     // =============================================
@@ -277,7 +277,7 @@ private class SOC2ModuleTest {
 
         Assert.areNotEqual(null, result, 'Result should not be null');
         Assert.areEqual('CC7.4', result.controlId, 'Control ID should match');
-        System.assert(result.passed, 'Incident response should pass');
+        Assert.isTrue(result.passed, 'Incident response should pass');
         Assert.areEqual(80, result.score, 'Score should be 80');
     }
 
@@ -295,7 +295,7 @@ private class SOC2ModuleTest {
 
         Assert.areNotEqual(null, result, 'Result should not be null');
         Assert.areEqual('CC8.1', result.controlId, 'Control ID should match');
-        System.assert(result.passed, 'Change management should pass');
+        Assert.isTrue(result.passed, 'Change management should pass');
         Assert.areEqual(90, result.score, 'Score should be 90');
     }
 
@@ -357,7 +357,7 @@ private class SOC2ModuleTest {
         Test.startTest();
         for (Elaro_Audit_Package__c pkg : packages) {
             Decimal score = module.calculateScore(pkg.Id);
-            System.assert(score >= 0, 'Score should be non-negative for package: ' + pkg.Id);
+            Assert.isTrue(score >= 0, 'Score should be non-negative for package: ' + pkg.Id);
 
             List<IComplianceModule.Gap> gaps = module.identifyGaps(pkg.Id);
             Assert.areNotEqual(null, gaps, 'Gaps should not be null for package: ' + pkg.Id);

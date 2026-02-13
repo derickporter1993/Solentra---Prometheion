@@ -76,7 +76,7 @@ private class MultiOrgManagerTest {
             MultiOrgManager.registerOrg(orgConfig);
             Assert.fail( 'Should throw exception for missing name');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('name'), 'Should mention name requirement');
+            Assert.isTrue(e.getMessage().contains('name'), 'Should mention name requirement');
         }
         Test.stopTest();
     }
@@ -93,7 +93,7 @@ private class MultiOrgManagerTest {
             MultiOrgManager.registerOrg(orgConfig);
             Assert.fail( 'Should throw exception for missing org ID');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Org ID'), 'Should mention org ID requirement');
+            Assert.isTrue(e.getMessage().contains('Org ID'), 'Should mention org ID requirement');
         }
         Test.stopTest();
     }
@@ -110,7 +110,7 @@ private class MultiOrgManagerTest {
             MultiOrgManager.registerOrg(orgConfig);
             Assert.fail( 'Should throw exception for missing instance URL');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Instance URL'), 'Should mention instance URL requirement');
+            Assert.isTrue(e.getMessage().contains('Instance URL'), 'Should mention instance URL requirement');
         }
         Test.stopTest();
     }
@@ -128,8 +128,8 @@ private class MultiOrgManagerTest {
         Assert.areNotEqual(null, status, 'Should return status');
         Assert.areNotEqual(null, status.currentOrg, 'Should have current org');
         Assert.areNotEqual(null, status.connectedOrgs, 'Should have connected orgs list');
-        System.assert(status.totalOrgs > 0, 'Should have at least one org');
-        System.assert(status.aggregateScore >= 0, 'Aggregate score should be non-negative');
+        Assert.isTrue(status.totalOrgs > 0, 'Should have at least one org');
+        Assert.isTrue(status.aggregateScore >= 0, 'Aggregate score should be non-negative');
     }
     
     @isTest
@@ -139,7 +139,7 @@ private class MultiOrgManagerTest {
         MultiOrgManager.MultiOrgStatus status = MultiOrgManager.getMultiOrgStatus();
         Test.stopTest();
         
-        System.assert(status.connectedOrgs.size() >= 5, 'Should include test connected orgs');
+        Assert.isTrue(status.connectedOrgs.size() >= 5, 'Should include test connected orgs');
         
         // Verify org details
         for (MultiOrgManager.OrgStatus os : status.connectedOrgs) {
@@ -239,10 +239,10 @@ private class MultiOrgManagerTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, metrics, 'Should return metrics');
-        System.assert(metrics.totalEvents >= 0, 'Total events should be non-negative');
-        System.assert(metrics.totalAlerts >= 0, 'Total alerts should be non-negative');
-        System.assert(metrics.avgComplianceScore >= 0, 'Average score should be non-negative');
-        System.assert(metrics.orgCount > 0, 'Should have at least one org');
+        Assert.isTrue(metrics.totalEvents >= 0, 'Total events should be non-negative');
+        Assert.isTrue(metrics.totalAlerts >= 0, 'Total alerts should be non-negative');
+        Assert.isTrue(metrics.avgComplianceScore >= 0, 'Average score should be non-negative');
+        Assert.isTrue(metrics.orgCount > 0, 'Should have at least one org');
     }
     
     @isTest
@@ -253,7 +253,7 @@ private class MultiOrgManagerTest {
         Test.stopTest();
         
         // Should include evidence items from test setup
-        System.assert(metrics.totalEvents >= 10, 'Should count evidence items');
+        Assert.isTrue(metrics.totalEvents >= 10, 'Should count evidence items');
     }
     
     // ═══════════════════════════════════════════════════════════════

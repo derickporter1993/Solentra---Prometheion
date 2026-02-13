@@ -133,7 +133,7 @@ private class ElaroSecurityUtilsTest {
         }
         Test.stopTest();
 
-        System.assert(validationPassed, 'Insert access validation should complete successfully');
+        Assert.isTrue(validationPassed, 'Insert access validation should complete successfully');
     }
     
     @IsTest
@@ -151,7 +151,7 @@ private class ElaroSecurityUtilsTest {
         }
         Test.stopTest();
 
-        System.assert(validationPassed, 'Update access validation should complete successfully');
+        Assert.isTrue(validationPassed, 'Update access validation should complete successfully');
     }
     
     @IsTest
@@ -169,7 +169,7 @@ private class ElaroSecurityUtilsTest {
         }
         Test.stopTest();
 
-        System.assert(validationPassed, 'Delete access validation should complete successfully');
+        Assert.isTrue(validationPassed, 'Delete access validation should complete successfully');
     }
     
     @IsTest
@@ -187,7 +187,7 @@ private class ElaroSecurityUtilsTest {
         }
         Test.stopTest();
 
-        System.assert(validationPassed, 'Upsert access validation should complete successfully');
+        Assert.isTrue(validationPassed, 'Upsert access validation should complete successfully');
     }
     
     @IsTest
@@ -204,7 +204,7 @@ private class ElaroSecurityUtilsTest {
         }
         Test.stopTest();
 
-        System.assert(validationPassed, 'FLS read validation should complete successfully for accessible fields');
+        Assert.isTrue(validationPassed, 'FLS read validation should complete successfully for accessible fields');
     }
     
     @IsTest
@@ -221,7 +221,7 @@ private class ElaroSecurityUtilsTest {
         }
         Test.stopTest();
 
-        System.assert(validationPassed, 'FLS write validation should complete successfully for writable fields');
+        Assert.isTrue(validationPassed, 'FLS write validation should complete successfully for writable fields');
     }
     
     @IsTest
@@ -232,9 +232,9 @@ private class ElaroSecurityUtilsTest {
         String secureQuery = ElaroSecurityUtils.buildSecureQuery(baseQuery);
         Test.stopTest();
         
-        System.assert(secureQuery.contains('WITH USER_MODE'), 
+        Assert.isTrue(secureQuery.contains('WITH USER_MODE'), 
             'Should add WITH USER_MODE');
-        System.assert(secureQuery.contains('SELECT Id, Name FROM Account'), 
+        Assert.isTrue(secureQuery.contains('SELECT Id, Name FROM Account'), 
             'Should preserve original query');
     }
     
@@ -326,7 +326,7 @@ private class ElaroSecurityUtilsTest {
             ElaroSecurityUtils.validateFLSAccess('Account', fields, false);
             Assert.fail( 'Should throw exception for invalid field');
         } catch (ElaroSecurityUtils.SecurityException e) {
-            System.assert(e.getMessage().contains('Insufficient FLS access'),
+            Assert.isTrue(e.getMessage().contains('Insufficient FLS access'),
                 'Exception should mention FLS access');
         }
         Test.stopTest();
@@ -341,7 +341,7 @@ private class ElaroSecurityUtilsTest {
             ElaroSecurityUtils.validateFLSAccess('Account', fields, true);
             Assert.fail( 'Should throw exception for invalid field write');
         } catch (ElaroSecurityUtils.SecurityException e) {
-            System.assert(e.getMessage().contains('Insufficient FLS access'),
+            Assert.isTrue(e.getMessage().contains('Insufficient FLS access'),
                 'Exception should mention FLS access');
         }
         Test.stopTest();
@@ -357,7 +357,7 @@ private class ElaroSecurityUtilsTest {
             );
             Assert.fail( 'Should throw exception for invalid object');
         } catch (ElaroSecurityUtils.SecurityException e) {
-            System.assert(e.getMessage().contains('Insufficient CRUD access'),
+            Assert.isTrue(e.getMessage().contains('Insufficient CRUD access'),
                 'Exception should mention CRUD access');
         }
         Test.stopTest();
@@ -400,9 +400,9 @@ private class ElaroSecurityUtilsTest {
         String secureQuery = ElaroSecurityUtils.buildSecureQuery(baseQuery);
         Test.stopTest();
 
-        System.assert(secureQuery.contains('WITH USER_MODE'),
+        Assert.isTrue(secureQuery.contains('WITH USER_MODE'),
             'Should add WITH USER_MODE');
-        System.assert(secureQuery.contains('WHERE Name != null'),
+        Assert.isTrue(secureQuery.contains('WHERE Name != null'),
             'Should preserve WHERE clause');
     }
 

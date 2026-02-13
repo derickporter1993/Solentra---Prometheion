@@ -99,7 +99,7 @@ private class ElaroAISettingsControllerTest {
             ElaroAISettingsController.saveSettings(settings);
             // If we reach here with valid data, that's acceptable
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Error saving settings'),
+            Assert.isTrue(e.getMessage().contains('Error saving settings'),
                 'Should throw AuraHandledException with appropriate message');
         }
         Test.stopTest();
