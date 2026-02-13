@@ -29,10 +29,10 @@ private class PerformanceAlertPublisherTest {
             PerformanceAlertPublisher.publish(null, 8500, 10000, null, null);
         } catch (AuraHandledException e) {
             exceptionThrown = true;
-            System.assert(e.getMessage().contains('Metric cannot be blank'), 'Expected validation error');
+            Assert.isTrue(e.getMessage().contains('Metric cannot be blank'), 'Expected validation error');
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Expected AuraHandledException to be thrown');
+        Assert.isTrue(exceptionThrown, 'Expected AuraHandledException to be thrown');
     }
 
     @isTest
@@ -43,10 +43,10 @@ private class PerformanceAlertPublisherTest {
             PerformanceAlertPublisher.publish('', 8500, 10000, null, null);
         } catch (AuraHandledException e) {
             exceptionThrown = true;
-            System.assert(e.getMessage().contains('Metric cannot be blank'), 'Expected validation error');
+            Assert.isTrue(e.getMessage().contains('Metric cannot be blank'), 'Expected validation error');
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Expected AuraHandledException to be thrown');
+        Assert.isTrue(exceptionThrown, 'Expected AuraHandledException to be thrown');
     }
 
     @isTest
@@ -57,10 +57,10 @@ private class PerformanceAlertPublisherTest {
             PerformanceAlertPublisher.publish('CPU', null, 10000, null, null);
         } catch (AuraHandledException e) {
             exceptionThrown = true;
-            System.assert(e.getMessage().contains('Value cannot be null'), 'Expected validation error');
+            Assert.isTrue(e.getMessage().contains('Value cannot be null'), 'Expected validation error');
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Expected AuraHandledException to be thrown');
+        Assert.isTrue(exceptionThrown, 'Expected AuraHandledException to be thrown');
     }
 
     @isTest
@@ -71,10 +71,10 @@ private class PerformanceAlertPublisherTest {
             PerformanceAlertPublisher.publish('CPU', 8500, null, null, null);
         } catch (AuraHandledException e) {
             exceptionThrown = true;
-            System.assert(e.getMessage().contains('Threshold cannot be null'), 'Expected validation error');
+            Assert.isTrue(e.getMessage().contains('Threshold cannot be null'), 'Expected validation error');
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Expected AuraHandledException to be thrown');
+        Assert.isTrue(exceptionThrown, 'Expected AuraHandledException to be thrown');
     }
 
     @isTest
@@ -94,7 +94,7 @@ private class PerformanceAlertPublisherTest {
             WHERE Metric__c = 'HEAP'
         ];
         Assert.areEqual(1, alerts.size(), 'Expected one alert to be saved');
-        System.assert(alerts[0].Stack__c.length() <= 32768, 'Stack should be truncated');
+        Assert.isTrue(alerts[0].Stack__c.length() <= 32768, 'Stack should be truncated');
     }
 
     @isTest
@@ -116,7 +116,7 @@ private class PerformanceAlertPublisherTest {
         ];
         Assert.areEqual(1, alerts.size(), 'Expected one alert to be saved');
         // Stack should be truncated to 32768 (32765 + '...')
-        System.assert(alerts[0].Stack__c.endsWith('...'), 'Stack should end with ellipsis when truncated');
+        Assert.isTrue(alerts[0].Stack__c.endsWith('...'), 'Stack should end with ellipsis when truncated');
     }
 
     @isTest
@@ -134,9 +134,9 @@ private class PerformanceAlertPublisherTest {
         ];
         Assert.areEqual(1, alerts.size(), 'Expected one alert to be saved');
         // Verify XSS characters are escaped
-        System.assert(!alerts[0].Stack__c.contains('<script>'), 'Script tags should be escaped');
-        System.assert(alerts[0].Stack__c.contains('&lt;'), 'Less than should be escaped');
-        System.assert(alerts[0].Stack__c.contains('&gt;'), 'Greater than should be escaped');
+        Assert.isTrue(!alerts[0].Stack__c.contains('<script>'), 'Script tags should be escaped');
+        Assert.isTrue(alerts[0].Stack__c.contains('&lt;'), 'Less than should be escaped');
+        Assert.isTrue(alerts[0].Stack__c.contains('&gt;'), 'Greater than should be escaped');
     }
 
     @isTest
@@ -271,10 +271,10 @@ private class PerformanceAlertPublisherTest {
             PerformanceAlertPublisher.publish('   ', 8500, 10000, null, null);
         } catch (AuraHandledException e) {
             exceptionThrown = true;
-            System.assert(e.getMessage().contains('Metric cannot be blank'), 'Expected validation error');
+            Assert.isTrue(e.getMessage().contains('Metric cannot be blank'), 'Expected validation error');
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Expected AuraHandledException for whitespace metric');
+        Assert.isTrue(exceptionThrown, 'Expected AuraHandledException for whitespace metric');
     }
 
     @isTest
@@ -301,9 +301,9 @@ private class PerformanceAlertPublisherTest {
         Assert.areEqual(200, alerts.size(), 'Should save all 200 alerts');
 
         // Verify governor limits were not exceeded
-        System.assert(Limits.getQueries() < 100,
+        Assert.isTrue(Limits.getQueries() < 100,
             'SOQL queries should be within limits: ' + Limits.getQueries());
-        System.assert(Limits.getDmlStatements() < 150,
+        Assert.isTrue(Limits.getDmlStatements() < 150,
             'DML statements should be within limits: ' + Limits.getDmlStatements());
     }
 

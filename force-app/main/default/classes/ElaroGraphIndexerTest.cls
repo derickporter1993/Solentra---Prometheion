@@ -51,7 +51,7 @@ private class ElaroGraphIndexerTest {
             ElaroGraphIndexer.indexChange('PERMISSION_SET', ps.Id, null, 'INVALID_FRAMEWORK');
             Assert.fail( 'Should have thrown exception for invalid framework');
         } catch (Exception e) {
-            System.assert(e.getMessage().contains('Unsupported framework'), 'Expected framework validation error');
+            Assert.isTrue(e.getMessage().contains('Unsupported framework'), 'Expected framework validation error');
         }
         Test.stopTest();
     }
@@ -141,7 +141,7 @@ private class ElaroGraphIndexerTest {
                 ElaroGraphIndexer.indexChange('FLOW', 'NonExistentFlowId', null, 'SOC2');
                 Assert.fail( 'Should have thrown exception for non-existent flow');
             } catch (Exception e) {
-                System.assert(e.getMessage().contains('FlowDefinitionView not found') || 
+                Assert.isTrue(e.getMessage().contains('FlowDefinitionView not found') || 
                              e.getMessage().contains('failed'), 
                              'Expected flow not found error: ' + e.getMessage());
             }
@@ -201,7 +201,7 @@ private class ElaroGraphIndexerTest {
             'POLICY_VIOLATION', 'UNAUTHORIZED', 'ANOMALY', 'MANUAL_OVERRIDE'
         };
         for (Elaro_Compliance_Graph__b node : nodes) {
-            System.assert(validCategories.contains(node.Drift_Category__c), 
+            Assert.isTrue(validCategories.contains(node.Drift_Category__c), 
                          'Node should have valid drift category: ' + node.Drift_Category__c);
             Assert.areNotEqual(null, node.Risk_Score__c, 'Risk score should not be null');
         }
@@ -235,9 +235,9 @@ private class ElaroGraphIndexerTest {
         
         // Fallback risk score should be BASE_RISK_SCORE (3.0) or higher
         // Since objectPermissionCount is added, score should be at least 3.0
-        System.assert(nodes[0].Risk_Score__c >= 3.0, 
+        Assert.isTrue(nodes[0].Risk_Score__c >= 3.0, 
                      'Fallback risk score should be at least BASE_RISK_SCORE (3.0), got: ' + nodes[0].Risk_Score__c);
-        System.assert(nodes[0].Risk_Score__c <= 10.0, 
+        Assert.isTrue(nodes[0].Risk_Score__c <= 10.0, 
                      'Risk score should not exceed RISK_SCORE_MAX (10.0), got: ' + nodes[0].Risk_Score__c);
     }
 }

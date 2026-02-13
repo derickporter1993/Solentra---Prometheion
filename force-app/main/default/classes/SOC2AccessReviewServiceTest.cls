@@ -127,7 +127,7 @@ public class SOC2AccessReviewServiceTest {
         Decimal score = service.getComplianceScore();
         Test.stopTest();
 
-        System.assert(score >= 0 && score <= 100, 'Score should be between 0 and 100');
+        Assert.isTrue(score >= 0 && score <= 100, 'Score should be between 0 and 100');
     }
 
     @isTest

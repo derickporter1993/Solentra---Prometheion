@@ -54,7 +54,7 @@ private class ElaroDeliveryServiceTest {
             ElaroDeliveryService.deliverAuditPackage(null, new List&lt;String&gt;{'test@example.com'});
             Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should mention required fields');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should mention required fields');
         }
         Test.stopTest();
     }
@@ -68,7 +68,7 @@ private class ElaroDeliveryServiceTest {
             ElaroDeliveryService.deliverAuditPackage(pkg.Id, new List&lt;String&gt;());
             Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should mention required fields');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should mention required fields');
         }
         Test.stopTest();
     }
@@ -82,7 +82,7 @@ private class ElaroDeliveryServiceTest {
             ElaroDeliveryService.deliverAuditPackage(pkg.Id, null);
             Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should mention required fields');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should mention required fields');
         }
         Test.stopTest();
     }
@@ -132,7 +132,7 @@ private class ElaroDeliveryServiceTest {
             );
             Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Cron expression'), 'Should mention cron expression');
+            Assert.isTrue(e.getMessage().contains('Cron expression'), 'Should mention cron expression');
         }
         Test.stopTest();
     }
@@ -150,7 +150,7 @@ private class ElaroDeliveryServiceTest {
             );
             Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Cron expression'), 'Should mention cron expression');
+            Assert.isTrue(e.getMessage().contains('Cron expression'), 'Should mention cron expression');
         }
         Test.stopTest();
     }
@@ -175,7 +175,7 @@ private class ElaroDeliveryServiceTest {
             FROM ContentDistribution
             WHERE Name LIKE '%Audit Package Share%'
         ];
-        System.assert(!distributions.isEmpty(), 'ContentDistribution should be created');
+        Assert.isTrue(!distributions.isEmpty(), 'ContentDistribution should be created');
         Assert.areEqual(Date.today().addDays(30), distributions[0].ExpiryDate, 'Expiration should be 30 days');
         Assert.areEqual(true, distributions[0].PreferencesPasswordRequired, 'Should require password');
     }
@@ -259,7 +259,7 @@ private class ElaroDeliveryServiceTest {
         List&lt;Map&lt;String, Object&gt;&gt; history = ElaroDeliveryService.getDeliveryHistory(pkg.Id);
         Test.stopTest();
         
-        System.assert(!history.isEmpty(), 'Should return delivery history');
+        Assert.isTrue(!history.isEmpty(), 'Should return delivery history');
     }
     
     @isTest

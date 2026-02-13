@@ -100,7 +100,7 @@ private class JiraIntegrationServiceTest {
             JiraIntegrationService.createIssue(gap.Id, null);
             Assert.fail( 'Should have thrown exception');
         } catch (JiraIntegrationService.JiraIntegrationException e) {
-            System.assert(e.getMessage().contains('already exists'), 'Should mention existing issue');
+            Assert.isTrue(e.getMessage().contains('already exists'), 'Should mention existing issue');
         }
         Test.stopTest();
     }
@@ -116,7 +116,7 @@ private class JiraIntegrationServiceTest {
             JiraIntegrationService.createIssue(gap.Id, null);
             Assert.fail( 'Should have thrown exception');
         } catch (JiraIntegrationService.JiraIntegrationException e) {
-            System.assert(e.getMessage().contains('Failed'), 'Should indicate failure');
+            Assert.isTrue(e.getMessage().contains('Failed'), 'Should indicate failure');
         }
         Test.stopTest();
     }
@@ -128,7 +128,7 @@ private class JiraIntegrationServiceTest {
             JiraIntegrationService.createIssue('001000000000000AAA', null);
             Assert.fail( 'Should have thrown exception');
         } catch (JiraIntegrationService.JiraIntegrationException e) {
-            System.assert(e.getMessage().contains('not found'), 'Should indicate not found');
+            Assert.isTrue(e.getMessage().contains('not found'), 'Should indicate not found');
         }
         Test.stopTest();
     }
@@ -173,7 +173,7 @@ private class JiraIntegrationServiceTest {
             JiraIntegrationService.getIssueStatus('INVALID-999');
             Assert.fail( 'Should have thrown exception');
         } catch (JiraIntegrationService.JiraIntegrationException e) {
-            System.assert(e.getMessage().contains('not found'), 'Should indicate not found');
+            Assert.isTrue(e.getMessage().contains('not found'), 'Should indicate not found');
         }
         Test.stopTest();
     }
@@ -185,7 +185,7 @@ private class JiraIntegrationServiceTest {
             JiraIntegrationService.getIssueStatus('');
             Assert.fail( 'Should have thrown exception');
         } catch (JiraIntegrationService.JiraIntegrationException e) {
-            System.assert(e.getMessage().contains('required'), 'Should indicate key required');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should indicate key required');
         }
         Test.stopTest();
     }
@@ -218,7 +218,7 @@ private class JiraIntegrationServiceTest {
             JiraIntegrationService.syncIssueStatus(gap.Id);
             Assert.fail( 'Should have thrown exception');
         } catch (JiraIntegrationService.JiraIntegrationException e) {
-            System.assert(e.getMessage().contains('No Jira issue'), 'Should indicate no link');
+            Assert.isTrue(e.getMessage().contains('No Jira issue'), 'Should indicate no link');
         }
         Test.stopTest();
     }
@@ -279,7 +279,7 @@ private class JiraIntegrationServiceTest {
             JiraIntegrationService.addComment('', '');
             Assert.fail( 'Should have thrown exception');
         } catch (JiraIntegrationService.JiraIntegrationException e) {
-            System.assert(e.getMessage().contains('required'), 'Should indicate required params');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should indicate required params');
         }
         Test.stopTest();
     }
@@ -297,7 +297,7 @@ private class JiraIntegrationServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, transitions, 'Should return transitions');
-        System.assert(transitions.size() > 0, 'Should have at least one transition');
+        Assert.isTrue(transitions.size() > 0, 'Should have at least one transition');
     }
 
     @isTest

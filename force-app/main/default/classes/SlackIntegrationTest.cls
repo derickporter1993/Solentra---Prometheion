@@ -194,6 +194,6 @@ private class SlackIntegrationTest {
 
         // Assert - Verify all 6 severity levels processed without exception
         Assert.areEqual(6, severities.size(), 'Should test all 6 severity levels');
-        System.assert(Limits.getCallouts() <= Limits.getLimitCallouts(), 'Should stay within callout limits');
+        Assert.isTrue(Limits.getCallouts() <= Limits.getLimitCallouts(), 'Should stay within callout limits');
     }
 }

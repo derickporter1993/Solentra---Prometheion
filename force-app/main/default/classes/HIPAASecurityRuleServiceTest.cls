@@ -53,7 +53,7 @@ public class HIPAASecurityRuleServiceTest {
         Decimal score = service.getComplianceScore();
         Test.stopTest();
 
-        System.assert(score >= 0 && score <= 100, 'Score should be between 0 and 100');
+        Assert.isTrue(score >= 0 && score <= 100, 'Score should be between 0 and 100');
     }
 
     @isTest
@@ -127,10 +127,10 @@ public class HIPAASecurityRuleServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, status, 'Status should not be null');
-        System.assert(status.containsKey('Contact'), 'Should include Contact object');
-        System.assert(status.containsKey('Lead'), 'Should include Lead object');
-        System.assert(status.containsKey('Account'), 'Should include Account object');
-        System.assert(status.containsKey('Case'), 'Should include Case object');
+        Assert.isTrue(status.containsKey('Contact'), 'Should include Contact object');
+        Assert.isTrue(status.containsKey('Lead'), 'Should include Lead object');
+        Assert.isTrue(status.containsKey('Account'), 'Should include Account object');
+        Assert.isTrue(status.containsKey('Case'), 'Should include Case object');
     }
 
     @isTest
@@ -155,7 +155,7 @@ public class HIPAASecurityRuleServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, result.overallScore, 'Overall score should be set');
-        System.assert(result.overallScore >= 0 && result.overallScore <= 100,
+        Assert.isTrue(result.overallScore >= 0 && result.overallScore <= 100,
             'Overall score should be between 0 and 100');
         Assert.areNotEqual(null, result.overallCompliant, 'Overall compliant flag should be set');
         Assert.areNotEqual(null, result.gaps, 'Gaps list should not be null');

@@ -117,7 +117,7 @@ private class BreachDeadlineMonitorTest {
             AND CreatedDate = TODAY
         ];
 
-        System.assert(gaps.size() > 0, 'Should create compliance gaps for breaches');
+        Assert.isTrue(gaps.size() > 0, 'Should create compliance gaps for breaches');
     }
 
     @IsTest
@@ -192,10 +192,10 @@ private class BreachDeadlineMonitorTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, summary, 'Should return deadline summary');
-        System.assert(summary.overdueCount >= 0, 'Overdue count should be valid');
-        System.assert(summary.criticalCount >= 0, 'Critical count should be valid');
-        System.assert(summary.upcomingCount >= 0, 'Upcoming count should be valid');
-        System.assert(summary.hhsRequiredCount >= 0, 'HHS required count should be valid');
+        Assert.isTrue(summary.overdueCount >= 0, 'Overdue count should be valid');
+        Assert.isTrue(summary.criticalCount >= 0, 'Critical count should be valid');
+        Assert.isTrue(summary.upcomingCount >= 0, 'Upcoming count should be valid');
+        Assert.isTrue(summary.hhsRequiredCount >= 0, 'HHS required count should be valid');
     }
 
     @IsTest
@@ -260,7 +260,7 @@ private class BreachDeadlineMonitorTest {
         Test.stopTest();
 
         // Should handle bulk data without governor limit issues
-        System.assert(Limits.getQueries() < 100, 'Should stay under SOQL limit');
-        System.assert(Limits.getDmlStatements() < 150, 'Should stay under DML limit');
+        Assert.isTrue(Limits.getQueries() < 100, 'Should stay under SOQL limit');
+        Assert.isTrue(Limits.getDmlStatements() < 150, 'Should stay under DML limit');
     }
 }

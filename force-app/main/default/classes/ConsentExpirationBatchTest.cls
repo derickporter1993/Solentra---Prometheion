@@ -38,7 +38,7 @@ private class ConsentExpirationBatchTest {
     static void testBatchExecutionWithDefaultWarningDays() {
         // Arrange
         Integer consentCount = [SELECT COUNT() FROM Consent__c WHERE Consent_Given__c = true];
-        System.assert(consentCount > 0, 'Test data should exist');
+        Assert.isTrue(consentCount > 0, 'Test data should exist');
 
         // Act
         Test.startTest();

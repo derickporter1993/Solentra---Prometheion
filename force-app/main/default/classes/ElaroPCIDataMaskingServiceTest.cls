@@ -93,7 +93,7 @@ private class ElaroPCIDataMaskingServiceTest {
             ElaroPCIDataMaskingService.validateNoCVVStorage('123');
             Assert.fail( 'Should throw PCIViolationException');
         } catch (ElaroPCIDataMaskingService.PCIViolationException e) {
-            System.assert(e.getMessage().contains('PCI DSS Requirement 3.2'),
+            Assert.isTrue(e.getMessage().contains('PCI DSS Requirement 3.2'),
                 'Should mention PCI requirement');
         }
         Test.stopTest();
@@ -239,7 +239,7 @@ private class ElaroPCIDataMaskingServiceTest {
 
         Assert.areEqual(200, maskedCards.size(), 'Should mask all 200 cards');
         for (String masked : maskedCards) {
-            System.assert(masked.startsWith('****-****-****-'), 'All should be properly masked');
+            Assert.isTrue(masked.startsWith('****-****-****-'), 'All should be properly masked');
         }
     }
 
@@ -252,7 +252,7 @@ private class ElaroPCIDataMaskingServiceTest {
             Assert.isTrue(true, 'Encryption validation passed');
         } catch (ElaroPCIDataMaskingService.PCIViolationException e) {
             // This may throw in environments without Shield
-            System.assert(e.getMessage().contains('Platform Encryption'),
+            Assert.isTrue(e.getMessage().contains('Platform Encryption'),
                 'Should mention encryption requirement');
         }
         Test.stopTest();

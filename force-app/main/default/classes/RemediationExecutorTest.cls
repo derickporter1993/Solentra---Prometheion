@@ -115,7 +115,7 @@ private class RemediationExecutorTest {
         Test.stopTest();
 
         Assert.areEqual(false, result.success, 'Execution should fail');
-        System.assert(result.errorMessage.contains('approved'), 'Error should mention approval');
+        Assert.isTrue(result.errorMessage.contains('approved'), 'Error should mention approval');
     }
 
     @isTest
@@ -131,7 +131,7 @@ private class RemediationExecutorTest {
         Test.stopTest();
 
         Assert.areEqual(false, result.success, 'Execution should fail');
-        System.assert(result.errorMessage.contains('not available'), 'Error should mention auto-remediation not available');
+        Assert.isTrue(result.errorMessage.contains('not available'), 'Error should mention auto-remediation not available');
     }
 
     @isTest
@@ -141,7 +141,7 @@ private class RemediationExecutorTest {
         Test.stopTest();
 
         Assert.areEqual(false, result.success, 'Execution should fail');
-        System.assert(result.errorMessage.contains('not found'), 'Error should mention not found');
+        Assert.isTrue(result.errorMessage.contains('not found'), 'Error should mention not found');
     }
 
     @isTest
@@ -160,7 +160,7 @@ private class RemediationExecutorTest {
         Remediation_Suggestion__c updated = [SELECT Status__c, Applied_At__c, Implementation_Steps__c
                                               FROM Remediation_Suggestion__c WHERE Id = :suggestion.Id];
         Assert.areEqual('APPLIED', updated.Status__c, 'Status should be APPLIED');
-        System.assert(updated.Implementation_Steps__c.contains('Manual Implementation Notes'), 'Notes should be appended');
+        Assert.isTrue(updated.Implementation_Steps__c.contains('Manual Implementation Notes'), 'Notes should be appended');
 
         // Verify gap status
         Compliance_Gap__c gap = [SELECT Status__c, Actual_Remediation_Date__c
@@ -182,7 +182,7 @@ private class RemediationExecutorTest {
             RemediationExecutor.markAsManuallyApplied(suggestion.Id, 'Test notes');
             Assert.fail( 'Expected exception for non-approved suggestion');
         } catch (RemediationSuggestionService.RemediationException e) {
-            System.assert(e.getMessage().contains('approved'), 'Error should mention approval');
+            Assert.isTrue(e.getMessage().contains('approved'), 'Error should mention approval');
         }
         Test.stopTest();
     }
@@ -194,7 +194,7 @@ private class RemediationExecutorTest {
             RemediationExecutor.markAsManuallyApplied('a00000000000000AAA', 'Test notes');
             Assert.fail( 'Expected exception for invalid ID');
         } catch (RemediationSuggestionService.RemediationException e) {
-            System.assert(e.getMessage().contains('not found'), 'Error should mention not found');
+            Assert.isTrue(e.getMessage().contains('not found'), 'Error should mention not found');
         }
         Test.stopTest();
     }
@@ -213,7 +213,7 @@ private class RemediationExecutorTest {
         List<RemediationExecutor.ExecutionHistory> history = RemediationExecutor.getExecutionHistory();
         Test.stopTest();
 
-        System.assert(history.size() > 0, 'Should have execution history');
+        Assert.isTrue(history.size() > 0, 'Should have execution history');
 
         RemediationExecutor.ExecutionHistory item = history[0];
         Assert.areNotEqual(null, item.suggestionId, 'Suggestion ID should be set');
@@ -256,7 +256,7 @@ private class RemediationExecutorTest {
         Test.stopTest();
 
         Assert.areEqual(suggestionIds.size(), result.totalProcessed, 'Total processed should match');
-        System.assert(result.successCount > 0, 'Should have successes');
+        Assert.isTrue(result.successCount > 0, 'Should have successes');
         Assert.areNotEqual(null, result.results, 'Results list should be set');
     }
 
@@ -330,7 +330,7 @@ private class RemediationExecutorTest {
         Test.stopTest();
 
         Assert.areEqual(true, result.success, 'FLS remediation should succeed');
-        System.assert(result.message.contains('Field-level security'), 'Message should mention FLS');
+        Assert.isTrue(result.message.contains('Field-level security'), 'Message should mention FLS');
     }
 
     @isTest
@@ -358,7 +358,7 @@ private class RemediationExecutorTest {
         Test.stopTest();
 
         Assert.areEqual(true, result.success, 'Profile remediation should succeed');
-        System.assert(result.message.contains('Profile update'), 'Message should mention profile');
+        Assert.isTrue(result.message.contains('Profile update'), 'Message should mention profile');
     }
 
     @isTest
@@ -381,7 +381,7 @@ private class RemediationExecutorTest {
         Test.stopTest();
 
         Assert.areEqual(false, result.success, 'Should fail with invalid payload');
-        System.assert(result.errorMessage.contains('Execution failed'), 'Error should mention execution failure');
+        Assert.isTrue(result.errorMessage.contains('Execution failed'), 'Error should mention execution failure');
     }
 
     @isTest

@@ -93,7 +93,7 @@ private class ElaroCCPASLAMonitorSchedulerTest {
             SELECT Id, Status__c FROM CCPA_Request__c
             WHERE Status__c = 'Overdue'
         ];
-        System.assert(overdueRequests.size() > 0, 'Overdue requests should be marked');
+        Assert.isTrue(overdueRequests.size() > 0, 'Overdue requests should be marked');
     }
 
     @isTest

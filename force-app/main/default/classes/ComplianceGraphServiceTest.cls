@@ -83,8 +83,8 @@ private class ComplianceGraphServiceTest {
         Assert.areNotEqual(null, graph, 'Graph should not be null');
         Assert.areNotEqual(null, graph.nodes, 'Nodes should not be null');
         Assert.areNotEqual(null, graph.edges, 'Edges should not be null');
-        System.assert(graph.nodes.size() > 0, 'Should have nodes');
-        System.assert(graph.edges.size() > 0, 'Should have edges');
+        Assert.isTrue(graph.nodes.size() > 0, 'Should have nodes');
+        Assert.isTrue(graph.edges.size() > 0, 'Should have edges');
 
         // Verify node types
         Set<String> nodeTypes = new Set<String>();
@@ -93,8 +93,8 @@ private class ComplianceGraphServiceTest {
             Assert.areNotEqual(null, node.id, 'Node ID should be set');
             Assert.areNotEqual(null, node.label, 'Node label should be set');
         }
-        System.assert(nodeTypes.contains('framework'), 'Should have framework nodes');
-        System.assert(nodeTypes.contains('gap'), 'Should have gap nodes');
+        Assert.isTrue(nodeTypes.contains('framework'), 'Should have framework nodes');
+        Assert.isTrue(nodeTypes.contains('gap'), 'Should have gap nodes');
     }
 
     @isTest
@@ -104,7 +104,7 @@ private class ComplianceGraphServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, graph, 'Graph should not be null');
-        System.assert(graph.nodes.size() > 0, 'Should have nodes');
+        Assert.isTrue(graph.nodes.size() > 0, 'Should have nodes');
 
         // Verify all gaps are SOX
         for (ComplianceGraphService.GraphNode node : graph.nodes) {
@@ -123,9 +123,9 @@ private class ComplianceGraphServiceTest {
         Assert.areNotEqual(null, analysis, 'Analysis should not be null');
         Assert.areEqual('PERMISSION_SET', analysis.entityType, 'Entity type should match');
         Assert.areEqual('0PS000000000001', analysis.entityId, 'Entity ID should match');
-        System.assert(analysis.totalGaps >= 2, 'Should have at least 2 gaps affecting this entity');
-        System.assert(analysis.affectedFrameworks.size() >= 2, 'Should affect multiple frameworks');
-        System.assert(analysis.riskScore > 0, 'Risk score should be positive');
+        Assert.isTrue(analysis.totalGaps >= 2, 'Should have at least 2 gaps affecting this entity');
+        Assert.isTrue(analysis.affectedFrameworks.size() >= 2, 'Should affect multiple frameworks');
+        Assert.isTrue(analysis.riskScore > 0, 'Risk score should be positive');
     }
 
     @isTest
@@ -294,10 +294,10 @@ private class ComplianceGraphServiceTest {
         for (ComplianceGraphService.GraphNode node : graph.nodes) {
             if (node.nodeType == 'entity') {
                 hasEntityNode = true;
-                System.assert(node.id.startsWith('entity-'), 'Entity node ID should start with entity-');
+                Assert.isTrue(node.id.startsWith('entity-'), 'Entity node ID should start with entity-');
             }
         }
-        System.assert(hasEntityNode, 'Should have entity nodes for gaps with entity info');
+        Assert.isTrue(hasEntityNode, 'Should have entity nodes for gaps with entity info');
     }
 
     @isTest
@@ -313,7 +313,7 @@ private class ComplianceGraphServiceTest {
             Assert.areNotEqual(null, edge.target, 'Edge target should be set');
         }
 
-        System.assert(edgeTypes.contains('HAS_GAP'), 'Should have HAS_GAP edges');
-        System.assert(edgeTypes.contains('FRAMEWORK_GAP'), 'Should have FRAMEWORK_GAP edges');
+        Assert.isTrue(edgeTypes.contains('HAS_GAP'), 'Should have HAS_GAP edges');
+        Assert.isTrue(edgeTypes.contains('FRAMEWORK_GAP'), 'Should have FRAMEWORK_GAP edges');
     }
 }

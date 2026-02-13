@@ -81,7 +81,7 @@ private class ElaroSharingViolationTest {
                 WITH USER_MODE
             ];
             // With sharing enforced, query may return empty or throw exception
-            System.assert(otherAccounts.isEmpty() || otherAccounts.size() == 0, 
+            Assert.isTrue(otherAccounts.isEmpty() || otherAccounts.size() == 0, 
                 'Owner1 should not see Owner2\'s account due to sharing');
         }
         Test.stopTest();
@@ -105,7 +105,7 @@ private class ElaroSharingViolationTest {
             ];
             
             Assert.areNotEqual(null, accounts, 'Accounts list should not be null');
-            System.assert(accounts.size() >= 0, 'Should return accounts respecting sharing');
+            Assert.isTrue(accounts.size() >= 0, 'Should return accounts respecting sharing');
         }
         Test.stopTest();
     }
@@ -154,7 +154,7 @@ private class ElaroSharingViolationTest {
                     WITH USER_MODE
                 ];
                 // Query may return empty due to sharing
-                System.assert(accounts.isEmpty() || accounts.size() == 0, 
+                Assert.isTrue(accounts.isEmpty() || accounts.size() == 0, 
                     'Should not return records due to sharing violation');
             } catch (QueryException e) {
                 // QueryException may be thrown for sharing violations
@@ -180,7 +180,7 @@ private class ElaroSharingViolationTest {
             ];
             
             // Should return at least owner1's account
-            System.assert(allAccounts.size() >= 1, 'Should return at least one account');
+            Assert.isTrue(allAccounts.size() >= 1, 'Should return at least one account');
         }
         Test.stopTest();
     }

@@ -172,7 +172,7 @@ describe("c-api-usage-dashboard", () => {
       await Promise.resolve();
       await flushPromises();
 
-      // Empty array [] evaluates to false in LWC, so if:false={rows} should be true
+      // Empty array [] evaluates to false in LWC, so lwc:else renders when rows is empty
       const message = element.shadowRoot.querySelector("p");
       expect(message).not.toBeNull();
       expect(message.textContent.trim()).toBe("No snapshots yet.");

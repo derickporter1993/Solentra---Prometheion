@@ -125,7 +125,7 @@ private class ElaroScheduledDeliveryTest {
         ];
         
         Assert.areEqual(cronExpression, ct.CronExpression, 'Cron expression should match');
-        System.assert(ct.CronJobDetail.Name.contains('Elaro_Delivery_'), 
+        Assert.isTrue(ct.CronJobDetail.Name.contains('Elaro_Delivery_'), 
             'Job name should contain Elaro_Delivery_');
     }
     

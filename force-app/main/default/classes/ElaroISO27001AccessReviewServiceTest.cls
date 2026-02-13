@@ -79,7 +79,7 @@ private class ElaroISO27001AccessReviewServiceTest {
         Test.stopTest();
         
         // Then: Reviews should be created
-        System.assert(!reviews.isEmpty(), 'Should create reviews');
+        Assert.isTrue(!reviews.isEmpty(), 'Should create reviews');
         for (Access_Review__c review : reviews) {
             Assert.areEqual('Quarterly Review', review.Review_Type__c, 'Should be quarterly review');
             Assert.areEqual('Pending', review.Review_Status__c, 'Status should be Pending');
@@ -98,7 +98,7 @@ private class ElaroISO27001AccessReviewServiceTest {
         Test.stopTest();
         
         // Then: Privileged reviews should be created
-        System.assert(!reviews.isEmpty(), 'Should create privileged reviews');
+        Assert.isTrue(!reviews.isEmpty(), 'Should create privileged reviews');
         for (Access_Review__c review : reviews) {
             Assert.areEqual('Privileged Access Review', review.Review_Type__c, 
                 'Should be privileged review');
@@ -171,7 +171,7 @@ private class ElaroISO27001AccessReviewServiceTest {
             } catch (Exception e) {
                 // Then: Permission exception should be thrown
                 // Note: InsufficientAccessException may not be available, catch generic Exception
-                System.assert(e.getMessage().contains('insufficient') || 
+                Assert.isTrue(e.getMessage().contains('insufficient') || 
                     e.getMessage().contains('access') || 
                     e.getMessage().contains('permission'), 
                     'Should throw permission-related exception: ' + e.getMessage());
@@ -193,9 +193,9 @@ private class ElaroISO27001AccessReviewServiceTest {
         Test.stopTest();
         
         // Then: Should return pending reviews for reviewer
-        System.assert(pendingReviews.size() >= 0, 'Should return pending reviews');
+        Assert.isTrue(pendingReviews.size() >= 0, 'Should return pending reviews');
         for (Access_Review__c review : pendingReviews) {
-            System.assert(review.Review_Status__c == 'Pending' || review.Review_Status__c == 'In Progress', 
+            Assert.isTrue(review.Review_Status__c == 'Pending' || review.Review_Status__c == 'In Progress', 
                 'Should only return pending/in progress reviews');
             Assert.areEqual(manager.Id, review.Reviewer__c, 'Should match reviewer');
         }
@@ -219,9 +219,9 @@ private class ElaroISO27001AccessReviewServiceTest {
         Test.stopTest();
         
         // Then: Should return overdue reviews
-        System.assert(overdueReviews.size() >= 0, 'Should return overdue reviews');
+        Assert.isTrue(overdueReviews.size() >= 0, 'Should return overdue reviews');
         for (Access_Review__c review : overdueReviews) {
-            System.assert(review.Due_Date__c < Date.today(), 'Should be overdue');
+            Assert.isTrue(review.Due_Date__c < Date.today(), 'Should be overdue');
         }
     }
     
@@ -235,7 +235,7 @@ private class ElaroISO27001AccessReviewServiceTest {
         Test.stopTest();
         
         // Then: Should handle bulk users
-        System.assert(reviews.size() >= 0, 'Should process users');
+        Assert.isTrue(reviews.size() >= 0, 'Should process users');
         // Note: Actual count depends on org setup
     }
     
@@ -311,11 +311,11 @@ private class ElaroISO27001AccessReviewServiceTest {
 
         // Then: Should return metrics
         Assert.areNotEqual(null, metrics, 'Metrics should not be null');
-        System.assert(metrics.containsKey('reviewsThisQuarter'), 'Should have reviewsThisQuarter metric');
-        System.assert(metrics.containsKey('completionRate'), 'Should have completionRate metric');
-        System.assert(metrics.containsKey('overdueCount'), 'Should have overdueCount metric');
-        System.assert(metrics.containsKey('privilegedUsersCount'), 'Should have privilegedUsersCount metric');
-        System.assert(metrics.containsKey('dormantAccountsCount'), 'Should have dormantAccountsCount metric');
+        Assert.isTrue(metrics.containsKey('reviewsThisQuarter'), 'Should have reviewsThisQuarter metric');
+        Assert.isTrue(metrics.containsKey('completionRate'), 'Should have completionRate metric');
+        Assert.isTrue(metrics.containsKey('overdueCount'), 'Should have overdueCount metric');
+        Assert.isTrue(metrics.containsKey('privilegedUsersCount'), 'Should have privilegedUsersCount metric');
+        Assert.isTrue(metrics.containsKey('dormantAccountsCount'), 'Should have dormantAccountsCount metric');
     }
 
     @IsTest
@@ -425,7 +425,7 @@ private class ElaroISO27001AccessReviewServiceTest {
         for (Access_Review__c review : reviews) {
             if (review.Risk_Level__c != null) {
                 hasRiskLevel = true;
-                System.assert(
+                Assert.isTrue(
                     review.Risk_Level__c == 'Low' ||
                     review.Risk_Level__c == 'Medium' ||
                     review.Risk_Level__c == 'High' ||
@@ -434,7 +434,7 @@ private class ElaroISO27001AccessReviewServiceTest {
                 );
             }
         }
-        System.assert(hasRiskLevel, 'At least one review should have risk level set');
+        Assert.isTrue(hasRiskLevel, 'At least one review should have risk level set');
     }
 
     @IsTest

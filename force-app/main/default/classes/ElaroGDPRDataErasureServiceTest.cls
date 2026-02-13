@@ -76,7 +76,7 @@ private class ElaroGDPRDataErasureServiceTest {
         Test.stopTest();
         
         // Then: Erasure should succeed
-        System.assert(result.success, 'Erasure should succeed');
+        Assert.isTrue(result.success, 'Erasure should succeed');
         Assert.areNotEqual(null, result.auditLogId, 'Audit log should be created');
         Assert.areNotEqual(null, result.message, 'Message should be provided');
         
@@ -110,7 +110,7 @@ private class ElaroGDPRDataErasureServiceTest {
             Assert.fail( 'Should have thrown exception');
         } catch (ElaroGDPRDataErasureService.GDPRException e) {
             // Then: Exception should be thrown
-            System.assert(e.getMessage().contains('Contact not found'), 
+            Assert.isTrue(e.getMessage().contains('Contact not found'), 
                 'Error message should indicate contact not found');
         }
         Test.stopTest();
@@ -143,8 +143,8 @@ private class ElaroGDPRDataErasureServiceTest {
         
         // Then: Should not be able to erase
         Assert.areEqual(false, result.canErase, 'Should not be able to erase');
-        System.assert(!result.blockers.isEmpty(), 'Blockers should exist');
-        System.assert(result.blockers[0].contains('open case'), 
+        Assert.isTrue(!result.blockers.isEmpty(), 'Blockers should exist');
+        Assert.isTrue(result.blockers[0].contains('open case'), 
             'Blocker should mention open case');
     }
     
@@ -165,7 +165,7 @@ private class ElaroGDPRDataErasureServiceTest {
             } catch (Exception e) {
                 // Then: Permission exception should be thrown
                 // Note: InsufficientAccessException may not be available, catch generic Exception
-                System.assert(e.getMessage().contains('insufficient') || 
+                Assert.isTrue(e.getMessage().contains('insufficient') || 
                     e.getMessage().contains('access') || 
                     e.getMessage().contains('permission'), 
                     'Should throw permission-related exception: ' + e.getMessage());
@@ -189,7 +189,7 @@ private class ElaroGDPRDataErasureServiceTest {
         Test.stopTest();
         
         // Then: Should return requests
-        System.assert(!requests.isEmpty(), 'Should return at least one request');
+        Assert.isTrue(!requests.isEmpty(), 'Should return at least one request');
         Assert.areEqual(testContact.Email, requests[0].Contact_Email__c, 
             'Should match contact email');
     }
@@ -324,7 +324,7 @@ private class ElaroGDPRDataErasureServiceTest {
             FROM GDPR_Erasure_Request__c
             WHERE Id = :result.auditLogId
         ];
-        System.assert(auditLog.Records_Deleted__c >= 3,
+        Assert.isTrue(auditLog.Records_Deleted__c >= 3,
             'Should count contact + task + event as deleted');
     }
 
@@ -446,7 +446,7 @@ private class ElaroGDPRDataErasureServiceTest {
         Assert.areEqual(testReason, auditLog.Request_Reason__c, 'Reason should match');
         Assert.areEqual('Completed', auditLog.Status__c, 'Status should be Completed');
         Assert.areEqual(UserInfo.getUserId(), auditLog.Requested_By__c, 'Requested by should match current user');
-        System.assert(auditLog.Records_Deleted__c >= 1, 'At least one record should be deleted');
+        Assert.isTrue(auditLog.Records_Deleted__c >= 1, 'At least one record should be deleted');
     }
 
     @IsTest

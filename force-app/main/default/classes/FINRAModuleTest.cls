@@ -77,15 +77,15 @@ private class FINRAModuleTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, controls, 'Controls list should not be null');
-        System.assert(controls.size() > 0, 'Should have at least one control');
+        Assert.isTrue(controls.size() > 0, 'Should have at least one control');
 
         Set<String> categories = new Set<String>();
         for (IComplianceModule.Control ctrl : controls) {
             categories.add(ctrl.category);
         }
-        System.assert(categories.contains('Supervision'), 'Should include Supervision controls');
-        System.assert(categories.contains('Records'), 'Should include Records controls');
-        System.assert(categories.contains('BCP'), 'Should include BCP controls');
+        Assert.isTrue(categories.contains('Supervision'), 'Should include Supervision controls');
+        Assert.isTrue(categories.contains('Records'), 'Should include Records controls');
+        Assert.isTrue(categories.contains('BCP'), 'Should include BCP controls');
     }
 
     @IsTest
@@ -98,7 +98,7 @@ private class FINRAModuleTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, score, 'Score should not be null');
-        System.assert(score >= 0, 'Score should be >= 0');
+        Assert.isTrue(score >= 0, 'Score should be >= 0');
     }
 
     @IsTest
@@ -123,7 +123,7 @@ private class FINRAModuleTest {
 
         Assert.areNotEqual(null, gaps, 'Gaps list should not be null');
         for (IComplianceModule.Gap gap : gaps) {
-            System.assert(gap.id.startsWith('GAP-FINRA-'), 'Gap ID should start with GAP-FINRA-');
+            Assert.isTrue(gap.id.startsWith('GAP-FINRA-'), 'Gap ID should start with GAP-FINRA-');
             Assert.areNotEqual(null, gap.recommendation, 'Gap recommendation should not be null');
         }
     }
@@ -210,7 +210,7 @@ private class FINRAModuleTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, result, 'Result should not be null');
-        System.assert(result.passed, 'Record keeping should pass');
+        Assert.isTrue(result.passed, 'Record keeping should pass');
         Assert.areEqual(90, result.score, 'Score should be 90');
     }
 

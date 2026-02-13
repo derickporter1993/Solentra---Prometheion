@@ -150,7 +150,7 @@ private class ElaroSlackNotifierQueueableTest {
         Test.stopTest();
 
         Assert.isTrue(true, 'Bulk notifications should complete');
-        System.assert(Limits.getQueueableJobs() <= 50, 'Should stay under queueable limit');
+        Assert.isTrue(Limits.getQueueableJobs() <= 50, 'Should stay under queueable limit');
     }
 
     @IsTest

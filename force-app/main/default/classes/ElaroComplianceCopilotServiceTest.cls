@@ -37,7 +37,7 @@ private class ElaroComplianceCopilotServiceTest {
         Assert.areNotEqual(null, rec, 'Should return recommendation');
         Assert.areNotEqual(null, rec.recommendation, 'Should have recommendation text');
         Assert.areNotEqual(null, rec.severity, 'Should have severity');
-        System.assert(rec.confidence &gt;= 0 &amp;&amp; rec.confidence &lt;= 100, 'Confidence should be 0-100');
+        Assert.isTrue(rec.confidence &gt;= 0 &amp;&amp; rec.confidence &lt;= 100, 'Confidence should be 0-100');
     }
     
     @isTest
@@ -50,7 +50,7 @@ private class ElaroComplianceCopilotServiceTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, rec, 'Should return recommendation even for empty list');
-        System.assert(rec.recommendation.contains('No events'), 'Should indicate no events');
+        Assert.isTrue(rec.recommendation.contains('No events'), 'Should indicate no events');
     }
     
     @isTest
@@ -80,7 +80,7 @@ private class ElaroComplianceCopilotServiceTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, summary, 'Should return summary');
-        System.assert(summary.length() &gt; 0, 'Summary should not be empty');
+        Assert.isTrue(summary.length() &gt; 0, 'Summary should not be empty');
     }
     
     @isTest
@@ -92,7 +92,7 @@ private class ElaroComplianceCopilotServiceTest {
             ElaroComplianceCopilotService.generateAuditSummary(null);
             Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should mention required');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should mention required');
         }
         Test.stopTest();
     }
@@ -106,7 +106,7 @@ private class ElaroComplianceCopilotServiceTest {
             ElaroComplianceCopilotService.generateAuditSummary('');
             Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should mention required');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should mention required');
         }
         Test.stopTest();
     }
@@ -137,7 +137,7 @@ private class ElaroComplianceCopilotServiceTest {
             ElaroComplianceCopilotService.predictComplianceRisks(null);
             Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should mention required');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should mention required');
         }
         Test.stopTest();
     }

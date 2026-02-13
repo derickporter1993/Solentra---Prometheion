@@ -80,7 +80,7 @@ private class ConsentExpirationSchedulerTest {
             WHERE JobType = 'BatchApex'
             AND ApexClass.Name = 'ConsentExpirationBatch'
         ];
-        System.assert(jobs.size() > 0, 'Batch job should have been queued');
+        Assert.isTrue(jobs.size() > 0, 'Batch job should have been queued');
     }
 
     @isTest

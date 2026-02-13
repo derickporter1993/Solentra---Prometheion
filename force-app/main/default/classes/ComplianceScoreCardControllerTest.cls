@@ -80,9 +80,9 @@ private class ComplianceScoreCardControllerTest {
         
         Assert.areNotEqual(null, details, 'Details should not be null');
         Assert.areEqual('SOC2', details.framework, 'Framework should match');
-        System.assert(details.mappingCount >= 0, 'Mapping count should be non-negative');
-        System.assert(details.evidenceCount >= 0, 'Evidence count should be non-negative');
-        System.assert(details.requirementCount > 0, 'Should have requirements');
+        Assert.isTrue(details.mappingCount >= 0, 'Mapping count should be non-negative');
+        Assert.isTrue(details.evidenceCount >= 0, 'Evidence count should be non-negative');
+        Assert.isTrue(details.requirementCount > 0, 'Should have requirements');
     }
     
     @IsTest
@@ -92,7 +92,7 @@ private class ComplianceScoreCardControllerTest {
             ComplianceScoreCardController.getFrameworkDetails('');
             Assert.fail( 'Should have thrown AuraHandledException');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('blank'), 'Should mention blank framework');
+            Assert.isTrue(e.getMessage().contains('blank'), 'Should mention blank framework');
         }
         Test.stopTest();
     }
@@ -104,7 +104,7 @@ private class ComplianceScoreCardControllerTest {
             ComplianceScoreCardController.getFrameworkDetails('INVALID');
             Assert.fail( 'Should have thrown AuraHandledException');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Unsupported'), 'Should mention unsupported framework');
+            Assert.isTrue(e.getMessage().contains('Unsupported'), 'Should mention unsupported framework');
         }
         Test.stopTest();
     }

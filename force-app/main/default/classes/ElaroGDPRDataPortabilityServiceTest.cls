@@ -44,7 +44,7 @@ private class ElaroGDPRDataPortabilityServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, jsonData, 'Should return JSON data');
-        System.assert(jsonData.contains('contact'), 'Should contain contact data');
+        Assert.isTrue(jsonData.contains('contact'), 'Should contain contact data');
     }
 
     @IsTest
@@ -57,8 +57,8 @@ private class ElaroGDPRDataPortabilityServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, jsonData, 'Should return JSON data');
-        System.assert(jsonData.length() > 0, 'Should have content');
-        System.assert(jsonData.contains('cases') || jsonData.contains('opportunities'), 
+        Assert.isTrue(jsonData.length() > 0, 'Should have content');
+        Assert.isTrue(jsonData.contains('cases') || jsonData.contains('opportunities'), 
             'Should include related data');
     }
 
@@ -91,7 +91,7 @@ private class ElaroGDPRDataPortabilityServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, jsonData, 'Should export data');
-        System.assert(jsonData.length() > 0, 'Should have content');
+        Assert.isTrue(jsonData.length() > 0, 'Should have content');
     }
 
     @IsTest
@@ -105,7 +105,7 @@ private class ElaroGDPRDataPortabilityServiceTest {
 
         Assert.areNotEqual(null, jsonData, 'Should export data');
         // Verify it contains standard fields
-        System.assert(jsonData.contains('FirstName') || jsonData.contains('LastName') || 
+        Assert.isTrue(jsonData.contains('FirstName') || jsonData.contains('LastName') || 
             jsonData.contains('Email'), 'Should include standard contact fields');
     }
 
@@ -120,7 +120,7 @@ private class ElaroGDPRDataPortabilityServiceTest {
 
         Assert.areNotEqual(null, jsonData, 'Should return data');
         // JSON format is machine-readable and can be converted to CSV
-        System.assert(jsonData.contains('"') || jsonData.contains('{'), 
+        Assert.isTrue(jsonData.contains('"') || jsonData.contains('{'), 
             'Should be in structured format');
     }
 
@@ -160,7 +160,7 @@ private class ElaroGDPRDataPortabilityServiceTest {
         Test.stopTest();
 
         Assert.areEqual(200, exportedData.size(), 'Should export all 200 contacts');
-        System.assert(endQueries - startQueries < 100, 'Should be reasonably efficient');
+        Assert.isTrue(endQueries - startQueries < 100, 'Should be reasonably efficient');
     }
 
     @IsTest
@@ -174,7 +174,7 @@ private class ElaroGDPRDataPortabilityServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, inventory, 'Should return inventory');
-        System.assert(inventory.containsKey('exportMetadata'), 'Should include export metadata');
-        System.assert(inventory.containsKey('personalInformation'), 'Should include personal information');
+        Assert.isTrue(inventory.containsKey('exportMetadata'), 'Should include export metadata');
+        Assert.isTrue(inventory.containsKey('personalInformation'), 'Should include personal information');
     }
 }

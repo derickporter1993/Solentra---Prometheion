@@ -81,7 +81,7 @@ private class RemediationSuggestionServiceTest {
         List<Remediation_Suggestion__c> suggestions = RemediationSuggestionService.generateSuggestions(gap.Id);
         Test.stopTest();
 
-        System.assert(suggestions.size() > 0, 'Should generate at least one suggestion');
+        Assert.isTrue(suggestions.size() > 0, 'Should generate at least one suggestion');
 
         // Verify SOX-specific suggestions
         Boolean hasAuditSuggestion = false;
@@ -95,7 +95,7 @@ private class RemediationSuggestionServiceTest {
                 hasAuditSuggestion = true;
             }
         }
-        System.assert(hasAuditSuggestion, 'Should include audit trail suggestion for SOX');
+        Assert.isTrue(hasAuditSuggestion, 'Should include audit trail suggestion for SOX');
     }
 
     @isTest
@@ -106,7 +106,7 @@ private class RemediationSuggestionServiceTest {
         List<Remediation_Suggestion__c> suggestions = RemediationSuggestionService.generateSuggestions(gap.Id);
         Test.stopTest();
 
-        System.assert(suggestions.size() > 0, 'Should generate suggestions');
+        Assert.isTrue(suggestions.size() > 0, 'Should generate suggestions');
 
         // Verify HIPAA-specific encryption suggestion
         Boolean hasEncryptionSuggestion = false;
@@ -116,7 +116,7 @@ private class RemediationSuggestionServiceTest {
                 Assert.areEqual('HIPAA', suggestion.Framework__c, 'Framework should be HIPAA');
             }
         }
-        System.assert(hasEncryptionSuggestion, 'Should include encryption suggestion for HIPAA');
+        Assert.isTrue(hasEncryptionSuggestion, 'Should include encryption suggestion for HIPAA');
     }
 
     @isTest
@@ -127,7 +127,7 @@ private class RemediationSuggestionServiceTest {
         List<Remediation_Suggestion__c> suggestions = RemediationSuggestionService.generateSuggestions(gap.Id);
         Test.stopTest();
 
-        System.assert(suggestions.size() > 0, 'Should generate suggestions');
+        Assert.isTrue(suggestions.size() > 0, 'Should generate suggestions');
 
         for (Remediation_Suggestion__c suggestion : suggestions) {
             Assert.areEqual('SOC2', suggestion.Framework__c, 'Framework should be SOC2');
@@ -142,7 +142,7 @@ private class RemediationSuggestionServiceTest {
         List<Remediation_Suggestion__c> suggestions = RemediationSuggestionService.generateSuggestions(gap.Id);
         Test.stopTest();
 
-        System.assert(suggestions.size() > 0, 'Should generate suggestions');
+        Assert.isTrue(suggestions.size() > 0, 'Should generate suggestions');
 
         // Verify privacy-specific FLS suggestion
         Boolean hasFLSSuggestion = false;
@@ -151,7 +151,7 @@ private class RemediationSuggestionServiceTest {
                 hasFLSSuggestion = true;
             }
         }
-        System.assert(hasFLSSuggestion, 'Should include FLS suggestion for GDPR');
+        Assert.isTrue(hasFLSSuggestion, 'Should include FLS suggestion for GDPR');
     }
 
     @isTest
@@ -161,7 +161,7 @@ private class RemediationSuggestionServiceTest {
             RemediationSuggestionService.generateSuggestions('a00000000000000AAA');
             Assert.fail( 'Expected exception for invalid gap ID');
         } catch (RemediationSuggestionService.RemediationException e) {
-            System.assert(e.getMessage().contains('not found'), 'Should indicate gap not found');
+            Assert.isTrue(e.getMessage().contains('not found'), 'Should indicate gap not found');
         }
         Test.stopTest();
     }
@@ -177,7 +177,7 @@ private class RemediationSuggestionServiceTest {
         List<Remediation_Suggestion__c> suggestions = RemediationSuggestionService.getSuggestions(gap.Id);
         Test.stopTest();
 
-        System.assert(suggestions.size() > 0, 'Should return generated suggestions');
+        Assert.isTrue(suggestions.size() > 0, 'Should return generated suggestions');
     }
 
     @isTest
@@ -193,7 +193,7 @@ private class RemediationSuggestionServiceTest {
             RemediationSuggestionService.getPendingSuggestions();
         Test.stopTest();
 
-        System.assert(pendingSuggestions.size() > 0, 'Should return pending suggestions');
+        Assert.isTrue(pendingSuggestions.size() > 0, 'Should return pending suggestions');
 
         for (RemediationSuggestionService.SuggestionWithGap swg : pendingSuggestions) {
             Assert.areNotEqual(null, swg.gapId, 'Gap ID should be set');
@@ -246,7 +246,7 @@ private class RemediationSuggestionServiceTest {
         Integer generated = RemediationSuggestionService.bulkGenerateSuggestions(gapIds);
         Test.stopTest();
 
-        System.assert(generated > 0, 'Should generate suggestions for multiple gaps');
+        Assert.isTrue(generated > 0, 'Should generate suggestions for multiple gaps');
 
         List<Remediation_Suggestion__c> allSuggestions = [SELECT Id FROM Remediation_Suggestion__c];
         Assert.areEqual(generated, allSuggestions.size(), 'Total suggestions should match');
@@ -288,7 +288,7 @@ private class RemediationSuggestionServiceTest {
                 Assert.areNotEqual(null, payload.get('gapId'), 'Payload should contain gapId');
             }
         }
-        System.assert(foundAutoRemediation, 'Should have at least one auto-remediable suggestion');
+        Assert.isTrue(foundAutoRemediation, 'Should have at least one auto-remediable suggestion');
     }
 
     @isTest
@@ -300,8 +300,8 @@ private class RemediationSuggestionServiceTest {
         Test.stopTest();
 
         for (Remediation_Suggestion__c suggestion : suggestions) {
-            System.assert(suggestion.Confidence_Score__c >= 0, 'Confidence should be >= 0');
-            System.assert(suggestion.Confidence_Score__c <= 1, 'Confidence should be <= 1');
+            Assert.isTrue(suggestion.Confidence_Score__c >= 0, 'Confidence should be >= 0');
+            Assert.isTrue(suggestion.Confidence_Score__c <= 1, 'Confidence should be <= 1');
         }
     }
 
@@ -313,7 +313,7 @@ private class RemediationSuggestionServiceTest {
         List<Remediation_Suggestion__c> suggestions = RemediationSuggestionService.generateSuggestions(gap.Id);
         Test.stopTest();
 
-        System.assert(suggestions.size() > 0, 'Should generate suggestions even for unknown entity type');
+        Assert.isTrue(suggestions.size() > 0, 'Should generate suggestions even for unknown entity type');
 
         Boolean hasManualReview = false;
         for (Remediation_Suggestion__c suggestion : suggestions) {
@@ -321,7 +321,7 @@ private class RemediationSuggestionServiceTest {
                 hasManualReview = true;
             }
         }
-        System.assert(hasManualReview, 'Should include manual review for unknown entity type');
+        Assert.isTrue(hasManualReview, 'Should include manual review for unknown entity type');
     }
 
     @isTest

@@ -63,6 +63,6 @@ private class SegregationOfDutiesServiceTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, result, 'Result should not be null');
-        System.assert(result.contains('remediated'), 'Result should indicate remediation');
+        Assert.isTrue(result.contains('remediated'), 'Result should indicate remediation');
     }
 }

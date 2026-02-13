@@ -50,7 +50,7 @@ private class ElaroExecutiveKPIControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for blank name');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for blank name');
     }
 
     @isTest
@@ -63,7 +63,7 @@ private class ElaroExecutiveKPIControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for null name');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for null name');
     }
 
     @isTest
@@ -76,7 +76,7 @@ private class ElaroExecutiveKPIControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for non-existent KPI');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for non-existent KPI');
     }
 
     @isTest
@@ -91,7 +91,7 @@ private class ElaroExecutiveKPIControllerTest {
         }
         Test.stopTest();
         // Should either throw not found or sanitize the input
-        System.assert(exceptionThrown, 'Should have thrown exception or sanitized input');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception or sanitized input');
     }
 
     @isTest
@@ -104,7 +104,7 @@ private class ElaroExecutiveKPIControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception (not found)');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception (not found)');
     }
 
     @isTest

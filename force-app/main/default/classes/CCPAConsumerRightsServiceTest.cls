@@ -67,7 +67,7 @@ private class CCPAConsumerRightsServiceTest {
         }
         Test.stopTest();
         
-        System.assert(results.size() > 0, 'Should process bulk requests');
+        Assert.isTrue(results.size() > 0, 'Should process bulk requests');
     }
     
     @IsTest
@@ -175,7 +175,7 @@ private class CCPAConsumerRightsServiceTest {
             service.handleKnowRequest(null, null);
             Assert.fail( 'Should throw exception for null parameters');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }

@@ -133,7 +133,7 @@ private class ElaroInstallHandlerTest {
         ];
         Assert.areEqual(1, auditLogs.size(), 'Should create upgrade audit log');
         Assert.areEqual('Upgrade', auditLogs[0].Event_Type__c, 'Should log as upgrade');
-        System.assert(auditLogs[0].Description__c.contains('2.5'), 'Should reference previous version');
+        Assert.isTrue(auditLogs[0].Description__c.contains('2.5'), 'Should reference previous version');
     }
 
     /**
@@ -235,10 +235,10 @@ private class ElaroInstallHandlerTest {
 
         // Assert
         Assert.areNotEqual(null, summary, 'Summary should not be null');
-        System.assert(summary.contains('Elaro Installation Summary'), 'Should contain header');
-        System.assert(summary.contains('Type: New Installation'), 'Should contain installation type');
-        System.assert(summary.contains('Org ID: ' + UserInfo.getOrganizationId()), 'Should contain org ID');
-        System.assert(summary.contains('Installer ID: ' + UserInfo.getUserId()), 'Should contain installer ID');
+        Assert.isTrue(summary.contains('Elaro Installation Summary'), 'Should contain header');
+        Assert.isTrue(summary.contains('Type: New Installation'), 'Should contain installation type');
+        Assert.isTrue(summary.contains('Org ID: ' + UserInfo.getOrganizationId()), 'Should contain org ID');
+        Assert.isTrue(summary.contains('Installer ID: ' + UserInfo.getUserId()), 'Should contain installer ID');
     }
 
     /**
@@ -256,8 +256,8 @@ private class ElaroInstallHandlerTest {
         Test.stopTest();
 
         // Assert
-        System.assert(summary.contains('Type: Upgrade'), 'Should contain upgrade type');
-        System.assert(summary.contains('Previous Version: 2.5'), 'Should contain previous version');
+        Assert.isTrue(summary.contains('Type: Upgrade'), 'Should contain upgrade type');
+        Assert.isTrue(summary.contains('Previous Version: 2.5'), 'Should contain previous version');
     }
 
     /**
@@ -333,7 +333,7 @@ private class ElaroInstallHandlerTest {
             SELECT Id FROM Elaro_Audit_Log__c
             WHERE Action__c = 'Package Installation'
         ];
-        System.assert(auditLogs.size() >= 1, 'Should have at least one audit log');
+        Assert.isTrue(auditLogs.size() >= 1, 'Should have at least one audit log');
     }
 
     /**

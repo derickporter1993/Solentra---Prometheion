@@ -28,9 +28,9 @@ private class ElaroComplianceCopilotTest {
         Assert.areNotEqual(null, response, 'Response should not be null');
         Assert.areEqual('DEEP_ANALYSIS', response.queryType, 'Query type should be DEEP_ANALYSIS');
         Assert.areNotEqual(null, response.answer, 'Answer should not be null');
-        System.assert(response.answer.length() > 0, 'Answer should not be empty');
+        Assert.isTrue(response.answer.length() > 0, 'Answer should not be empty');
         Assert.areNotEqual(null, response.confidence, 'Confidence should not be null');
-        System.assert(response.confidence >= 0 && response.confidence <= 1, 'Confidence should be between 0 and 1');
+        Assert.isTrue(response.confidence >= 0 && response.confidence <= 1, 'Confidence should be between 0 and 1');
     }
     
     @IsTest
@@ -43,7 +43,7 @@ private class ElaroComplianceCopilotTest {
         Assert.areNotEqual(null, response, 'Response should not be null');
         Assert.areEqual('DEEP_ANALYSIS', response.queryType, 'Query type should be DEEP_ANALYSIS');
         Assert.areNotEqual(null, response.answer, 'Answer should not be null');
-        System.assert(response.answer.length() > 0, 'Answer should not be empty');
+        Assert.isTrue(response.answer.length() > 0, 'Answer should not be empty');
     }
     
     @IsTest
@@ -69,7 +69,7 @@ private class ElaroComplianceCopilotTest {
         
         Assert.areNotEqual(null, response, 'Response should not be null');
         Assert.areNotEqual(null, response.answer, 'Answer should not be null');
-        System.assert(response.answer.contains('Please provide a topic'), 'Should request topic input');
+        Assert.isTrue(response.answer.contains('Please provide a topic'), 'Should request topic input');
         Assert.areEqual(0.0, response.confidence, 'Confidence should be 0 for invalid input');
     }
     
@@ -82,7 +82,7 @@ private class ElaroComplianceCopilotTest {
         
         Assert.areNotEqual(null, response, 'Response should not be null');
         Assert.areNotEqual(null, response.answer, 'Answer should not be null');
-        System.assert(response.answer.contains('Please provide a topic'), 'Should request topic input');
+        Assert.isTrue(response.answer.contains('Please provide a topic'), 'Should request topic input');
         Assert.areEqual(0.0, response.confidence, 'Confidence should be 0 for invalid input');
     }
     
@@ -100,7 +100,7 @@ private class ElaroComplianceCopilotTest {
         Assert.areNotEqual(null, response, 'Response should not be null');
         // The method may catch the exception and return an error response
         // Check that response indicates an issue
-        System.assert(response.answer != null, 'Answer should not be null');
+        Assert.isTrue(response.answer != null, 'Answer should not be null');
     }
     
     @IsTest
@@ -122,7 +122,7 @@ private class ElaroComplianceCopilotTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, response.answer, 'Answer should not be null');
-        System.assert(response.answer.contains('Recommendations'), 'Answer should include recommendations');
+        Assert.isTrue(response.answer.contains('Recommendations'), 'Answer should include recommendations');
     }
     
     @IsTest
@@ -135,7 +135,7 @@ private class ElaroComplianceCopilotTest {
         Assert.areNotEqual(null, response.actions, 'Actions should not be null');
         // Export action is added in the method, verify actions list exists
         // May be empty if method fails, but list should exist
-        System.assert(response.actions.size() >= 0, 'Actions list should exist');
+        Assert.isTrue(response.actions.size() >= 0, 'Actions list should exist');
     }
     
     @IsTest
@@ -173,11 +173,11 @@ private class ElaroComplianceCopilotTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, commands, 'Commands should not be null');
-        System.assert(!commands.isEmpty(), 'Should return at least one command');
+        Assert.isTrue(!commands.isEmpty(), 'Should return at least one command');
         
         for (Map<String, String> cmd : commands) {
-            System.assert(cmd.containsKey('command'), 'Command should have command key');
-            System.assert(cmd.containsKey('icon'), 'Command should have icon key');
+            Assert.isTrue(cmd.containsKey('command'), 'Command should have command key');
+            Assert.isTrue(cmd.containsKey('icon'), 'Command should have icon key');
         }
     }
 }

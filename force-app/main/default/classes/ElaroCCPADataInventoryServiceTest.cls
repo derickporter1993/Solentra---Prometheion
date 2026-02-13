@@ -79,9 +79,9 @@ private class ElaroCCPADataInventoryServiceTest {
         Assert.areNotEqual(null, report.reportDate, 'Report date should be set');
         Assert.areNotEqual(null, report.responseDeadline, 'Response deadline should be set');
         Assert.areEqual(true, report.doNotSellStatus, 'Should reflect opt-out status');
-        System.assert(!report.categoriesCollected.isEmpty(), 'Should have categories');
-        System.assert(!report.sources.isEmpty(), 'Should have sources');
-        System.assert(!report.businessPurposes.isEmpty(), 'Should have business purposes');
+        Assert.isTrue(!report.categoriesCollected.isEmpty(), 'Should have categories');
+        Assert.isTrue(!report.sources.isEmpty(), 'Should have sources');
+        Assert.isTrue(!report.businessPurposes.isEmpty(), 'Should have business purposes');
         Assert.areNotEqual(null, report.requestId, 'Request ID should be set');
         
         // Verify audit log created
@@ -105,7 +105,7 @@ private class ElaroCCPADataInventoryServiceTest {
             Assert.fail( 'Should have thrown exception');
         } catch (ElaroCCPADataInventoryService.CCPAException e) {
             // Then: Exception should be thrown
-            System.assert(e.getMessage().contains('Contact not found'), 
+            Assert.isTrue(e.getMessage().contains('Contact not found'), 
                 'Error message should indicate contact not found');
         }
         Test.stopTest();
@@ -153,7 +153,7 @@ private class ElaroCCPADataInventoryServiceTest {
             } catch (Exception e) {
                 // Then: Permission exception should be thrown
                 // Note: InsufficientAccessException may not be available, catch generic Exception
-                System.assert(e.getMessage().contains('insufficient') || 
+                Assert.isTrue(e.getMessage().contains('insufficient') || 
                     e.getMessage().contains('access') || 
                     e.getMessage().contains('permission'), 
                     'Should throw permission-related exception: ' + e.getMessage());
@@ -172,9 +172,9 @@ private class ElaroCCPADataInventoryServiceTest {
         Test.stopTest();
         
         // Then: Should return pending requests
-        System.assert(!requests.isEmpty(), 'Should return pending requests');
+        Assert.isTrue(!requests.isEmpty(), 'Should return pending requests');
         for (CCPA_Request__c req : requests) {
-            System.assert(req.Status__c == 'Pending' || req.Status__c == 'In Progress', 
+            Assert.isTrue(req.Status__c == 'Pending' || req.Status__c == 'In Progress', 
                 'Should only return pending/in progress requests');
         }
     }
@@ -276,8 +276,8 @@ private class ElaroCCPADataInventoryServiceTest {
         // Then: Report should still be generated with available data
         Assert.areNotEqual(null, report, 'Report should be generated');
         Assert.areEqual('minimal@test.com', report.dataSubject, 'Should have email');
-        System.assert(report.specificData.containsKey('Email Address'), 'Should have email data point');
-        System.assert(!report.specificData.containsKey('Mailing Address'), 'Should not have mailing address');
+        Assert.isTrue(report.specificData.containsKey('Email Address'), 'Should have email data point');
+        Assert.isTrue(!report.specificData.containsKey('Mailing Address'), 'Should not have mailing address');
     }
 
     @IsTest
@@ -338,8 +338,8 @@ private class ElaroCCPADataInventoryServiceTest {
 
         // Then: Third parties should be populated
         Assert.areNotEqual(null, report.thirdParties, 'Should have third parties list');
-        System.assert(!report.thirdParties.isEmpty(), 'Third parties should not be empty');
-        System.assert(report.thirdParties.size() >= 3, 'Should have at least 3 third parties');
+        Assert.isTrue(!report.thirdParties.isEmpty(), 'Third parties should not be empty');
+        Assert.isTrue(report.thirdParties.size() >= 3, 'Should have at least 3 third parties');
     }
 
     @IsTest
@@ -406,7 +406,7 @@ private class ElaroCCPADataInventoryServiceTest {
             ElaroCCPADataInventoryService.processDoNotSellRequest(invalidContactId);
             Assert.fail( 'Should have thrown exception');
         } catch (ElaroCCPADataInventoryService.CCPAException e) {
-            System.assert(e.getMessage().contains('Contact not found'),
+            Assert.isTrue(e.getMessage().contains('Contact not found'),
                 'Error message should indicate contact not found');
         }
         Test.stopTest();
@@ -423,10 +423,10 @@ private class ElaroCCPADataInventoryServiceTest {
         Test.stopTest();
 
         // Then: All data points should be present
-        System.assert(report.specificData.containsKey('Full Name'), 'Should have full name');
-        System.assert(report.specificData.containsKey('Email Address'), 'Should have email');
-        System.assert(report.specificData.containsKey('Phone Number'), 'Should have phone');
-        System.assert(report.specificData.containsKey('Mailing Address'), 'Should have mailing address');
+        Assert.isTrue(report.specificData.containsKey('Full Name'), 'Should have full name');
+        Assert.isTrue(report.specificData.containsKey('Email Address'), 'Should have email');
+        Assert.isTrue(report.specificData.containsKey('Phone Number'), 'Should have phone');
+        Assert.isTrue(report.specificData.containsKey('Mailing Address'), 'Should have mailing address');
     }
 
     @IsTest

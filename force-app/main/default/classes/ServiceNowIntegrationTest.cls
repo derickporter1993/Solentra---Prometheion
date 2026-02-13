@@ -149,10 +149,10 @@ private class ServiceNowIntegrationTest {
             Assert.fail( 'Should have thrown exception');
         } catch (AuraHandledException e) {
             exceptionCaught = true;
-            System.assert(e.getMessage().length() > 0, 'Exception should have message');
+            Assert.isTrue(e.getMessage().length() > 0, 'Exception should have message');
         }
         Test.stopTest();
 
-        System.assert(exceptionCaught, 'Should catch AuraHandledException for 500 error');
+        Assert.isTrue(exceptionCaught, 'Should catch AuraHandledException for 500 error');
     }
 }

@@ -166,7 +166,7 @@ private class FlowExecutionLoggerTest {
             FlowExecutionLogger.log('', null, 'SUCCESS', 100, 5, 2);
             Assert.fail( 'Should have thrown exception for blank flow name');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Flow name cannot be blank'), 'Expected flow name validation error');
+            Assert.isTrue(e.getMessage().contains('Flow name cannot be blank'), 'Expected flow name validation error');
         }
 
         // Test null flow name
@@ -174,7 +174,7 @@ private class FlowExecutionLoggerTest {
             FlowExecutionLogger.log(null, null, 'SUCCESS', 100, 5, 2);
             Assert.fail( 'Should have thrown exception for null flow name');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Flow name cannot be blank'), 'Expected flow name validation error');
+            Assert.isTrue(e.getMessage().contains('Flow name cannot be blank'), 'Expected flow name validation error');
         }
 
         // Test blank status
@@ -182,7 +182,7 @@ private class FlowExecutionLoggerTest {
             FlowExecutionLogger.log('TestFlow', null, '', 100, 5, 2);
             Assert.fail( 'Should have thrown exception for blank status');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Status cannot be blank'), 'Expected status validation error');
+            Assert.isTrue(e.getMessage().contains('Status cannot be blank'), 'Expected status validation error');
         }
 
         // Test null status
@@ -190,7 +190,7 @@ private class FlowExecutionLoggerTest {
             FlowExecutionLogger.log('TestFlow', null, null, 100, 5, 2);
             Assert.fail( 'Should have thrown exception for null status');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Status cannot be blank'), 'Expected status validation error');
+            Assert.isTrue(e.getMessage().contains('Status cannot be blank'), 'Expected status validation error');
         }
 
         Test.stopTest();

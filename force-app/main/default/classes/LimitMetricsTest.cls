@@ -11,16 +11,16 @@ private class LimitMetricsTest {
 
         // Verify all fields are populated with valid values
         Assert.areNotEqual(null, g.cpuMs, 'CPU time should not be null');
-        System.assert(g.cpuMs >= 0, 'CPU time should be non-negative');
+        Assert.isTrue(g.cpuMs >= 0, 'CPU time should be non-negative');
 
         Assert.areNotEqual(null, g.soql, 'SOQL queries should not be null');
-        System.assert(g.soql >= 0, 'SOQL queries should be non-negative');
+        Assert.isTrue(g.soql >= 0, 'SOQL queries should be non-negative');
 
         Assert.areNotEqual(null, g.dml, 'DML statements should not be null');
-        System.assert(g.dml >= 0, 'DML statements should be non-negative');
+        Assert.isTrue(g.dml >= 0, 'DML statements should be non-negative');
 
         Assert.areNotEqual(null, g.heapKb, 'Heap size should not be null');
-        System.assert(g.heapKb >= 0, 'Heap size should be non-negative');
+        Assert.isTrue(g.heapKb >= 0, 'Heap size should be non-negative');
     }
 
     @IsTest
@@ -37,8 +37,8 @@ private class LimitMetricsTest {
         Test.stopTest();
 
         // Verify limits show usage (DML includes the insert above)
-        System.assert(g.dml >= 0, 'DML count should be non-negative');
-        System.assert(g.heapKb >= 0, 'Heap should be non-negative');
+        Assert.isTrue(g.dml >= 0, 'DML count should be non-negative');
+        Assert.isTrue(g.heapKb >= 0, 'Heap should be non-negative');
     }
 
     @IsTest
@@ -56,7 +56,7 @@ private class LimitMetricsTest {
 
         // Verify method works and returns valid stats
         Assert.areNotEqual(null, g, 'GovernorStats should be returned');
-        System.assert(g.soql >= 0, 'SOQL count should be valid');
+        Assert.isTrue(g.soql >= 0, 'SOQL count should be valid');
     }
 
     @IsTest

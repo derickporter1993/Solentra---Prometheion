@@ -61,12 +61,12 @@ private class ElaroGDPRExceptionTest {
             simulateGDPRFailure();
         } catch (ElaroGDPRException e) {
             exceptionCaught = true;
-            System.assert(e.getMessage().contains('Contact not found'), 'Message should indicate contact not found');
+            Assert.isTrue(e.getMessage().contains('Contact not found'), 'Message should indicate contact not found');
         }
 
         Test.stopTest();
 
-        System.assert(exceptionCaught, 'Exception should have been caught');
+        Assert.isTrue(exceptionCaught, 'Exception should have been caught');
     }
 
     @IsTest
@@ -77,8 +77,8 @@ private class ElaroGDPRExceptionTest {
 
         Test.stopTest();
 
-        System.assert(gdprEx instanceof Exception, 'Should be an Exception');
-        System.assert(gdprEx instanceof ElaroGDPRException, 'Should be a ElaroGDPRException');
+        Assert.isTrue(gdprEx instanceof Exception, 'Should be an Exception');
+        Assert.isTrue(gdprEx instanceof ElaroGDPRException, 'Should be a ElaroGDPRException');
     }
 
     @IsTest
@@ -90,7 +90,7 @@ private class ElaroGDPRExceptionTest {
         } catch (ElaroGDPRException e) {
             String stackTrace = e.getStackTraceString();
             Assert.areNotEqual(null, stackTrace, 'Stack trace should not be null');
-            System.assert(stackTrace.length() > 0, 'Stack trace should have content');
+            Assert.isTrue(stackTrace.length() > 0, 'Stack trace should have content');
         }
 
         Test.stopTest();
@@ -109,7 +109,7 @@ private class ElaroGDPRExceptionTest {
         } catch (ElaroGDPRException e) {
             Assert.areEqual('GDPR lookup failed', e.getMessage(), 'Outer message should match');
             Assert.areNotEqual(null, e.getCause(), 'Should have a cause');
-            System.assert(e.getCause() instanceof QueryException, 'Cause should be QueryException');
+            Assert.isTrue(e.getCause() instanceof QueryException, 'Cause should be QueryException');
         }
 
         Test.stopTest();

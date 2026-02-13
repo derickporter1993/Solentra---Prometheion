@@ -71,7 +71,7 @@ private class ElaroHistoricalEventBatchTest {
             AND Status = 'Completed'
         ];
         
-        System.assert(jobs.size() &gt; 0, 'Batches should complete');
+        Assert.isTrue(jobs.size() &gt; 0, 'Batches should complete');
     }
     
     @isTest

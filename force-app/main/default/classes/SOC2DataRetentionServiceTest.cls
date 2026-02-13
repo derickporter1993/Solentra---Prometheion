@@ -46,7 +46,7 @@ public class SOC2DataRetentionServiceTest {
         Assert.areNotEqual(null, result, 'Result should not be null');
         Assert.areNotEqual(null, result.evaluationDate, 'Evaluation date should be set');
         Assert.areNotEqual(null, result.objectResults, 'Object results should not be null');
-        System.assert(result.totalObjects > 0, 'Should evaluate at least one object');
+        Assert.isTrue(result.totalObjects > 0, 'Should evaluate at least one object');
     }
 
     @isTest
@@ -88,7 +88,7 @@ public class SOC2DataRetentionServiceTest {
         Decimal score = service.getComplianceScore();
         Test.stopTest();
 
-        System.assert(score >= 0 && score <= 100, 'Score should be between 0 and 100');
+        Assert.isTrue(score >= 0 && score <= 100, 'Score should be between 0 and 100');
     }
 
     @isTest
@@ -104,8 +104,8 @@ public class SOC2DataRetentionServiceTest {
         Decimal riskScore = service.calculateRiskScore('PERMISSION_SET', 'TestId', metadata);
         Test.stopTest();
 
-        System.assert(riskScore > 0, 'Risk score should be greater than 0');
-        System.assert(riskScore <= 10, 'Risk score should not exceed 10');
+        Assert.isTrue(riskScore > 0, 'Risk score should be greater than 0');
+        Assert.isTrue(riskScore <= 10, 'Risk score should not exceed 10');
     }
 
     @isTest

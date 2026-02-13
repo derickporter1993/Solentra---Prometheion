@@ -107,7 +107,7 @@ private class EscalationPathControllerTest {
             EscalationPathController.createPath(path);
             Assert.fail( 'Expected exception for missing user');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('User'), 'Error message should mention user');
+            Assert.isTrue(e.getMessage().contains('User'), 'Error message should mention user');
         }
         Test.stopTest();
     }
@@ -129,7 +129,7 @@ private class EscalationPathControllerTest {
             EscalationPathController.createPath(path);
             Assert.fail( 'Expected exception for invalid level');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Level'), 'Error message should mention level');
+            Assert.isTrue(e.getMessage().contains('Level'), 'Error message should mention level');
         }
         Test.stopTest();
     }
@@ -151,7 +151,7 @@ private class EscalationPathControllerTest {
             EscalationPathController.createPath(path);
             Assert.fail( 'Expected exception for invalid level');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Level'), 'Error message should mention level');
+            Assert.isTrue(e.getMessage().contains('Level'), 'Error message should mention level');
         }
         Test.stopTest();
     }
@@ -173,7 +173,7 @@ private class EscalationPathControllerTest {
             EscalationPathController.createPath(path);
             Assert.fail( 'Expected exception for invalid delay');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('delay'), 'Error message should mention delay');
+            Assert.isTrue(e.getMessage().contains('delay'), 'Error message should mention delay');
         }
         Test.stopTest();
     }
@@ -195,7 +195,7 @@ private class EscalationPathControllerTest {
             EscalationPathController.createPath(path);
             Assert.fail( 'Expected exception for null delay');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('delay'), 'Error message should mention delay');
+            Assert.isTrue(e.getMessage().contains('delay'), 'Error message should mention delay');
         }
         Test.stopTest();
     }

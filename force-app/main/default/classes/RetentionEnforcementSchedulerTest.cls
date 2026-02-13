@@ -67,7 +67,7 @@ private class RetentionEnforcementSchedulerTest {
             WHERE JobType = 'BatchApex'
             AND ApexClass.Name = 'RetentionEnforcementBatch'
         ];
-        System.assert(jobs.size() > 0, 'Batch job should have been queued');
+        Assert.isTrue(jobs.size() > 0, 'Batch job should have been queued');
     }
 
     @isTest

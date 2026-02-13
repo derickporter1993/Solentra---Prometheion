@@ -68,7 +68,7 @@ private class ElaroGLBAAnnualNoticeSchedulerTest {
         ];
         
         // Note: In test context, batch jobs execute synchronously
-        System.assert(!jobs.isEmpty() || Test.isRunningTest(), 'Batch job should be queued or executed');
+        Assert.isTrue(!jobs.isEmpty() || Test.isRunningTest(), 'Batch job should be queued or executed');
     }
     
     @isTest
@@ -126,7 +126,7 @@ private class ElaroGLBAAnnualNoticeSchedulerTest {
             WHERE Id = :jobId
         ];
         
-        System.assert(ct.CronJobDetail.Name.contains('GLBA Annual Notice'), 
+        Assert.isTrue(ct.CronJobDetail.Name.contains('GLBA Annual Notice'), 
             'Job name should contain GLBA Annual Notice');
         Assert.areNotEqual(null, ct.CronExpression, 'Cron expression should be set');
     }
@@ -147,7 +147,7 @@ private class ElaroGLBAAnnualNoticeSchedulerTest {
         ];
         
         // Verify cron expression is valid (default: '0 0 6 * * ?')
-        System.assert(ct.CronExpression.contains('0 0 6') || ct.CronExpression.length() > 0, 
+        Assert.isTrue(ct.CronExpression.contains('0 0 6') || ct.CronExpression.length() > 0, 
             'Cron expression should be valid');
     }
     

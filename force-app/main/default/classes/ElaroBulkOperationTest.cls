@@ -181,8 +181,8 @@ private class ElaroBulkOperationTest {
         Test.stopTest();
         
         Assert.areEqual(200, queriedAccounts.size(), 'Should query all 200 accounts');
-        System.assert(endQueries - startQueries < 10, 'Should use reasonable number of queries');
-        System.assert(endDml - startDml == 1, 'Should use single DML statement for bulk insert');
+        Assert.isTrue(endQueries - startQueries < 10, 'Should use reasonable number of queries');
+        Assert.isTrue(endDml - startDml == 1, 'Should use single DML statement for bulk insert');
     }
     
     /**

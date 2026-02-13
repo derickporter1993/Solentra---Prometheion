@@ -165,7 +165,7 @@ private class AccessReviewSchedulerTest {
         Test.stopTest();
 
         // Should handle bulk data without governor limit issues
-        System.assert(Limits.getQueries() < 100, 'Should stay under SOQL limit');
-        System.assert(Limits.getDmlStatements() < 150, 'Should stay under DML limit');
+        Assert.isTrue(Limits.getQueries() < 100, 'Should stay under SOQL limit');
+        Assert.isTrue(Limits.getDmlStatements() < 150, 'Should stay under DML limit');
     }
 }

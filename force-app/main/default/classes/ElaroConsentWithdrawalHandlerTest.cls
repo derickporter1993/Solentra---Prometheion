@@ -230,6 +230,6 @@ private class ElaroConsentWithdrawalHandlerTest {
 
         // Verify withdrawal processing completed with event publishing
         // Platform events are async, verify DML occurred for updates
-        System.assert(Limits.getDmlStatements() > 0, 'Should publish events and update records');
+        Assert.isTrue(Limits.getDmlStatements() > 0, 'Should publish events and update records');
     }
 }

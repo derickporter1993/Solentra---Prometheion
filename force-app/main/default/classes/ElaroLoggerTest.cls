@@ -112,6 +112,6 @@ private class ElaroLoggerTest {
         Test.stopTest();
 
         // No exceptions should be thrown
-        System.assert(Test.isRunningTest(), 'Running in test context');
+        Assert.isTrue(Test.isRunningTest(), 'Running in test context');
     }
 }

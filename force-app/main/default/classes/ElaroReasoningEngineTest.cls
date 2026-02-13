@@ -225,8 +225,8 @@ private class ElaroReasoningEngineTest {
         String explanation = ElaroReasoningEngine.buildSafeExplanation(policy, node, prediction, settings);
         Test.stopTest();
 
-        System.assert(explanation.startsWith('[REVIEW REQUIRED] '), 'Explanation should include review prefix when below threshold');
-        System.assert(explanation.contains('Flow123'), 'Explanation should include entity record id');
-        System.assert(explanation.contains('Policy description'), 'Explanation should reference policy description');
+        Assert.isTrue(explanation.startsWith('[REVIEW REQUIRED] '), 'Explanation should include review prefix when below threshold');
+        Assert.isTrue(explanation.contains('Flow123'), 'Explanation should include entity record id');
+        Assert.isTrue(explanation.contains('Policy description'), 'Explanation should reference policy description');
     }
 }

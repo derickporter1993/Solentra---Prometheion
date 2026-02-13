@@ -18,8 +18,8 @@ private class ElaroPCIDSSComplianceServiceTest {
         
         // Then: Should calculate risk score
         Assert.areNotEqual(null, score, 'Risk score should not be null');
-        System.assert(score >= 0 && score <= 10, 'Risk score should be between 0 and 10');
-        System.assert(score > 3.0, 'Cardholder data fields should have higher risk');
+        Assert.isTrue(score >= 0 && score <= 10, 'Risk score should be between 0 and 10');
+        Assert.isTrue(score > 3.0, 'Cardholder data fields should have higher risk');
     }
     
     @IsTest

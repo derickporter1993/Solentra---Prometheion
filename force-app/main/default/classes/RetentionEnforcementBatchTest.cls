@@ -25,7 +25,7 @@ private class RetentionEnforcementBatchTest {
     static void testBatchExecution() {
         // Arrange
         Integer activityCount = [SELECT COUNT() FROM Data_Processing_Activity__c];
-        System.assert(activityCount > 0, 'Test data should exist');
+        Assert.isTrue(activityCount > 0, 'Test data should exist');
 
         // Act
         Test.startTest();

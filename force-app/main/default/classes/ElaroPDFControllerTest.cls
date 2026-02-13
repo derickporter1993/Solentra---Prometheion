@@ -61,7 +61,7 @@ private class ElaroPDFControllerTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, controller.auditPackage, 'Audit package should be loaded');
-        System.assert(controller.evidenceCount > 0, 'Evidence should be loaded');
+        Assert.isTrue(controller.evidenceCount > 0, 'Evidence should be loaded');
         Assert.areNotEqual(null, controller.generatedAt, 'Generated timestamp should be set');
         Assert.areNotEqual(null, controller.documentHash, 'Document hash should be generated');
     }
@@ -91,7 +91,7 @@ private class ElaroPDFControllerTest {
         Decimal score = controller.getComplianceScore();
         Test.stopTest();
 
-        System.assert(score >= 0 && score <= 100, 'Score should be between 0 and 100');
+        Assert.isTrue(score >= 0 && score <= 100, 'Score should be between 0 and 100');
     }
 
     @isTest
@@ -104,7 +104,7 @@ private class ElaroPDFControllerTest {
         String dateRange = controller.getDateRange();
         Test.stopTest();
 
-        System.assert(dateRange.contains(' - '), 'Date range should contain separator');
+        Assert.isTrue(dateRange.contains(' - '), 'Date range should contain separator');
     }
 
     @isTest
@@ -131,7 +131,7 @@ private class ElaroPDFControllerTest {
         ElaroPDFController controller = new ElaroPDFController(stdController);
         Test.stopTest();
 
-        System.assert(controller.controlSummary.size() > 0, 'Control summary should be populated');
+        Assert.isTrue(controller.controlSummary.size() > 0, 'Control summary should be populated');
     }
 
     @isTest

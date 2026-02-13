@@ -74,7 +74,7 @@ private class ElaroMatrixControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for empty config');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for empty config');
     }
 
     @isTest
@@ -87,7 +87,7 @@ private class ElaroMatrixControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for null config');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for null config');
     }
 
     @isTest
@@ -100,7 +100,7 @@ private class ElaroMatrixControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for invalid JSON');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for invalid JSON');
     }
 
     @isTest
@@ -121,7 +121,7 @@ private class ElaroMatrixControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for invalid object');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for invalid object');
     }
 
     @isTest
@@ -142,7 +142,7 @@ private class ElaroMatrixControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for missing row field');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for missing row field');
     }
 
     @isTest
@@ -163,7 +163,7 @@ private class ElaroMatrixControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for missing column field');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for missing column field');
     }
 
     @isTest
@@ -184,7 +184,7 @@ private class ElaroMatrixControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for missing aggregate');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for missing aggregate');
     }
 
     @isTest
@@ -205,7 +205,7 @@ private class ElaroMatrixControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for invalid aggregate');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for invalid aggregate');
     }
 
     @isTest
@@ -226,7 +226,7 @@ private class ElaroMatrixControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for invalid field');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for invalid field');
     }
 
     @isTest
@@ -247,7 +247,7 @@ private class ElaroMatrixControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for non-groupable field');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for non-groupable field');
     }
 
     @isTest
@@ -356,7 +356,7 @@ private class ElaroMatrixControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for dangerous filter');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for dangerous filter');
     }
 
     @isTest
@@ -379,7 +379,7 @@ private class ElaroMatrixControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for invalid object');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for invalid object');
     }
 
     @isTest
@@ -392,7 +392,7 @@ private class ElaroMatrixControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for null object');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for null object');
     }
 
     @isTest

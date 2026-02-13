@@ -159,7 +159,7 @@ private class ElaroSecurityUtilsPermissionTest {
                 ElaroSecurityUtils.validateCRUDAccess('InvalidObject__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
                 Assert.fail( 'Should have thrown SecurityException');
             } catch (ElaroSecurityUtils.SecurityException e) {
-                System.assert(e.getMessage().contains('Insufficient'), 
+                Assert.isTrue(e.getMessage().contains('Insufficient'), 
                     'Should throw SecurityException with insufficient access message: ' + e.getMessage());
             }
         }
@@ -201,7 +201,7 @@ private class ElaroSecurityUtilsPermissionTest {
                 // May not throw if field doesn't exist
                 Assert.isTrue(true, 'Validation may pass for non-existent field');
             } catch (ElaroSecurityUtils.SecurityException e) {
-                System.assert(e.getMessage().contains('Insufficient FLS'), 
+                Assert.isTrue(e.getMessage().contains('Insufficient FLS'), 
                     'Should throw SecurityException for insufficient FLS: ' + e.getMessage());
             }
         }

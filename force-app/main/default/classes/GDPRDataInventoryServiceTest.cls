@@ -42,8 +42,8 @@ private class GDPRDataInventoryServiceTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, inventory, 'Inventory should not be null');
-        System.assert(inventory.containsKey('totalActivities'), 'Should include activity count');
-        System.assert(inventory.containsKey('totalRecipients'), 'Should include recipient count');
+        Assert.isTrue(inventory.containsKey('totalActivities'), 'Should include activity count');
+        Assert.isTrue(inventory.containsKey('totalRecipients'), 'Should include recipient count');
     }
     
     @IsTest
@@ -59,7 +59,7 @@ private class GDPRDataInventoryServiceTest {
             Assert.areNotEqual(null, evidence, 'Evidence should not be null');
         } catch (Exception e) {
             // May fail if control doesn't exist - that's expected in test
-            System.assert(e.getMessage().contains('Control not found') || e.getMessage().contains('required'), 
+            Assert.isTrue(e.getMessage().contains('Control not found') || e.getMessage().contains('required'), 
                 'Should handle missing control gracefully');
         }
         Test.stopTest();
@@ -77,7 +77,7 @@ private class GDPRDataInventoryServiceTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, classification, 'Classification should not be null');
-        System.assert(classification.containsKey('categories'), 'Should include categories');
+        Assert.isTrue(classification.containsKey('categories'), 'Should include categories');
         Assert.areEqual(6, classification.get('totalFields'), 'Should classify all fields');
     }
     
@@ -132,7 +132,7 @@ private class GDPRDataInventoryServiceTest {
             service.generateEvidenceReport('INVALID', parameters);
             Assert.fail( 'Should throw exception for invalid report type');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('Unsupported'), 'Should throw unsupported error');
+            Assert.isTrue(e.getMessage().contains('Unsupported'), 'Should throw unsupported error');
         }
         Test.stopTest();
     }

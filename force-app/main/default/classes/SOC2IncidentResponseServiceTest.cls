@@ -74,7 +74,7 @@ public class SOC2IncidentResponseServiceTest {
 
         Assert.areNotEqual(null, assessment, 'Assessment should not be null');
         Assert.areNotEqual(null, assessment.breachId, 'Breach ID should be set');
-        System.assert(assessment.riskScore > 5.0, 'Risk score should be elevated for PHI breach');
+        Assert.isTrue(assessment.riskScore > 5.0, 'Risk score should be elevated for PHI breach');
         Assert.areEqual(true, assessment.notificationRequired, 'Notification should be required');
     }
 
@@ -93,7 +93,7 @@ public class SOC2IncidentResponseServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, assessment, 'Assessment should not be null');
-        System.assert(assessment.riskScore < 7.0, 'Risk score should be lower for minor incident');
+        Assert.isTrue(assessment.riskScore < 7.0, 'Risk score should be lower for minor incident');
     }
 
     @isTest
@@ -119,7 +119,7 @@ public class SOC2IncidentResponseServiceTest {
 
         Assert.areNotEqual(null, deadline, 'Deadline should not be null');
         // Critical incidents have 1-day deadline
-        System.assert(deadline > DateTime.now(), 'Deadline should be in the future');
+        Assert.isTrue(deadline > DateTime.now(), 'Deadline should be in the future');
     }
 
     @isTest
@@ -156,7 +156,7 @@ public class SOC2IncidentResponseServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, breaches, 'Breaches list should not be null');
-        System.assert(breaches.size() >= 2, 'Should have at least 2 open breaches from test data');
+        Assert.isTrue(breaches.size() >= 2, 'Should have at least 2 open breaches from test data');
     }
 
     @isTest
@@ -168,7 +168,7 @@ public class SOC2IncidentResponseServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, metrics, 'Metrics should not be null');
-        System.assert(metrics.totalBreaches >= 3, 'Should have at least 3 breaches from test data');
+        Assert.isTrue(metrics.totalBreaches >= 3, 'Should have at least 3 breaches from test data');
     }
 
     @isTest
@@ -238,7 +238,7 @@ public class SOC2IncidentResponseServiceTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, metrics, 'Metrics should not be null');
-        System.assert(metrics.totalIncidents >= 3, 'Should have at least 3 incidents from test data');
+        Assert.isTrue(metrics.totalIncidents >= 3, 'Should have at least 3 incidents from test data');
     }
 
     @isTest
@@ -274,6 +274,6 @@ public class SOC2IncidentResponseServiceTest {
         List<IBreachNotificationService.BreachSummary> breaches = service.getOpenBreaches();
         Test.stopTest();
 
-        System.assert(breaches.size() >= 200, 'Should retrieve bulk incidents');
+        Assert.isTrue(breaches.size() >= 200, 'Should retrieve bulk incidents');
     }
 }

@@ -19,7 +19,7 @@ private class WeeklyScorecardSchedulerTest {
         
         // Assert result contains expected confirmation text
         Assert.areNotEqual(null, result, 'Schedule should return a result message');
-        System.assert(result.contains('Weekly scorecard scheduled') || result.contains('Elaro Weekly Scorecard'), 
+        Assert.isTrue(result.contains('Weekly scorecard scheduled') || result.contains('Elaro Weekly Scorecard'), 
             'Result should confirm scheduling: ' + result);
         
         // Verify job was actually scheduled
@@ -28,7 +28,7 @@ private class WeeklyScorecardSchedulerTest {
             FROM CronTrigger 
             WHERE CronJobDetail.Name LIKE 'Elaro Weekly Scorecard%'
         ];
-        System.assert(!scheduledJobs.isEmpty(), 'At least one scheduled job should exist');
+        Assert.isTrue(!scheduledJobs.isEmpty(), 'At least one scheduled job should exist');
     }
     
     /**
@@ -45,7 +45,7 @@ private class WeeklyScorecardSchedulerTest {
         Test.stopTest();
 
         // Verify Slack webhook callout completed successfully
-        System.assert(Limits.getCallouts() <= Limits.getLimitCallouts(), 'Should stay within callout limits');
+        Assert.isTrue(Limits.getCallouts() <= Limits.getLimitCallouts(), 'Should stay within callout limits');
     }
     
     /**
@@ -60,7 +60,7 @@ private class WeeklyScorecardSchedulerTest {
         Test.stopTest();
 
         // Verify Teams webhook callout completed successfully
-        System.assert(Limits.getCallouts() <= Limits.getLimitCallouts(), 'Should stay within callout limits');
+        Assert.isTrue(Limits.getCallouts() <= Limits.getLimitCallouts(), 'Should stay within callout limits');
     }
     
     /**
@@ -75,7 +75,7 @@ private class WeeklyScorecardSchedulerTest {
         Test.stopTest();
 
         // Verify both Slack and Teams webhooks were called
-        System.assert(Limits.getCallouts() <= Limits.getLimitCallouts(), 'Should stay within callout limits for both channels');
+        Assert.isTrue(Limits.getCallouts() <= Limits.getLimitCallouts(), 'Should stay within callout limits for both channels');
     }
     
     /**
@@ -119,7 +119,7 @@ private class WeeklyScorecardSchedulerTest {
         Test.stopTest();
 
         // Verify test scorecard executed successfully
-        System.assert(Limits.getCallouts() <= Limits.getLimitCallouts(), 'Should stay within callout limits');
+        Assert.isTrue(Limits.getCallouts() <= Limits.getLimitCallouts(), 'Should stay within callout limits');
     }
     
     /**
@@ -151,7 +151,7 @@ private class WeeklyScorecardSchedulerTest {
         }
         Test.stopTest();
 
-        System.assert(completedSuccessfully, 'Invalid channel should be handled gracefully without exception');
+        Assert.isTrue(completedSuccessfully, 'Invalid channel should be handled gracefully without exception');
     }
     
     /**

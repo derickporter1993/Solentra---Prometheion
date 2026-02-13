@@ -42,7 +42,7 @@ private class PCIAccessControlServiceTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, result, 'RBAC result should not be null');
-        System.assert(result.containsKey('hasAccess'), 'Should include access decision');
+        Assert.isTrue(result.containsKey('hasAccess'), 'Should include access decision');
     }
     
     @IsTest
@@ -62,7 +62,7 @@ private class PCIAccessControlServiceTest {
         }
         Test.stopTest();
         
-        System.assert(results.size() > 0, 'Should process bulk RBAC checks');
+        Assert.isTrue(results.size() > 0, 'Should process bulk RBAC checks');
     }
     
     @IsTest
@@ -111,7 +111,7 @@ private class PCIAccessControlServiceTest {
             service.enforceRBAC(null, 'Resource');
             Assert.fail( 'Should throw exception for null user');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }
@@ -124,7 +124,7 @@ private class PCIAccessControlServiceTest {
             service.rotateCredentials(null);
             Assert.fail( 'Should throw exception for null user');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('required'), 'Should validate required parameters');
+            Assert.isTrue(e.getMessage().contains('required'), 'Should validate required parameters');
         }
         Test.stopTest();
     }

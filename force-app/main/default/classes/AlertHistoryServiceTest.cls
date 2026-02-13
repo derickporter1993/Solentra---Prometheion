@@ -63,9 +63,9 @@ private class AlertHistoryServiceTest {
         for (AlertHistoryService.AlertRow row : rows) {
             metrics.add(row.metric);
         }
-        System.assert(metrics.contains('CPU'), 'Should include CPU metric');
-        System.assert(metrics.contains('HEAP'), 'Should include HEAP metric');
-        System.assert(metrics.contains('SOQL'), 'Should include SOQL metric');
+        Assert.isTrue(metrics.contains('CPU'), 'Should include CPU metric');
+        Assert.isTrue(metrics.contains('HEAP'), 'Should include HEAP metric');
+        Assert.isTrue(metrics.contains('SOQL'), 'Should include SOQL metric');
     }
 
     @IsTest
@@ -122,7 +122,7 @@ private class AlertHistoryServiceTest {
         // Verify descending order by created date (most recent first)
         Assert.areEqual(3, rows.size(), 'Should return all 3 alerts');
         for (Integer i = 0; i < rows.size() - 1; i++) {
-            System.assert(
+            Assert.isTrue(
                 rows[i].createdDate >= rows[i + 1].createdDate,
                 'Alerts should be ordered by CreatedDate DESC'
             );

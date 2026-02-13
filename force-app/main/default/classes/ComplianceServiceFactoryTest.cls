@@ -18,7 +18,7 @@ private class ComplianceServiceFactoryTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, service, 'Should return HIPAA service');
-        System.assert(service instanceof ElaroHIPAAComplianceService,
+        Assert.isTrue(service instanceof ElaroHIPAAComplianceService,
             'Should return correct service type');
     }
 
@@ -31,7 +31,7 @@ private class ComplianceServiceFactoryTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, service, 'Should return SOC2 service');
-        System.assert(service instanceof ElaroSOC2ComplianceService,
+        Assert.isTrue(service instanceof ElaroSOC2ComplianceService,
             'Should return correct service type');
     }
 
@@ -44,7 +44,7 @@ private class ComplianceServiceFactoryTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, service, 'Should return GDPR service');
-        System.assert(service instanceof ElaroGDPRComplianceService,
+        Assert.isTrue(service instanceof ElaroGDPRComplianceService,
             'Should return correct service type');
     }
 
@@ -57,7 +57,7 @@ private class ComplianceServiceFactoryTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, service, 'Should return CCPA service');
-        System.assert(service instanceof ElaroCCPAComplianceService,
+        Assert.isTrue(service instanceof ElaroCCPAComplianceService,
             'Should return correct service type');
     }
 
@@ -70,7 +70,7 @@ private class ComplianceServiceFactoryTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, service, 'Should return PCI-DSS service');
-        System.assert(service instanceof ElaroPCIDSSComplianceService,
+        Assert.isTrue(service instanceof ElaroPCIDSSComplianceService,
             'Should return correct service type');
     }
 
@@ -96,7 +96,7 @@ private class ComplianceServiceFactoryTest {
             ComplianceServiceFactory.getService('');
             Assert.fail( 'Should throw exception for blank framework');
         } catch (ComplianceServiceFactory.ComplianceServiceException e) {
-            System.assert(e.getMessage().contains('blank'),
+            Assert.isTrue(e.getMessage().contains('blank'),
                 'Should mention blank in error message');
         }
 
@@ -192,11 +192,11 @@ private class ComplianceServiceFactoryTest {
         Test.stopTest();
 
         Assert.areNotEqual(null, frameworks, 'Should return supported frameworks');
-        System.assert(frameworks.contains('HIPAA'), 'Should include HIPAA');
-        System.assert(frameworks.contains('SOC2'), 'Should include SOC2');
-        System.assert(frameworks.contains('GDPR'), 'Should include GDPR');
-        System.assert(frameworks.contains('CCPA'), 'Should include CCPA');
-        System.assert(frameworks.contains('PCI_DSS'), 'Should include PCI_DSS');
+        Assert.isTrue(frameworks.contains('HIPAA'), 'Should include HIPAA');
+        Assert.isTrue(frameworks.contains('SOC2'), 'Should include SOC2');
+        Assert.isTrue(frameworks.contains('GDPR'), 'Should include GDPR');
+        Assert.isTrue(frameworks.contains('CCPA'), 'Should include CCPA');
+        Assert.isTrue(frameworks.contains('PCI_DSS'), 'Should include PCI_DSS');
     }
 
     @IsTest

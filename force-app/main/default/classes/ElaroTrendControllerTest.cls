@@ -37,7 +37,7 @@ private class ElaroTrendControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for invalid object');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for invalid object');
     }
 
     @isTest
@@ -61,7 +61,7 @@ private class ElaroTrendControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for invalid object');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for invalid object');
     }
 
     @isTest
@@ -182,7 +182,7 @@ private class ElaroTrendControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for invalid object');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for invalid object');
     }
 
     @isTest
@@ -202,7 +202,7 @@ private class ElaroTrendControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for null object API name');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for null object API name');
     }
 
     @isTest
@@ -222,7 +222,7 @@ private class ElaroTrendControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for invalid granularity');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for invalid granularity');
     }
 
     @isTest
@@ -242,7 +242,7 @@ private class ElaroTrendControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for blank date field');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for blank date field');
     }
 
     @isTest
@@ -262,7 +262,7 @@ private class ElaroTrendControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for blank metric field');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for blank metric field');
     }
 
     @isTest
@@ -282,7 +282,7 @@ private class ElaroTrendControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for blank granularity');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for blank granularity');
     }
 
     @isTest
@@ -382,7 +382,7 @@ private class ElaroTrendControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for non-date field');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for non-date field');
     }
 
     @isTest
@@ -402,7 +402,7 @@ private class ElaroTrendControllerTest {
             exceptionThrown = true;
         }
         Test.stopTest();
-        System.assert(exceptionThrown, 'Should have thrown exception for invalid field');
+        Assert.isTrue(exceptionThrown, 'Should have thrown exception for invalid field');
     }
 
     @isTest

@@ -76,7 +76,7 @@ private class ElaroDashboardControllerTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, packages, 'Packages should not be null');
-        System.assert(packages.size() > 0, 'Should return at least one package');
+        Assert.isTrue(packages.size() > 0, 'Should return at least one package');
     }
     
     @IsTest
@@ -117,8 +117,8 @@ private class ElaroDashboardControllerTest {
         
         Assert.areNotEqual(null, stats, 'Stats should not be null');
         Assert.areEqual(pkg.Id, stats.id, 'Package ID should match');
-        System.assert(stats.mappingCount > 0, 'Should have mappings');
-        System.assert(stats.evidenceCount > 0, 'Should have evidence');
+        Assert.isTrue(stats.mappingCount > 0, 'Should have mappings');
+        Assert.isTrue(stats.evidenceCount > 0, 'Should have evidence');
     }
     
     @IsTest
@@ -128,7 +128,7 @@ private class ElaroDashboardControllerTest {
             ElaroDashboardController.getAuditPackageStats('');
             Assert.fail( 'Should have thrown AuraHandledException');
         } catch (AuraHandledException e) {
-            System.assert(e.getMessage().contains('blank'), 'Should mention blank ID');
+            Assert.isTrue(e.getMessage().contains('blank'), 'Should mention blank ID');
         }
         Test.stopTest();
     }

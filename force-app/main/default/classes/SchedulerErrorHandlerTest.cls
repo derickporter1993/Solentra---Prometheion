@@ -40,7 +40,7 @@ private class SchedulerErrorHandlerTest {
 
         Assert.areEqual(1, logs.size(), 'Should create one log record');
         Assert.areEqual('SCHEDULER_SUCCESS', logs[0].Error_Type__c, 'Should be SCHEDULER_SUCCESS type');
-        System.assert(logs[0].Error_Message__c.contains('100 records'), 'Should capture success details');
+        Assert.isTrue(logs[0].Error_Message__c.contains('100 records'), 'Should capture success details');
     }
 
     @isTest
@@ -52,7 +52,7 @@ private class SchedulerErrorHandlerTest {
 
         // Should return the configured value or the default
         Assert.areNotEqual(null, cron, 'Should return a CRON expression');
-        System.assert(cron.contains('*'), 'Should be a valid CRON expression');
+        Assert.isTrue(cron.contains('*'), 'Should be a valid CRON expression');
     }
 
     @isTest
@@ -73,7 +73,7 @@ private class SchedulerErrorHandlerTest {
         Test.stopTest();
 
         // Should return configured value (500) or default (100)
-        System.assert(batchSize > 0, 'Should return a positive batch size');
+        Assert.isTrue(batchSize > 0, 'Should return a positive batch size');
     }
 
     @isTest
@@ -137,6 +137,6 @@ private class SchedulerErrorHandlerTest {
         ];
 
         Assert.areEqual(1, errors.size(), 'Should create one error record');
-        System.assert(errors[0].Error_Message__c.length() <= 255, 'Message should be truncated to 255 chars');
+        Assert.isTrue(errors[0].Error_Message__c.length() <= 255, 'Message should be truncated to 255 chars');
     }
 }
