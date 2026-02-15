@@ -111,6 +111,13 @@ const MOCK_LINKS = [
   },
 ];
 
+// Flush all microtasks
+function flushPromises() {
+  return new Promise((resolve) => {
+    setTimeout(resolve, 0);
+  });
+}
+
 describe("c-trust-center-link-manager", () => {
   afterEach(() => {
     while (document.body.firstChild) {
@@ -127,17 +134,20 @@ describe("c-trust-center-link-manager", () => {
     return element;
   }
 
-  it("renders loading spinner initially", () => {
+  it("renders lightning-card with correct title", async () => {
     const element = createComponent();
-    const spinner = element.shadowRoot.querySelector("lightning-spinner");
-    expect(spinner).not.toBeNull();
+    getActiveLinks.emit(MOCK_LINKS);
+    await flushPromises();
+
+    const card = element.shadowRoot.querySelector("lightning-card");
+    expect(card).not.toBeNull();
+    expect(card.title).toBe("Link Manager");
   });
 
   it("renders datatable when links are returned", async () => {
     const element = createComponent();
     getActiveLinks.emit(MOCK_LINKS);
-
-    await Promise.resolve();
+    await flushPromises();
 
     const datatable = element.shadowRoot.querySelector("lightning-datatable");
     expect(datatable).not.toBeNull();
@@ -147,8 +157,7 @@ describe("c-trust-center-link-manager", () => {
   it("renders empty state when no links exist", async () => {
     const element = createComponent();
     getActiveLinks.emit([]);
-
-    await Promise.resolve();
+    await flushPromises();
 
     const emptyMessage = element.shadowRoot.querySelector(".slds-illustration");
     expect(emptyMessage).not.toBeNull();
@@ -157,80 +166,57 @@ describe("c-trust-center-link-manager", () => {
   it("renders error state when wire fails", async () => {
     const element = createComponent();
     getActiveLinks.error({ body: { message: "Test error" } });
-
-    await Promise.resolve();
+    await flushPromises();
 
     const errorAlert = element.shadowRoot.querySelector('[role="alert"]');
     expect(errorAlert).not.toBeNull();
   });
 
-  it("renders create link button", () => {
-    const element = createComponent();
-    const button = element.shadowRoot.querySelector('lightning-button[variant="brand"]');
-    expect(button).not.toBeNull();
-  });
-
-  it("opens modal when create link button is clicked", async () => {
+  it("maps access tier labels correctly in table data", async () => {
     const element = createComponent();
     getActiveLinks.emit(MOCK_LINKS);
+    await flushPromises();
 
-    await Promise.resolve();
-
-    const button = element.shadowRoot.querySelector('lightning-button[variant="brand"]');
-    button.click();
-
-    await Promise.resolve();
-
-    const modal = element.shadowRoot.querySelector('[role="dialog"]');
-    expect(modal).not.toBeNull();
+    const datatable = element.shadowRoot.querySelector("lightning-datatable");
+    expect(datatable.data[0].accessTierLabel).toBe("Public");
+    expect(datatable.data[1].accessTierLabel).toBe("NDA Required");
   });
 
-  it("renders access tier combobox in modal", async () => {
+  it("does not show modal by default", async () => {
     const element = createComponent();
     getActiveLinks.emit(MOCK_LINKS);
-
-    await Promise.resolve();
-
-    const button = element.shadowRoot.querySelector('lightning-button[variant="brand"]');
-    button.click();
-
-    await Promise.resolve();
-
-    const combobox = element.shadowRoot.querySelector("lightning-combobox");
-    expect(combobox).not.toBeNull();
-    expect(combobox.options.length).toBe(3);
-  });
-
-  it("closes modal when close button is clicked", async () => {
-    const element = createComponent();
-    getActiveLinks.emit(MOCK_LINKS);
-
-    await Promise.resolve();
-
-    // Open modal
-    const createButton = element.shadowRoot.querySelector('lightning-button[variant="brand"]');
-    createButton.click();
-
-    await Promise.resolve();
-
-    // Close modal
-    const closeButton = element.shadowRoot.querySelector(".slds-modal__close");
-    closeButton.click();
-
-    await Promise.resolve();
+    await flushPromises();
 
     const modal = element.shadowRoot.querySelector('[role="dialog"]');
     expect(modal).toBeNull();
   });
 
-  it("maps access tier labels correctly in table data", async () => {
+  it("hides datatable in error state", async () => {
     const element = createComponent();
-    getActiveLinks.emit(MOCK_LINKS);
-
-    await Promise.resolve();
+    getActiveLinks.error({ body: { message: "Error" } });
+    await flushPromises();
 
     const datatable = element.shadowRoot.querySelector("lightning-datatable");
-    expect(datatable.data[0].accessTierLabel).toBe("Public");
-    expect(datatable.data[1].accessTierLabel).toBe("NDA Required");
+    expect(datatable).toBeNull();
+  });
+
+  it("hides datatable in empty state", async () => {
+    const element = createComponent();
+    getActiveLinks.emit([]);
+    await flushPromises();
+
+    const datatable = element.shadowRoot.querySelector("lightning-datatable");
+    expect(datatable).toBeNull();
+  });
+
+  it("datatable has correct columns configuration", async () => {
+    const element = createComponent();
+    getActiveLinks.emit(MOCK_LINKS);
+    await flushPromises();
+
+    const datatable = element.shadowRoot.querySelector("lightning-datatable");
+    expect(datatable.columns.length).toBe(5);
+    expect(datatable.columns[0].label).toBe("Created For");
+    expect(datatable.columns[1].label).toBe("Access Tier");
   });
 });

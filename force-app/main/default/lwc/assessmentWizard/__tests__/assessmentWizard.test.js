@@ -95,11 +95,9 @@ jest.mock("@salesforce/label/c.AW_AutoScanRunning", () => ({ default: "Scanning"
 jest.mock("@salesforce/label/c.AW_AutoScanComplete", () => ({ default: "Scan complete" }), {
   virtual: true,
 });
-jest.mock(
-  "@salesforce/label/c.AW_AutoScanError",
-  () => ({ default: "Scan error" }),
-  { virtual: true }
-);
+jest.mock("@salesforce/label/c.AW_AutoScanError", () => ({ default: "Scan error" }), {
+  virtual: true,
+});
 jest.mock("@salesforce/label/c.AW_AutoScanPassCount", () => ({ default: "{0} Passed" }), {
   virtual: true,
 });

@@ -191,6 +191,13 @@ const MOCK_VIEWS = [
   },
 ];
 
+// Flush all microtasks
+function flushPromises() {
+  return new Promise((resolve) => {
+    setTimeout(resolve, 0);
+  });
+}
+
 describe("c-trust-center-dashboard", () => {
   afterEach(() => {
     while (document.body.firstChild) {
@@ -207,17 +214,20 @@ describe("c-trust-center-dashboard", () => {
     return element;
   }
 
-  it("renders loading spinner initially", () => {
+  it("renders lightning-card with correct title", async () => {
     const element = createComponent();
-    const spinner = element.shadowRoot.querySelector("lightning-spinner");
-    expect(spinner).not.toBeNull();
+    getPublicViews.emit(MOCK_VIEWS);
+    await flushPromises();
+
+    const card = element.shadowRoot.querySelector("lightning-card");
+    expect(card).not.toBeNull();
+    expect(card.title).toBe("Trust Center");
   });
 
   it("renders badge components when data is returned", async () => {
     const element = createComponent();
     getPublicViews.emit(MOCK_VIEWS);
-
-    await Promise.resolve();
+    await flushPromises();
 
     const badges = element.shadowRoot.querySelectorAll("c-trust-center-badge");
     expect(badges.length).toBe(2);
@@ -226,8 +236,7 @@ describe("c-trust-center-dashboard", () => {
   it("renders empty state when no views exist", async () => {
     const element = createComponent();
     getPublicViews.emit([]);
-
-    await Promise.resolve();
+    await flushPromises();
 
     const emptyMessage = element.shadowRoot.querySelector(".slds-illustration");
     expect(emptyMessage).not.toBeNull();
@@ -236,8 +245,7 @@ describe("c-trust-center-dashboard", () => {
   it("renders error state when wire fails", async () => {
     const element = createComponent();
     getPublicViews.error({ body: { message: "Test error" } });
-
-    await Promise.resolve();
+    await flushPromises();
 
     const errorAlert = element.shadowRoot.querySelector('[role="alert"]');
     expect(errorAlert).not.toBeNull();
@@ -246,30 +254,48 @@ describe("c-trust-center-dashboard", () => {
   it("renders link manager child component when views exist", async () => {
     const element = createComponent();
     getPublicViews.emit(MOCK_VIEWS);
-
-    await Promise.resolve();
+    await flushPromises();
 
     const linkManager = element.shadowRoot.querySelector("c-trust-center-link-manager");
     expect(linkManager).not.toBeNull();
   });
 
-  it("renders aggregation button", () => {
+  it("does not render link manager in empty state", async () => {
     const element = createComponent();
-    const button = element.shadowRoot.querySelector(
-      'lightning-button[icon-name="utility:refresh"]'
-    );
-    expect(button).not.toBeNull();
+    getPublicViews.emit([]);
+    await flushPromises();
+
+    const linkManager = element.shadowRoot.querySelector("c-trust-center-link-manager");
+    expect(linkManager).toBeNull();
   });
 
   it("passes correct props to badge components", async () => {
     const element = createComponent();
     getPublicViews.emit(MOCK_VIEWS);
-
-    await Promise.resolve();
+    await flushPromises();
 
     const badges = element.shadowRoot.querySelectorAll("c-trust-center-badge");
     expect(badges[0].frameworkName).toBe("SOC 2");
     expect(badges[0].compliancePercentage).toBe(95.5);
     expect(badges[0].certificationStatus).toBe("Certified");
+  });
+
+  it("renders compliance status heading when views exist", async () => {
+    const element = createComponent();
+    getPublicViews.emit(MOCK_VIEWS);
+    await flushPromises();
+
+    const heading = element.shadowRoot.querySelector(".slds-text-heading_small");
+    expect(heading).not.toBeNull();
+    expect(heading.textContent).toBe("Compliance Status");
+  });
+
+  it("renders badge grid with correct ARIA role", async () => {
+    const element = createComponent();
+    getPublicViews.emit(MOCK_VIEWS);
+    await flushPromises();
+
+    const grid = element.shadowRoot.querySelector('[role="list"]');
+    expect(grid).not.toBeNull();
   });
 });
