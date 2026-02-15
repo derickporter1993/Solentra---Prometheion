@@ -252,8 +252,8 @@ export default class TrustCenterLinkManager extends LightningElement {
       return;
     }
     const linkUrl = `${window.location.origin}/trust-center?token=${token}`;
-    if (navigator.clipboard) {
-      navigator.clipboard
+    if (window.navigator?.clipboard) {
+      window.navigator.clipboard
         .writeText(linkUrl)
         .then(() => {
           this.dispatchEvent(
@@ -289,7 +289,7 @@ export default class TrustCenterLinkManager extends LightningElement {
           variant: "success",
         })
       );
-    } catch (err) {
+    } catch (_err) {
       // Clipboard copy failed silently
     }
     document.body.removeChild(textArea);

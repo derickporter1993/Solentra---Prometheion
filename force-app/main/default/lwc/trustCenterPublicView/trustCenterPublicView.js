@@ -94,7 +94,8 @@ export default class TrustCenterPublicView extends LightningElement {
    */
   _extractTokenFromUrl() {
     try {
-      const urlParams = new URLSearchParams(window.location.search);
+      const UrlSearchParams = window.URLSearchParams;
+      const urlParams = new UrlSearchParams(window.location.search);
       const token = urlParams.get("token");
       if (token) {
         return token;
@@ -103,12 +104,12 @@ export default class TrustCenterPublicView extends LightningElement {
       // Fallback: check hash-based routing (Lightning Communities)
       const hash = window.location.hash;
       if (hash && hash.includes("token=")) {
-        const hashParams = new URLSearchParams(hash.substring(hash.indexOf("?")));
+        const hashParams = new UrlSearchParams(hash.substring(hash.indexOf("?")));
         return hashParams.get("token");
       }
 
       return null;
-    } catch (e) {
+    } catch (_err) {
       return null;
     }
   }
