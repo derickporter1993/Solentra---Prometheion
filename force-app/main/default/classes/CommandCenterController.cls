@@ -7,6 +7,8 @@
  * @since v3.1.0 (Spring '26)
  * @group Command Center
  * @see ComplianceContextEngine
+ * @see OrchestrationService
+ * @see RemediationOrchestrator
  */
 public with sharing class CommandCenterController {
 
@@ -229,6 +231,138 @@ public with sharing class CommandCenterController {
                 e.getMessage(), e.getStackTraceString());
             throw new AuraHandledException(
                 'Unable to execute compliance action. Please verify your permissions and try again.');
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // ORCHESTRATION INTEGRATION METHODS
+    // ═══════════════════════════════════════════════════════════════
+
+    /**
+     * Triggers an orchestrated compliance scan across all supported frameworks
+     * via the {@link OrchestrationService}. For small framework sets the scan
+     * runs synchronously; larger sets are queued asynchronously.
+     *
+     * @return OrchestrationService.ScanResult with scan ID, status, and per-framework results
+     * @throws AuraHandledException if the scan cannot be started or user lacks permissions
+     * @example
+     * OrchestrationService.ScanResult result = CommandCenterController.triggerOrchestrationScan();
+     * System.debug('Scan ID: ' + result.scanId + ', Status: ' + result.status);
+     */
+    @AuraEnabled
+    public static OrchestrationService.ScanResult triggerOrchestrationScan() {
+        try {
+            ElaroLogger.info('CommandCenterController.triggerOrchestrationScan',
+                'Initiating full orchestrated compliance scan');
+
+            OrchestrationService orchestrator = new OrchestrationService();
+            OrchestrationService.ScanResult result = orchestrator.triggerFullScan();
+
+            ElaroLogger.info('CommandCenterController.triggerOrchestrationScan',
+                'Scan initiated: ' + result.scanId + ' status=' + result.status);
+
+            return result;
+
+        } catch (OrchestrationService.OrchestrationException oe) {
+            ElaroLogger.error('CommandCenterController.triggerOrchestrationScan',
+                oe.getMessage(), oe.getStackTraceString());
+            throw new AuraHandledException(
+                'Unable to start compliance scan: ' + oe.getMessage());
+        } catch (Exception e) {
+            ElaroLogger.error('CommandCenterController.triggerOrchestrationScan',
+                e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException(
+                'Unable to start compliance scan. Please verify your permissions and try again.');
+        }
+    }
+
+    /**
+     * Triggers an orchestrated compliance scan for specific frameworks.
+     * Allows the Command Center UI to request targeted scans when users
+     * want to refresh only certain framework postures.
+     *
+     * @param frameworks JSON array of framework codes (e.g., '["SOC2","HIPAA"]')
+     * @return OrchestrationService.ScanResult with scan ID and per-framework results
+     * @throws AuraHandledException if frameworks are invalid or scan fails
+     */
+    @AuraEnabled
+    public static OrchestrationService.ScanResult triggerFrameworkScan(List<String> frameworks) {
+        try {
+            if (frameworks == null || frameworks.isEmpty()) {
+                throw new AuraHandledException(
+                    'At least one framework must be selected for scanning.');
+            }
+
+            ElaroLogger.info('CommandCenterController.triggerFrameworkScan',
+                'Initiating scan for frameworks: ' + String.join(frameworks, ', '));
+
+            OrchestrationService orchestrator = new OrchestrationService();
+            OrchestrationService.ScanResult result = orchestrator.triggerScan(frameworks);
+
+            ElaroLogger.info('CommandCenterController.triggerFrameworkScan',
+                'Scan initiated: ' + result.scanId + ' for ' + frameworks.size() + ' frameworks');
+
+            return result;
+
+        } catch (AuraHandledException ae) {
+            throw ae;
+        } catch (OrchestrationService.OrchestrationException oe) {
+            ElaroLogger.error('CommandCenterController.triggerFrameworkScan',
+                oe.getMessage(), oe.getStackTraceString());
+            throw new AuraHandledException(
+                'Unable to start framework scan: ' + oe.getMessage());
+        } catch (Exception e) {
+            ElaroLogger.error('CommandCenterController.triggerFrameworkScan',
+                e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException(
+                'Unable to start framework scan. Please try again.');
+        }
+    }
+
+    /**
+     * Retrieves the current progress of a previously triggered orchestration scan.
+     * The Command Center UI polls this endpoint to display scan progress.
+     *
+     * @param scanId The scan identifier returned by {@code triggerOrchestrationScan}
+     * @return OrchestrationService.ScanProgress with completion percentage and status
+     * @throws AuraHandledException if progress retrieval fails
+     */
+    @AuraEnabled
+    public static OrchestrationService.ScanProgress getOrchestrationProgress(String scanId) {
+        try {
+            if (String.isBlank(scanId)) {
+                throw new AuraHandledException('Scan ID is required.');
+            }
+
+            OrchestrationService orchestrator = new OrchestrationService();
+            return orchestrator.getScanProgress(scanId);
+
+        } catch (AuraHandledException ae) {
+            throw ae;
+        } catch (Exception e) {
+            ElaroLogger.error('CommandCenterController.getOrchestrationProgress',
+                e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException(
+                'Unable to retrieve scan progress. Please try again.');
+        }
+    }
+
+    /**
+     * Returns the list of framework codes registered in the Orchestration Engine.
+     * Used by the Command Center UI to populate framework picker components.
+     *
+     * @return List of supported framework codes (e.g., ['SOC2', 'HIPAA', 'GDPR'])
+     * @throws AuraHandledException if retrieval fails
+     */
+    @AuraEnabled(cacheable=true)
+    public static List<String> getRegisteredFrameworks() {
+        try {
+            return new List<String>(ComplianceServiceFactory.getSupportedFrameworks());
+        } catch (Exception e) {
+            ElaroLogger.error('CommandCenterController.getRegisteredFrameworks',
+                e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException(
+                'Unable to retrieve registered frameworks.');
         }
     }
 

@@ -169,6 +169,21 @@ public inherited sharing class ConfigDriftDetector implements Schedulable {
     }
 
     /**
+     * Detects configuration drift and converts detected drift events into
+     * normalized ComplianceFinding objects via {@link RuleEngineEventBridge}.
+     * This enables the Rule Engine to incorporate drift detection results
+     * into compliance scoring and gap analysis pipelines.
+     *
+     * @param hoursBack Number of hours to look back for changes
+     * @return List of ComplianceFinding objects for any detected drift
+     * @see RuleEngineEventBridge#convertDriftEventsToFindings
+     */
+    public List<RuleEngineEventBridge.ComplianceFinding> detectAndConvertToFindings(Integer hoursBack) {
+        List<DriftEvent> driftEvents = detectDrift(hoursBack);
+        return RuleEngineEventBridge.convertDriftEventsToFindings(driftEvents);
+    }
+
+    /**
      * Returns the set of high-risk sections for external configuration or testing.
      *
      * @return Set of high-risk SetupAuditTrail section names

@@ -1,11 +1,13 @@
 /**
  * Tests for ComplianceContextEngine including framework summary aggregation,
- * overview calculation, action loading, and gap retrieval.
+ * overview calculation, action loading, gap retrieval, and orchestration
+ * data enrichment.
  *
  * @author Elaro Team
  * @since v3.1.0 (Spring '26)
  * @group Command Center
  * @see ComplianceContextEngine
+ * @see OrchestrationService
  */
 @IsTest(testFor=ComplianceContextEngine.class)
 private class ComplianceContextEngineTest {
@@ -183,6 +185,59 @@ private class ComplianceContextEngineTest {
             'Score should be 0 when JSON is malformed');
     }
 
+    // ═══════════════════════════════════════════════════════════════
+    // ORCHESTRATION ENRICHMENT TESTS
+    // ═══════════════════════════════════════════════════════════════
+
+    @IsTest
+    static void shouldEnrichContextWithOrchestrationData() {
+        Test.startTest();
+        ComplianceContextEngine engine = new ComplianceContextEngine();
+        ComplianceContextEngine.ComplianceContext ctx = engine.buildContext();
+        Test.stopTest();
+
+        // lastScanTimestamp should be set because we have Compliance_Score__c data
+        Assert.isNotNull(ctx.lastScanTimestamp,
+            'Last scan timestamp should be populated from Compliance_Score__c');
+
+        // registeredFrameworks should come from ComplianceServiceFactory
+        Assert.isNotNull(ctx.registeredFrameworks,
+            'Registered frameworks should not be null');
+        Assert.isFalse(ctx.registeredFrameworks.isEmpty(),
+            'Registered frameworks should contain entries from ComplianceServiceFactory');
+
+        // Verify known frameworks are in the list
+        Set<String> fwSet = new Set<String>(ctx.registeredFrameworks);
+        Assert.isTrue(fwSet.contains('HIPAA'),
+            'Registered frameworks should include HIPAA');
+        Assert.isTrue(fwSet.contains('SOC2'),
+            'Registered frameworks should include SOC2');
+    }
+
+    @IsTest
+    static void shouldHandleOrchestrationEnrichmentWithNoScores() {
+        delete as user [SELECT Id FROM Compliance_Score__c WITH USER_MODE];
+
+        Test.startTest();
+        ComplianceContextEngine engine = new ComplianceContextEngine();
+        ComplianceContextEngine.ComplianceContext ctx = engine.buildContext();
+        Test.stopTest();
+
+        // lastScanTimestamp should be null when no scores exist
+        Assert.isNull(ctx.lastScanTimestamp,
+            'Last scan timestamp should be null when no Compliance_Score__c records exist');
+
+        // registeredFrameworks should still be populated from ComplianceServiceFactory
+        Assert.isNotNull(ctx.registeredFrameworks,
+            'Registered frameworks should not be null even without scores');
+        Assert.isFalse(ctx.registeredFrameworks.isEmpty(),
+            'Registered frameworks should still be populated from factory');
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // DTO DEFAULT TESTS
+    // ═══════════════════════════════════════════════════════════════
+
     @IsTest
     static void shouldInitializeDTODefaults() {
         ComplianceContextEngine.ComplianceContext ctx = new ComplianceContextEngine.ComplianceContext();
@@ -190,6 +245,8 @@ private class ComplianceContextEngineTest {
         Assert.isNotNull(ctx.prioritizedActions, 'prioritizedActions should default to empty list');
         Assert.isNotNull(ctx.recentGaps, 'recentGaps should default to empty list');
         Assert.isNotNull(ctx.overview, 'overview should default to new instance');
+        Assert.isNotNull(ctx.registeredFrameworks,
+            'registeredFrameworks should default to empty list');
 
         ComplianceContextEngine.ComplianceOverview ov = new ComplianceContextEngine.ComplianceOverview();
         Assert.areEqual(0, ov.overallScore, 'overallScore should default to 0');

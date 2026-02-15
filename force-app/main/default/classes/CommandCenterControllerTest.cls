@@ -1,11 +1,12 @@
 /**
  * Tests for CommandCenterController including context loading, gap updates,
- * severity counts, and activity feed.
+ * severity counts, activity feed, and orchestration integration methods.
  *
  * @author Elaro Team
  * @since v3.1.0 (Spring '26)
  * @group Command Center
  * @see CommandCenterController
+ * @see OrchestrationService
  */
 @IsTest(testFor=CommandCenterController.class)
 private class CommandCenterControllerTest {
@@ -288,5 +289,122 @@ private class CommandCenterControllerTest {
                 'Should indicate action type is required');
         }
         Test.stopTest();
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // ORCHESTRATION INTEGRATION TESTS
+    // ═══════════════════════════════════════════════════════════════
+
+    @IsTest
+    static void shouldTriggerOrchestrationScan() {
+        Test.startTest();
+        OrchestrationService.ScanResult result =
+            CommandCenterController.triggerOrchestrationScan();
+        Test.stopTest();
+
+        Assert.isNotNull(result, 'Scan result should not be null');
+        Assert.isNotNull(result.scanId, 'Scan ID should be generated');
+        Assert.isTrue(result.scanId.startsWith('SCAN-'),
+            'Scan ID should have SCAN- prefix');
+        Assert.isNotNull(result.frameworkResults,
+            'Framework results should not be null');
+    }
+
+    @IsTest
+    static void shouldTriggerFrameworkScanForSpecificFrameworks() {
+        List<String> frameworks = new List<String>{ 'SOC2', 'HIPAA' };
+
+        Test.startTest();
+        OrchestrationService.ScanResult result =
+            CommandCenterController.triggerFrameworkScan(frameworks);
+        Test.stopTest();
+
+        Assert.isNotNull(result, 'Scan result should not be null');
+        Assert.areEqual(2, result.requestedFrameworks.size(),
+            'Should have 2 requested frameworks');
+    }
+
+    @IsTest
+    static void shouldRejectNullFrameworksInTriggerFrameworkScan() {
+        Test.startTest();
+        try {
+            CommandCenterController.triggerFrameworkScan(null);
+            Assert.fail('Should throw AuraHandledException for null frameworks');
+        } catch (AuraHandledException e) {
+            Assert.isTrue(e.getMessage().contains('At least one framework'),
+                'Error should indicate frameworks are required');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void shouldRejectEmptyFrameworksInTriggerFrameworkScan() {
+        Test.startTest();
+        try {
+            CommandCenterController.triggerFrameworkScan(new List<String>());
+            Assert.fail('Should throw AuraHandledException for empty frameworks');
+        } catch (AuraHandledException e) {
+            Assert.isTrue(e.getMessage().contains('At least one framework'),
+                'Error should indicate frameworks are required');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void shouldGetOrchestrationProgress() {
+        Test.startTest();
+        OrchestrationService.ScanProgress progress =
+            CommandCenterController.getOrchestrationProgress('SCAN-TEST-123');
+        Test.stopTest();
+
+        Assert.isNotNull(progress, 'Scan progress should not be null');
+        Assert.areEqual('SCAN-TEST-123', progress.scanId,
+            'Scan ID should match requested ID');
+        Assert.isNotNull(progress.status, 'Status should be set');
+    }
+
+    @IsTest
+    static void shouldRejectBlankScanIdInGetProgress() {
+        Test.startTest();
+        try {
+            CommandCenterController.getOrchestrationProgress('');
+            Assert.fail('Should throw AuraHandledException for blank scan ID');
+        } catch (AuraHandledException e) {
+            Assert.isTrue(e.getMessage().contains('Scan ID is required'),
+                'Error should indicate scan ID is required');
+        }
+        Test.stopTest();
+    }
+
+    @IsTest
+    static void shouldGetRegisteredFrameworks() {
+        Test.startTest();
+        List<String> frameworks = CommandCenterController.getRegisteredFrameworks();
+        Test.stopTest();
+
+        Assert.isNotNull(frameworks, 'Frameworks list should not be null');
+        Assert.isFalse(frameworks.isEmpty(),
+            'Should have at least one registered framework');
+        // Verify known frameworks are present
+        Set<String> frameworkSet = new Set<String>(frameworks);
+        Assert.isTrue(frameworkSet.contains('HIPAA'),
+            'Should contain HIPAA framework');
+        Assert.isTrue(frameworkSet.contains('SOC2'),
+            'Should contain SOC2 framework');
+    }
+
+    @IsTest
+    static void shouldIncludeOrchestrationDataInContext() {
+        Test.startTest();
+        ComplianceContextEngine.ComplianceContext ctx =
+            CommandCenterController.getComplianceContext();
+        Test.stopTest();
+
+        Assert.isNotNull(ctx.lastScanTimestamp,
+            'Last scan timestamp should be populated from orchestration data');
+        Assert.isNotNull(ctx.registeredFrameworks,
+            'Registered frameworks should be populated from orchestration data');
+        Assert.isFalse(ctx.registeredFrameworks.isEmpty(),
+            'Registered frameworks should not be empty');
     }
 }

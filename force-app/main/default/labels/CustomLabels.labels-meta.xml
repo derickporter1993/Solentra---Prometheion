@@ -491,6 +491,34 @@
         <value>Automated scan complete. Review the results below.</value>
     </labels>
     <labels>
+        <fullName>AW_AutoScanError</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Auto Scan Error Message</shortDescription>
+        <value>The automated scan encountered an error. Please retry or contact your administrator.</value>
+    </labels>
+    <labels>
+        <fullName>AW_AutoScanPassCount</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Auto Scan Pass Count</shortDescription>
+        <value>{0} Passed</value>
+    </labels>
+    <labels>
+        <fullName>AW_AutoScanFailCount</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Auto Scan Fail Count</shortDescription>
+        <value>{0} Failed</value>
+    </labels>
+    <labels>
+        <fullName>AW_AutoScanNoFindings</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Auto Scan No Findings Message</shortDescription>
+        <value>No compliance findings were generated for this control reference.</value>
+    </labels>
+    <labels>
         <fullName>AW_AttestationPrompt</fullName>
         <language>en_US</language>
         <protected>false</protected>
@@ -981,6 +1009,146 @@
         <protected>true</protected>
         <shortDescription>Not started status</shortDescription>
         <value>Not Started</value>
+    </labels>
+    <labels>
+        <fullName>TC_NoFrameworks</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No frameworks available message</shortDescription>
+        <value>No compliance frameworks available. Run data aggregation to generate views.</value>
+    </labels>
+    <labels>
+        <fullName>TC_Error</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Trust Center error title</shortDescription>
+        <value>Error</value>
+    </labels>
+    <labels>
+        <fullName>TC_PublicToggle</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Toggle public visibility label</shortDescription>
+        <value>Public</value>
+    </labels>
+    <labels>
+        <fullName>TC_LinkManager</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Link manager section title</shortDescription>
+        <value>Link Manager</value>
+    </labels>
+    <labels>
+        <fullName>TC_LinkCopied</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Link copied confirmation</shortDescription>
+        <value>Link copied to clipboard</value>
+    </labels>
+    <labels>
+        <fullName>TC_DeactivateLink</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Deactivate link button</shortDescription>
+        <value>Deactivate</value>
+    </labels>
+    <labels>
+        <fullName>TC_AccessTier</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Access tier field label</shortDescription>
+        <value>Access Tier</value>
+    </labels>
+    <labels>
+        <fullName>TC_ExpirationDate</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Expiration date column label</shortDescription>
+        <value>Expiration Date</value>
+    </labels>
+    <labels>
+        <fullName>TC_AccessCount</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Access count column label</shortDescription>
+        <value>Access Count</value>
+    </labels>
+    <labels>
+        <fullName>TC_PublicViewTitle</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Public view page title</shortDescription>
+        <value>Compliance Trust Center</value>
+    </labels>
+    <labels>
+        <fullName>TC_InvalidLink</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Invalid link error message</shortDescription>
+        <value>This link is invalid or has been revoked.</value>
+    </labels>
+    <labels>
+        <fullName>TC_ExpiredLink</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Expired link error message</shortDescription>
+        <value>This link has expired. Please request a new link from your contact.</value>
+    </labels>
+    <labels>
+        <fullName>TC_CertificationStatus</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Certification status label</shortDescription>
+        <value>Certification Status</value>
+    </labels>
+    <labels>
+        <fullName>TC_LastAuditDate</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Last audit date label</shortDescription>
+        <value>Last Audit Date</value>
+    </labels>
+    <labels>
+        <fullName>TC_ComplianceScore</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Compliance score label</shortDescription>
+        <value>Compliance Score</value>
+    </labels>
+    <labels>
+        <fullName>TC_NotCertified</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Not certified status</shortDescription>
+        <value>Not Certified</value>
+    </labels>
+    <labels>
+        <fullName>TC_ScoreExcellent</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Excellent score range label</shortDescription>
+        <value>Excellent</value>
+    </labels>
+    <labels>
+        <fullName>TC_ScoreGood</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Good score range label</shortDescription>
+        <value>Good</value>
+    </labels>
+    <labels>
+        <fullName>TC_ScoreNeedsWork</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Needs work score range label</shortDescription>
+        <value>Needs Improvement</value>
+    </labels>
+    <labels>
+        <fullName>TC_ScoreCritical</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Critical score range label</shortDescription>
+        <value>Critical</value>
     </labels>
     <labels>
         <fullName>AI_DiscoveryInProgress</fullName>

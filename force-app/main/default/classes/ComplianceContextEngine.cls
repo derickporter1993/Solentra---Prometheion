@@ -7,12 +7,15 @@
  * @since v3.1.0 (Spring '26)
  * @group Command Center
  * @see CommandCenterController
+ * @see OrchestrationService
  * @see Compliance_Action__mdt
  */
 public inherited sharing class ComplianceContextEngine {
 
     /**
      * DTO representing the aggregated compliance context for the Command Center.
+     * Includes orchestration metadata so the UI can display last-scan status
+     * and available framework coverage.
      */
     public class ComplianceContext {
         @AuraEnabled public List<FrameworkSummary> frameworkSummaries;
@@ -20,6 +23,10 @@ public inherited sharing class ComplianceContextEngine {
         @AuraEnabled public List<GapSummary> recentGaps;
         @AuraEnabled public ComplianceOverview overview;
         @AuraEnabled public Datetime contextTimestamp;
+        /** Timestamp of the most recent orchestrated scan. Null if no scan recorded. */
+        @AuraEnabled public Datetime lastScanTimestamp;
+        /** List of framework codes registered in the Orchestration Engine. */
+        @AuraEnabled public List<String> registeredFrameworks;
 
         public ComplianceContext() {
             this.frameworkSummaries = new List<FrameworkSummary>();
@@ -27,6 +34,7 @@ public inherited sharing class ComplianceContextEngine {
             this.recentGaps = new List<GapSummary>();
             this.overview = new ComplianceOverview();
             this.contextTimestamp = Datetime.now();
+            this.registeredFrameworks = new List<String>();
         }
     }
 
@@ -108,6 +116,8 @@ public inherited sharing class ComplianceContextEngine {
 
     /**
      * Builds the full compliance context for the Command Center.
+     * Enriches the context with orchestration metadata from
+     * {@link OrchestrationService} and {@link ComplianceServiceFactory}.
      *
      * @return ComplianceContext containing all aggregated compliance data
      */
@@ -117,7 +127,30 @@ public inherited sharing class ComplianceContextEngine {
         ctx.overview = buildOverview(ctx.frameworkSummaries);
         ctx.prioritizedActions = loadPrioritizedActions();
         ctx.recentGaps = loadRecentGaps();
+        enrichWithOrchestrationData(ctx);
         return ctx;
+    }
+
+    /**
+     * Enriches the compliance context with orchestration engine metadata:
+     * last scan timestamp and the set of registered frameworks available
+     * for scanning.
+     *
+     * @param ctx The ComplianceContext to enrich in place
+     */
+    @TestVisible
+    private void enrichWithOrchestrationData(ComplianceContext ctx) {
+        try {
+            OrchestrationService orchestrator = new OrchestrationService();
+            ctx.lastScanTimestamp = orchestrator.getLastScanTimestamp();
+            ctx.registeredFrameworks = new List<String>(
+                ComplianceServiceFactory.getSupportedFrameworks()
+            );
+        } catch (Exception e) {
+            ElaroLogger.warn('ComplianceContextEngine.enrichWithOrchestrationData: '
+                + 'Failed to load orchestration data: ' + e.getMessage());
+            // Graceful degradation: leave orchestration fields at defaults
+        }
     }
 
     /**
