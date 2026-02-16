@@ -97,7 +97,10 @@ public with sharing class ElaroGraphIndexer {
         );
 
         try {
-            ElaroSecurityUtils.validateCRUDAccess('Elaro_Graph_Node__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
+            // Big Object (__b): use inline Schema check so PMD static analysis can verify CRUD
+            if (!Schema.sObjectType.Elaro_Compliance_Graph__b.isCreateable()) {
+                throw new ElaroException('Insufficient create access on Elaro_Compliance_Graph__b');
+            }
             insert node;
             return nodeHash;
         } catch (DmlException e) {
@@ -397,7 +400,10 @@ public with sharing class ElaroGraphIndexer {
         
         // Bulk insert all nodes
         if (!nodesToInsert.isEmpty()) {
-            ElaroSecurityUtils.validateCRUDAccess('Elaro_Graph_Node__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
+            // Big Object (__b): use inline Schema check so PMD static analysis can verify CRUD
+            if (!Schema.sObjectType.Elaro_Compliance_Graph__b.isCreateable()) {
+                throw new ElaroException('Insufficient create access on Elaro_Compliance_Graph__b');
+            }
             try {
                 insert nodesToInsert;
             } catch (DmlException e) {

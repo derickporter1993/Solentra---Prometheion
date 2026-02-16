@@ -160,7 +160,10 @@ public without sharing class ElaroReasoningEngine {
         );
 
         try {
-            // Big Object (__b): standard CRUD/FLS checks not enforced by platform for Big Objects
+            // Big Object (__b): use inline Schema check so PMD static analysis can verify CRUD
+            if (!Schema.sObjectType.Elaro_Compliance_Graph__b.isCreateable()) {
+                throw new ElaroGraphIndexer.ElaroException('Insufficient create access on Elaro_Compliance_Graph__b');
+            }
             insert adjudication;
             return adjudicationHash;
         } catch (DmlException e) {
