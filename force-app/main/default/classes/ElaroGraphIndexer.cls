@@ -31,6 +31,7 @@
 public with sharing class ElaroGraphIndexer {
     private static final String GRAPH_VERSION = 'v3.0';
     private static final Integer MAX_METADATA_SIZE = 50000;
+    private static final String INJECTION_PATTERN = '.*[;\'\"\\-\\-<>\\\\/%].*';
 
     /**
      * Indexes a single compliance entity change into the graph Big Object.
@@ -66,11 +67,10 @@ public with sharing class ElaroGraphIndexer {
         }
         // Injection character validation for entityType and entityId
         // Prevent SOQL injection, XSS, and path traversal via dangerous characters
-        String injectionPattern = '.*[;\'\"\\-\\-<>\\\\/%].*';
-        if (Pattern.matches(injectionPattern, entityType)) {
+        if (Pattern.matches(INJECTION_PATTERN, entityType)) {
             throw new ElaroException('Entity type contains invalid characters');
         }
-        if (Pattern.matches(injectionPattern, entityId)) {
+        if (Pattern.matches(INJECTION_PATTERN, entityId)) {
             throw new ElaroException('Entity ID contains invalid characters');
         }
         // Validate framework is supported
@@ -97,7 +97,10 @@ public with sharing class ElaroGraphIndexer {
         );
 
         try {
-            ElaroSecurityUtils.validateCRUDAccess('Elaro_Graph_Node__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
+            // Big Object (__b): use inline Schema check so PMD static analysis can verify CRUD
+            if (!Schema.sObjectType.Elaro_Compliance_Graph__b.isCreateable()) {
+                throw new ElaroException('Insufficient create access on Elaro_Compliance_Graph__b');
+            }
             insert node;
             return nodeHash;
         } catch (DmlException e) {
@@ -223,7 +226,7 @@ public with sharing class ElaroGraphIndexer {
                     Status__c = 'NEW',
                     Timestamp__c = System.now()
                 );
-                insert error;
+                Database.insert(error, false, AccessLevel.USER_MODE);
             } catch (Exception logError) {
                 // Don't fail if error logging fails
                 ElaroLogger.warn( 'Failed to log Einstein error: ' + logError.getMessage());
@@ -348,6 +351,16 @@ public with sharing class ElaroGraphIndexer {
                     continue;
                 }
                 
+                // Injection character validation (consistent with indexChange single-record method)
+                if (Pattern.matches(INJECTION_PATTERN, input.entityType)) {
+                    ElaroLogger.warn('ElaroGraphIndexer: Skipping input with invalid entityType characters - EntityType: ' + input.entityType);
+                    continue;
+                }
+                if (Pattern.matches(INJECTION_PATTERN, input.entityId)) {
+                    ElaroLogger.warn('ElaroGraphIndexer: Skipping input with invalid entityId characters - EntityId: ' + input.entityId);
+                    continue;
+                }
+
                 // Validate framework
                 if (!ElaroConstants.isValidFramework(input.framework)) {
                     ElaroLogger.warn( 'ElaroGraphIndexer: Skipping invalid framework - ' + input.framework);
@@ -387,6 +400,10 @@ public with sharing class ElaroGraphIndexer {
         
         // Bulk insert all nodes
         if (!nodesToInsert.isEmpty()) {
+            // Big Object (__b): use inline Schema check so PMD static analysis can verify CRUD
+            if (!Schema.sObjectType.Elaro_Compliance_Graph__b.isCreateable()) {
+                throw new ElaroException('Insufficient create access on Elaro_Compliance_Graph__b');
+            }
             try {
                 insert nodesToInsert;
             } catch (DmlException e) {
