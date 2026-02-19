@@ -1,5 +1,5 @@
 /**
- * @description Test class for ComplianceGraphService
+ * Test class for ComplianceGraphService
  * @author Elaro Development Team
  * @since 2026-01
  */

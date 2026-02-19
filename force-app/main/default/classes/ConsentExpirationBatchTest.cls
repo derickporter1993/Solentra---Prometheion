@@ -1,5 +1,5 @@
 /**
- * @description Test class for ConsentExpirationBatch
+ * Test class for ConsentExpirationBatch
  * Tests batch processing of expiring consents and renewal reminders
  * @group Tests
  * @see ConsentExpirationBatch

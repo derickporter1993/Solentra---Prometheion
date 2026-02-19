@@ -87,7 +87,8 @@ jobs:
             --rule-selector "AppExchange" \
             --rule-selector "Recommended:Security" \
             --format "json" \
-            --outfile "scanner-reports/code-analyzer-appexchange.json" || true
+            --outfile "scanner-reports/code-analyzer-appexchange.json" \
+            --severity-threshold 2
 
       - name: Run AppExchange Security Scan (Table)
         run: |

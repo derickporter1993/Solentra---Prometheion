@@ -1,5 +1,5 @@
 /**
- * @description Unit tests for BenchmarkingService
+ * Unit tests for BenchmarkingService
  * Tests industry benchmarks, comparisons, maturity assessment, and recommendations
  * @group Tests
  * @author Elaro Team

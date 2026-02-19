@@ -1,5 +1,5 @@
 /**
- * @description Test class for EscalationPathController
+ * Test class for EscalationPathController
  * @author Elaro Development Team
  * @since 2026-01
  */

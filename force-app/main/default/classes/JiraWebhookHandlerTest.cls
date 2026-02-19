@@ -1,5 +1,5 @@
 /**
- * @description Test class for JiraWebhookHandler
+ * Test class for JiraWebhookHandler
  * Provides comprehensive coverage for Jira webhook processing
  *
  * @author Elaro Development Team

@@ -1,5 +1,5 @@
 /**
- * @description Test class for RemediationSuggestionService
+ * Test class for RemediationSuggestionService
  * @author Elaro Development Team
  * @since 2026-01
  */

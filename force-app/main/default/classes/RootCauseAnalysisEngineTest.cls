@@ -1,5 +1,5 @@
 /**
- * @description Unit tests for RootCauseAnalysisEngine
+ * Unit tests for RootCauseAnalysisEngine
  * @group Tests
  */
 @IsTest(testFor=RootCauseAnalysisEngine.class)

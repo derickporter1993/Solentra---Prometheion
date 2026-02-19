@@ -70,11 +70,11 @@ public with sharing class ElaroDrillDownController {
         Integer offset = ctx.offset != null ? ctx.offset : 0;
 
         // Build and execute query
-        String soql = buildSecureQuery(ctx, pageSize, offset);
+        QueryWithBinds qwb = buildSecureQuery(ctx, pageSize, offset);
 
         List<SObject> records;
         try {
-            records = Database.query(soql);
+            records = Database.queryWithBinds(qwb.query, qwb.binds, AccessLevel.USER_MODE);
         } catch (QueryException e) {
             throw new AuraHandledException('Query failed: ' + e.getMessage());
         }
@@ -122,8 +122,8 @@ public with sharing class ElaroDrillDownController {
         validateFilterContext(ctx);
 
         // Build query with export limit
-        String soql = buildSecureQuery(ctx, MAX_TOTAL_RECORDS, 0);
-        List<SObject> records = Database.query(soql);
+        QueryWithBinds qwb = buildSecureQuery(ctx, MAX_TOTAL_RECORDS, 0);
+        List<SObject> records = Database.queryWithBinds(qwb.query, qwb.binds, AccessLevel.USER_MODE);
 
         // Build CSV
         List<String> csvLines = new List<String>();
@@ -226,9 +226,15 @@ public with sharing class ElaroDrillDownController {
     }
 
     /**
-     * Build secure SOQL query
+     * Build secure SOQL query with bind variables
+     *
+     * @param ctx The filter context containing object, fields, and filters
+     * @param limitSize Maximum number of records to return
+     * @param offset Number of records to skip for pagination
+     * @return QueryWithBinds containing the parameterized query and bind map
      */
-    private static String buildSecureQuery(FilterContext ctx, Integer limitSize, Integer offset) {
+    private static QueryWithBinds buildSecureQuery(FilterContext ctx, Integer limitSize, Integer offset) {
+        Map<String, Object> binds = new Map<String, Object>();
         List<String> selectFields = new List<String>();
 
         // Always include Id for record links
@@ -245,8 +251,9 @@ public with sharing class ElaroDrillDownController {
         String soql = 'SELECT ' + String.join(selectFields, ', ') +
                       ' FROM ' + ctx.objectApiName;
 
-        // Build WHERE clause
+        // Build WHERE clause with bind variables
         List<String> whereParts = new List<String>();
+        Integer bindIndex = 0;
 
         if (ctx.filters != null && !ctx.filters.isEmpty()) {
             for (Filter f : ctx.filters) {
@@ -261,29 +268,36 @@ public with sharing class ElaroDrillDownController {
                     continue;
                 }
 
-                String escapedValue = String.escapeSingleQuotes(f.value);
+                String bindKey = 'filterVal_' + bindIndex;
+                bindIndex++;
 
                 if (op == 'LIKE') {
-                    whereParts.add(fieldName + ' LIKE \'%' + escapedValue + '%\'');
+                    binds.put(bindKey, '%' + f.value + '%');
+                    whereParts.add(fieldName + ' LIKE :' + bindKey);
                 } else if (op == 'IN' || op == 'NOT IN') {
                     List<String> vals = new List<String>();
                     for (String v : f.value.split(',')) {
-                        vals.add('\'' + String.escapeSingleQuotes(v.trim()) + '\'');
+                        vals.add(v.trim());
                     }
-                    whereParts.add(fieldName + ' ' + op + ' (' + String.join(vals, ', ') + ')');
+                    binds.put(bindKey, vals);
+                    whereParts.add(fieldName + ' ' + op + ' :' + bindKey);
                 } else if (op == 'INCLUDES' || op == 'EXCLUDES') {
                     // Multi-select picklist
-                    whereParts.add(fieldName + ' ' + op + ' (\'' + escapedValue + '\')');
+                    binds.put(bindKey, f.value);
+                    whereParts.add(fieldName + ' ' + op + ' (:' + bindKey + ')');
                 } else {
-                    // Handle date literals
+                    // Handle date literals (keep inline as they are SOQL keywords)
                     if (isDateLiteral(f.value)) {
                         whereParts.add(fieldName + ' ' + op + ' ' + f.value);
                     } else if (isNumeric(f.value)) {
-                        whereParts.add(fieldName + ' ' + op + ' ' + f.value);
+                        binds.put(bindKey, Decimal.valueOf(f.value));
+                        whereParts.add(fieldName + ' ' + op + ' :' + bindKey);
                     } else if (f.value.equalsIgnoreCase('true') || f.value.equalsIgnoreCase('false')) {
-                        whereParts.add(fieldName + ' ' + op + ' ' + f.value.toLowerCase());
+                        binds.put(bindKey, Boolean.valueOf(f.value));
+                        whereParts.add(fieldName + ' ' + op + ' :' + bindKey);
                     } else {
-                        whereParts.add(fieldName + ' ' + op + ' \'' + escapedValue + '\'');
+                        binds.put(bindKey, f.value);
+                        whereParts.add(fieldName + ' ' + op + ' :' + bindKey);
                     }
                 }
             }
@@ -305,13 +319,18 @@ public with sharing class ElaroDrillDownController {
             soql += ' ORDER BY CreatedDate DESC';
         }
 
-        // Add pagination
-        soql += ' LIMIT ' + limitSize;
+        // Add pagination with bind variables
+        binds.put('queryLimit', limitSize);
+        soql += ' LIMIT :queryLimit';
         if (offset > 0) {
-            soql += ' OFFSET ' + offset;
+            binds.put('queryOffset', offset);
+            soql += ' OFFSET :queryOffset';
         }
 
-        return soql;
+        QueryWithBinds result = new QueryWithBinds();
+        result.query = soql;
+        result.binds = binds;
+        return result;
     }
 
     /**
@@ -540,5 +559,13 @@ public with sharing class ElaroDrillDownController {
         @AuraEnabled public String label;
         @AuraEnabled public String type;
         @AuraEnabled public Boolean sortable = true;
+    }
+
+    /**
+     * Wrapper for a parameterized SOQL query and its bind variable map
+     */
+    private class QueryWithBinds {
+        public String query;
+        public Map<String, Object> binds;
     }
 }

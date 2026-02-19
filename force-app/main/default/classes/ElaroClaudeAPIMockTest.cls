@@ -1,5 +1,5 @@
 /**
- * @description Test class for ElaroClaudeAPIMock
+ * Test class for ElaroClaudeAPIMock
  * @group Tests
  * @see ElaroClaudeAPIMock
  */

@@ -16,12 +16,16 @@ private class HCLoggerTest {
 
     @IsTest
     static void shouldLogInfoMessageWithoutException() {
+        Exception caughtEx;
         Test.startTest();
-        HCLogger.info('Test info message');
+        try {
+            HCLogger.info('Test info message');
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        // Method completes without throwing; logger suppresses output in test context
-        Assert.isTrue(true, 'info(String) should execute without exception');
+        Assert.isNull(caughtEx, 'info(String) should execute without exception');
     }
 
     @IsTest
@@ -31,38 +35,58 @@ private class HCLoggerTest {
             'action' => 'scan'
         };
 
+        Exception caughtEx;
         Test.startTest();
-        HCLogger.info('Test info with context', context);
+        try {
+            HCLogger.info('Test info with context', context);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'info(String, Map) should execute without exception');
+        Assert.isNull(caughtEx, 'info(String, Map) should execute without exception');
     }
 
     @IsTest
     static void shouldLogInfoMessageWithNullContext() {
+        Exception caughtEx;
         Test.startTest();
-        HCLogger.info('Test info null context', null);
+        try {
+            HCLogger.info('Test info null context', null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'info(String, null) should handle null context gracefully');
+        Assert.isNull(caughtEx, 'info(String, null) should handle null context gracefully');
     }
 
     @IsTest
     static void shouldLogInfoMessageWithEmptyContext() {
+        Exception caughtEx;
         Test.startTest();
-        HCLogger.info('Test info empty context', new Map<String, Object>());
+        try {
+            HCLogger.info('Test info empty context', new Map<String, Object>());
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'info(String, emptyMap) should handle empty context gracefully');
+        Assert.isNull(caughtEx, 'info(String, emptyMap) should handle empty context gracefully');
     }
 
     @IsTest
     static void shouldLogWarnMessageWithoutException() {
+        Exception caughtEx;
         Test.startTest();
-        HCLogger.warn('Test warning message');
+        try {
+            HCLogger.warn('Test warning message');
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'warn(String) should execute without exception');
+        Assert.isNull(caughtEx, 'warn(String) should execute without exception');
     }
 
     @IsTest
@@ -72,20 +96,30 @@ private class HCLoggerTest {
             'actual' => 65
         };
 
+        Exception caughtEx;
         Test.startTest();
-        HCLogger.warn('Score below threshold', context);
+        try {
+            HCLogger.warn('Score below threshold', context);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'warn(String, Map) should execute without exception');
+        Assert.isNull(caughtEx, 'warn(String, Map) should execute without exception');
     }
 
     @IsTest
     static void shouldLogErrorMessageWithoutException() {
+        Exception caughtEx;
         Test.startTest();
-        HCLogger.error('Test error message');
+        try {
+            HCLogger.error('Test error message');
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'error(String) should execute without exception');
+        Assert.isNull(caughtEx, 'error(String) should execute without exception');
     }
 
     @IsTest
@@ -102,7 +136,6 @@ private class HCLoggerTest {
         Test.stopTest();
 
         Assert.isNotNull(testEx, 'Test exception should have been captured');
-        Assert.isTrue(true, 'error(String, Exception) should execute without exception');
     }
 
     @IsTest
@@ -124,12 +157,17 @@ private class HCLoggerTest {
 
     @IsTest
     static void shouldHandleNullMessage() {
+        Exception caughtEx;
         Test.startTest();
-        HCLogger.info(null);
-        HCLogger.warn(null);
-        HCLogger.error(null);
+        try {
+            HCLogger.info(null);
+            HCLogger.warn(null);
+            HCLogger.error(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'All log methods should handle null messages gracefully');
+        Assert.isNull(caughtEx, 'All log methods should handle null messages gracefully');
     }
 }

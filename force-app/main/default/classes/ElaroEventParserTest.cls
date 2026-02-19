@@ -1,5 +1,5 @@
 /**
- * @description Unit tests for ElaroEventParser
+ * Unit tests for ElaroEventParser
  * @group Tests
  */
 @IsTest(testFor=ElaroEventParser.class)

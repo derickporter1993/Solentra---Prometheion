@@ -1,5 +1,5 @@
 /**
- * @description Unit tests for NaturalLanguageQueryService
+ * Unit tests for NaturalLanguageQueryService
  * @group Tests
  */
 @IsTest(testFor=NaturalLanguageQueryService.class)

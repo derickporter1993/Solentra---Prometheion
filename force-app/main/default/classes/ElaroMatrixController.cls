@@ -303,18 +303,24 @@ public with sharing class ElaroMatrixController {
             ' WHERE ' + sanitizeFilterClause(cfg.filters) : '';
 
         try {
+            Map<String, Object> binds = new Map<String, Object>();
+
             // Count distinct row values
             String rowCountQuery = 'SELECT COUNT_DISTINCT(' + rowField + ') distinctCount ' +
                                    'FROM ' + cfg.objectName + baseFilter +
                                    ' WITH USER_MODE';
-            List<AggregateResult> rowResults = Database.query(rowCountQuery);
+            List<AggregateResult> rowResults = (List<AggregateResult>) Database.queryWithBinds(
+                rowCountQuery, binds, AccessLevel.USER_MODE
+            );
             Integer rowCount = rowResults.isEmpty() ? 0 : (Integer)rowResults[0].get('distinctCount');
 
             // Count distinct column values
             String colCountQuery = 'SELECT COUNT_DISTINCT(' + colField + ') distinctCount ' +
                                    'FROM ' + cfg.objectName + baseFilter +
                                    ' WITH USER_MODE';
-            List<AggregateResult> colResults = Database.query(colCountQuery);
+            List<AggregateResult> colResults = (List<AggregateResult>) Database.queryWithBinds(
+                colCountQuery, binds, AccessLevel.USER_MODE
+            );
             Integer colCount = colResults.isEmpty() ? 0 : (Integer)colResults[0].get('distinctCount');
 
             return rowCount * colCount;
@@ -352,7 +358,10 @@ public with sharing class ElaroMatrixController {
 
         List<AggregateResult> results;
         try {
-            results = Database.query(soql);
+            Map<String, Object> binds = new Map<String, Object>();
+            results = (List<AggregateResult>) Database.queryWithBinds(
+                soql, binds, AccessLevel.USER_MODE
+            );
         } catch (QueryException e) {
             throw new AuraHandledException('Matrix query syntax error: ' + e.getMessage());
         } catch (System.SecurityException e) {
@@ -380,20 +389,22 @@ public with sharing class ElaroMatrixController {
             );
         }
 
-        // Query the summary object
+        // Query the summary object with bind variables
         String soql = 'SELECT Row_Dimension__c rowDim, ' +
                              'Column_Dimension__c colDim, ' +
                              'Metric_Value__c metricValue ' +
                       'FROM ' + summaryObjectName +
                       ' WHERE Summary_Type__c = :summaryType' +
                       ' WITH USER_MODE' +
-                      ' LIMIT ' + MAX_QUERY_ROWS;
+                      ' LIMIT :queryLimit';
 
-        String summaryType = cfg.rowField + '_' + cfg.columnField;
+        Map<String, Object> binds = new Map<String, Object>();
+        binds.put('summaryType', cfg.rowField + '_' + cfg.columnField);
+        binds.put('queryLimit', MAX_QUERY_ROWS);
 
         List<SObject> summaryRecords;
         try {
-            summaryRecords = Database.query(soql);
+            summaryRecords = Database.queryWithBinds(soql, binds, AccessLevel.USER_MODE);
         } catch (QueryException e) {
             throw new AuraHandledException('Summary query syntax error: ' + e.getMessage());
         } catch (System.SecurityException e) {

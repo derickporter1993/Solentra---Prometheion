@@ -1,5 +1,5 @@
 /**
- * @description Test class for ComplianceServiceBase
+ * Test class for ComplianceServiceBase
  * Tests the abstract base class through a concrete subclass (HIPAASecurityRuleService).
  * Covers: policy retrieval, gap creation, evidence collection, audit logging,
  * risk scoring, severity mapping, and IRiskScoringService implementation.

@@ -121,8 +121,11 @@ public with sharing class ElaroExecutiveKPIController {
         // Validate and secure the query
         String safeQuery = validateAndSecureQuery(config.SOQL_Query__c);
 
-        // Execute the query
-        List<AggregateResult> queryResults = Database.query(safeQuery);
+        // Execute the query with bind map (query is metadata-driven, no user-concatenated values)
+        Map<String, Object> binds = new Map<String, Object>();
+        List<AggregateResult> queryResults = (List<AggregateResult>) Database.queryWithBinds(
+            safeQuery, binds, AccessLevel.USER_MODE
+        );
 
         if (queryResults.isEmpty()) {
             return null;

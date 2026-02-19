@@ -1,5 +1,5 @@
 /**
- * @description Test class for ServiceNowIntegration
+ * Test class for ServiceNowIntegration
  * Tests ServiceNow integration for controls, evidence, and incidents
  * @group Tests
  * @see ServiceNowIntegration

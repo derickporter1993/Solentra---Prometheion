@@ -1,5 +1,5 @@
 /**
- * @description Test class for DataResidencyService
+ * Test class for DataResidencyService
  * Tests data residency compliance and regional validation
  * @group Tests
  * @see DataResidencyService

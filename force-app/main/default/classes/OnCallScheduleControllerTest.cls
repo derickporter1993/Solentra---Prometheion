@@ -1,5 +1,5 @@
 /**
- * @description Test class for OnCallScheduleController
+ * Test class for OnCallScheduleController
  * @author Elaro Development Team
  * @since 2026-01
  */

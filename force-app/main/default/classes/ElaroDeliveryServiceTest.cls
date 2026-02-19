@@ -1,5 +1,5 @@
 /**
- * @description Unit tests for ElaroDeliveryService
+ * Unit tests for ElaroDeliveryService
  * @group Tests
  */
 @IsTest(testFor=ElaroDeliveryService.class)

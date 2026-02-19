@@ -1,5 +1,5 @@
 /**
- * @description Test class for BlockchainVerification
+ * Test class for BlockchainVerification
  * Tests blockchain evidence anchoring and verification
  * @group Tests
  * @see BlockchainVerification

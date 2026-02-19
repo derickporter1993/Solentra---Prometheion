@@ -1,5 +1,5 @@
 /**
- * @description Test class for SlackIntegration
+ * Test class for SlackIntegration
  * Tests Slack webhook integration for alerts and notifications
  * @group Tests
  * @see SlackIntegration
