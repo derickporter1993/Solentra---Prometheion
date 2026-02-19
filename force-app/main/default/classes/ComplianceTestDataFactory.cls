@@ -14,7 +14,9 @@ public class ComplianceTestDataFactory {
      * @param framework Framework name
      * @param count Number of gaps to create
      * @return List of Compliance_Gap__c records
-     */
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
+ */
     public static List<Compliance_Gap__c> createComplianceGaps(String framework, Integer count) {
         List<Compliance_Gap__c> gaps = new List<Compliance_Gap__c>();
         

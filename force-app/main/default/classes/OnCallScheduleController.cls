@@ -1,14 +1,15 @@
 /**
- * @description Controller for On-Call Schedule LWC component
+ * Controller for On-Call Schedule LWC component
  * Provides CRUD operations for Elaro_On_Call_Schedule__c records
  *
  * @author Elaro Development Team
  * @since 2026-01
+ * @group System Monitoring
  */
 public with sharing class OnCallScheduleController {
 
     /**
-     * @description Gets all on-call schedules ordered by start time
+     * Gets all on-call schedules ordered by start time
      * @return List of schedule records with related user info
      * @throws AuraHandledException if query fails
      */
@@ -37,7 +38,7 @@ public with sharing class OnCallScheduleController {
     }
 
     /**
-     * @description Creates a new on-call schedule
+     * Creates a new on-call schedule
      * @param schedule The schedule record to create
      * @return The created schedule ID
      * @throws AuraHandledException if creation fails
@@ -57,7 +58,7 @@ public with sharing class OnCallScheduleController {
     }
 
     /**
-     * @description Updates an existing on-call schedule
+     * Updates an existing on-call schedule
      * @param schedule The schedule record to update
      * @throws AuraHandledException if update fails
      */
@@ -75,7 +76,7 @@ public with sharing class OnCallScheduleController {
     }
 
     /**
-     * @description Deletes an on-call schedule
+     * Deletes an on-call schedule
      * @param scheduleId The ID of the schedule to delete
      * @throws AuraHandledException if deletion fails
      */
@@ -90,7 +91,7 @@ public with sharing class OnCallScheduleController {
     }
 
     /**
-     * @description Validates schedule data before save
+     * Validates schedule data before save
      * @param schedule The schedule to validate
      */
     private static void validateSchedule(Elaro_On_Call_Schedule__c schedule) {

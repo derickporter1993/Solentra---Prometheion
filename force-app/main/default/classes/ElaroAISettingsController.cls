@@ -2,6 +2,9 @@
  * AI Settings Controller with proper default persistence
  * Best Practice: Persists org defaults instead of in-memory objects
  * Security: Enforces CRUD/FLS with Security.stripInaccessible
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group AI Governance
  */
 public with sharing class ElaroAISettingsController {
     private static final Boolean DEFAULT_ENABLE_AI_REASONING = true;

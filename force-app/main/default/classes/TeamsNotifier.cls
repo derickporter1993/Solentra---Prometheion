@@ -8,6 +8,8 @@
  *
  * @author Elaro Enterprise
  * @version 1.0
+ * @since v3.1.0 (Spring '26)
+ * @group Integration
  */
 public with sharing class TeamsNotifier {
 

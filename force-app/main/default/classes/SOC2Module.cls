@@ -1,8 +1,9 @@
 /**
- * @description SOC 2 Type II compliance module implementation
+ * SOC 2 Type II compliance module implementation
  * Covers Trust Service Criteria (CC6, CC7, CC8, CC9)
  * @group Framework Modules
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class SOC2Module implements IComplianceModule {
     

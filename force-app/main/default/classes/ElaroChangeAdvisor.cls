@@ -3,6 +3,9 @@
  * 
  * Analyzes PROPOSED changes before they're made, showing compliance impact in real-time.
  * This is proactive compliance - preventing violations before they happen.
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group System Monitoring
  */
 public with sharing class ElaroChangeAdvisor {
     

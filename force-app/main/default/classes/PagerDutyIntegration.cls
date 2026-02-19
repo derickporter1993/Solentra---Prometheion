@@ -1,15 +1,16 @@
 /**
- * @description PagerDuty integration service for Elaro
+ * PagerDuty integration service for Elaro
  * Provides incident triggering and resolution
  * @group Integrations
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class PagerDutyIntegration {
     
     private static final String EVENTS_API = 'https://events.pagerduty.com/v2/enqueue';
     
     /**
-     * @description Trigger a PagerDuty incident using Queueable
+     * Trigger a PagerDuty incident using Queueable
      * @param alertDataJson Alert information as JSON
      */
     public static void triggerIncident(String alertDataJson) {
@@ -19,7 +20,7 @@ public with sharing class PagerDutyIntegration {
     }
     
     /**
-     * @description Resolve a PagerDuty incident using Queueable
+     * Resolve a PagerDuty incident using Queueable
      * @param dedupKey The dedup key used when triggering
      */
     public static void resolveIncident(String dedupKey) {
@@ -29,7 +30,7 @@ public with sharing class PagerDutyIntegration {
     }
     
     /**
-     * @description Acknowledge a PagerDuty incident using Queueable
+     * Acknowledge a PagerDuty incident using Queueable
      * @param dedupKey The dedup key used when triggering
      */
     public static void acknowledgeIncident(String dedupKey) {
@@ -141,7 +142,7 @@ public with sharing class PagerDutyIntegration {
     }
     
     /**
-     * @description Trigger incident with severity mapping
+     * Trigger incident with severity mapping
      * @param title Incident title
      * @param description Incident description
      * @param severity Severity (CRITICAL, HIGH, MEDIUM, LOW)
@@ -166,7 +167,7 @@ public with sharing class PagerDutyIntegration {
     }
     
     /**
-     * @description Get PagerDuty incident history (mock - PD API requires different auth)
+     * Get PagerDuty incident history (mock - PD API requires different auth)
      * @return List of recent incidents
      */
     @AuraEnabled(cacheable=true)

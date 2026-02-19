@@ -1,8 +1,9 @@
 /**
- * @description PDF and export generation service for audit packages
+ * PDF and export generation service for audit packages
  * Generates PDF reports, CSV exports, and JSON exports with integrity hashing
  * @group Export &amp; Delivery
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class ElaroPDFExporter {
     
@@ -11,7 +12,7 @@ public with sharing class ElaroPDFExporter {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Generate PDF for audit package
+     * Generate PDF for audit package
      * @param packageId The audit package ID
      * @return ContentVersion ID of the generated PDF
      * @throws AuraHandledException if generation fails
@@ -62,7 +63,7 @@ public with sharing class ElaroPDFExporter {
     }
     
     /**
-     * @description Generate executive summary PDF
+     * Generate executive summary PDF
      * @param packageId The audit package ID
      * @return ContentVersion ID of the generated PDF
      */
@@ -103,7 +104,7 @@ public with sharing class ElaroPDFExporter {
     }
     
     /**
-     * @description Generate detailed evidence report
+     * Generate detailed evidence report
      * @param packageId The audit package ID
      * @param controlIds List of control IDs to filter (optional)
      * @return ContentVersion ID of the generated PDF
@@ -149,7 +150,7 @@ public with sharing class ElaroPDFExporter {
     }
     
     /**
-     * @description Batch generate PDFs for multiple packages
+     * Batch generate PDFs for multiple packages
      * @param packageIds List of audit package IDs
      * @return List of ContentVersion IDs
      */
@@ -169,7 +170,7 @@ public with sharing class ElaroPDFExporter {
     }
     
     /**
-     * @description Generate CSV export of audit package evidence
+     * Generate CSV export of audit package evidence
      * @param packageId The audit package ID
      * @return CSV content as string
      */
@@ -208,7 +209,7 @@ public with sharing class ElaroPDFExporter {
     }
     
     /**
-     * @description Generate JSON export of audit package
+     * Generate JSON export of audit package
      * @param packageId The audit package ID
      * @return JSON content as string
      */
@@ -271,7 +272,7 @@ public with sharing class ElaroPDFExporter {
     }
     
     /**
-     * @description Save CSV export as ContentVersion
+     * Save CSV export as ContentVersion
      * @param packageId The audit package ID
      * @return ContentVersion ID
      */
@@ -294,7 +295,7 @@ public with sharing class ElaroPDFExporter {
     }
     
     /**
-     * @description Save JSON export as ContentVersion
+     * Save JSON export as ContentVersion
      * @param packageId The audit package ID
      * @return ContentVersion ID
      */
@@ -321,7 +322,7 @@ public with sharing class ElaroPDFExporter {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Validate package ID
+     * Validate package ID
      * @param packageId The ID to validate
      */
     private static void validatePackageId(String packageId) {
@@ -331,7 +332,7 @@ public with sharing class ElaroPDFExporter {
     }
     
     /**
-     * @description Query audit package with error handling
+     * Query audit package with error handling
      * @param packageId The package ID
      * @return Elaro_Audit_Package__c record
      */
@@ -352,7 +353,7 @@ public with sharing class ElaroPDFExporter {
     }
     
     /**
-     * @description Generate SHA-256 hash for document integrity
+     * Generate SHA-256 hash for document integrity
      * @param content The content to hash
      * @return Hex-encoded hash string
      */
@@ -362,7 +363,7 @@ public with sharing class ElaroPDFExporter {
     }
     
     /**
-     * @description Link ContentVersion to a record
+     * Link ContentVersion to a record
      * @param contentVersionId The ContentVersion ID
      * @param recordId The record to link to
      */
@@ -385,7 +386,7 @@ public with sharing class ElaroPDFExporter {
     }
     
     /**
-     * @description Escape a field value for CSV
+     * Escape a field value for CSV
      * @param value The value to escape
      * @return Escaped value
      */

@@ -1,15 +1,16 @@
 /**
- * @description ServiceNow integration service for Elaro
+ * ServiceNow integration service for Elaro
  * Provides control sync, evidence push, and incident creation
  * @group Integrations
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class ServiceNowIntegration {
     
     private static final String NAMED_CREDENTIAL = 'callout:ServiceNow_API';
     
     /**
-     * @description Sync controls from Elaro to ServiceNow GRC using Queueable
+     * Sync controls from Elaro to ServiceNow GRC using Queueable
      * @param frameworkName Framework name (HIPAA, SOC2, etc.)
      */
     public static void syncControls(String frameworkName) {
@@ -19,7 +20,7 @@ public with sharing class ServiceNowIntegration {
     }
     
     /**
-     * @description Push evidence to ServiceNow using Queueable
+     * Push evidence to ServiceNow using Queueable
      * @param evidenceId Evidence item ID
      */
     public static void pushEvidence(String evidenceId) {
@@ -29,7 +30,7 @@ public with sharing class ServiceNowIntegration {
     }
     
     /**
-     * @description Sync compliance status to ServiceNow using Queueable
+     * Sync compliance status to ServiceNow using Queueable
      * @param auditPackageId Audit package ID
      */
     public static void syncComplianceStatus(String auditPackageId) {
@@ -179,7 +180,7 @@ public with sharing class ServiceNowIntegration {
     }
     
     /**
-     * @description Create incident in ServiceNow
+     * Create incident in ServiceNow
      * @param incidentData Incident details
      * @return ServiceNow incident sys_id
      */
@@ -221,7 +222,7 @@ public with sharing class ServiceNowIntegration {
     }
     
     /**
-     * @description Get incident status from ServiceNow
+     * Get incident status from ServiceNow
      * @param incidentSysId ServiceNow incident sys_id
      * @return Incident status
      */

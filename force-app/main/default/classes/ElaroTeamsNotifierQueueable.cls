@@ -2,6 +2,9 @@
  * Queueable class for Teams notifications with retry logic and exponential backoff
  * Best Practice: Queueable provides better error handling, chaining, and monitoring than @future
  * Security: Validates payload size, sanitizes inputs, and implements secure retry patterns
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Integration
  */
 public with sharing class ElaroTeamsNotifierQueueable implements Queueable, Database.AllowsCallouts {
     private static final Integer MAX_RETRIES = 3;

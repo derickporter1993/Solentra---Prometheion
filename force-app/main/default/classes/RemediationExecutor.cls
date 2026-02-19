@@ -1,5 +1,5 @@
 /**
- * @description Executor service for applying approved remediation suggestions.
+ * Executor service for applying approved remediation suggestions.
  * Handles both auto-remediation and manual remediation tracking.
  *
  * Features:
@@ -10,11 +10,12 @@
  *
  * @author Elaro Development Team
  * @since 2026-01
+ * @group Compliance Framework
  */
 public with sharing class RemediationExecutor {
 
     /**
-     * @description Executes an approved remediation suggestion
+     * Executes an approved remediation suggestion
      * @param suggestionId The ID of the suggestion to execute
      * @return Result of the remediation execution
      */
@@ -79,7 +80,7 @@ public with sharing class RemediationExecutor {
     }
 
     /**
-     * @description Marks a suggestion as manually applied
+     * Marks a suggestion as manually applied
      * @param suggestionId The suggestion ID
      * @param notes Optional notes about the manual implementation
      */
@@ -120,7 +121,7 @@ public with sharing class RemediationExecutor {
     }
 
     /**
-     * @description Gets remediation execution history
+     * Gets remediation execution history
      * @return List of recently executed remediations
      */
     @AuraEnabled(cacheable=true)
@@ -156,7 +157,7 @@ public with sharing class RemediationExecutor {
     }
 
     /**
-     * @description Bulk executes multiple approved suggestions
+     * Bulk executes multiple approved suggestions
      * @param suggestionIds List of suggestion IDs to execute
      * @return Summary of execution results
      */
@@ -432,7 +433,7 @@ public with sharing class RemediationExecutor {
     // ============================================
 
     /**
-     * @description Result wrapper for remediation execution
+     * Result wrapper for remediation execution
      */
     public class RemediationResult {
         @AuraEnabled public String suggestionId;
@@ -443,7 +444,7 @@ public with sharing class RemediationExecutor {
     }
 
     /**
-     * @description Execution history item
+     * Execution history item
      */
     public class ExecutionHistory {
         @AuraEnabled public Id suggestionId;
@@ -458,7 +459,7 @@ public with sharing class RemediationExecutor {
     }
 
     /**
-     * @description Bulk execution result wrapper
+     * Bulk execution result wrapper
      */
     public class BulkExecutionResult {
         @AuraEnabled public Integer totalProcessed = 0;

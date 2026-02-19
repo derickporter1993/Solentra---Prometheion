@@ -9,7 +9,7 @@
 public with sharing class MultiOrgManager {
 
     /**
-     * @description Register a connected org
+     * Register a connected org
      * @param orgConfig Configuration for the connected org
      * @return Id of the created record
      * @throws AuraHandledException if registration fails
@@ -47,7 +47,7 @@ public with sharing class MultiOrgManager {
     }
 
     /**
-     * @description Get multi-org compliance status
+     * Get multi-org compliance status
      * @return Map of org statuses
      * @throws AuraHandledException if retrieval fails
      */
@@ -99,7 +99,7 @@ public with sharing class MultiOrgManager {
     }
 
     /**
-     * @description Sync policies to connected orgs via Queueable
+     * Sync policies to connected orgs via Queueable
      * @param policyIds List of policy IDs to sync
      */
     public static void syncPolicies(List<String> policyIds) {
@@ -109,7 +109,7 @@ public with sharing class MultiOrgManager {
     }
 
     /**
-     * @description Remove a connected org
+     * Remove a connected org
      * @param orgId The connected org record ID
      * @throws AuraHandledException if removal fails
      */
@@ -127,7 +127,7 @@ public with sharing class MultiOrgManager {
     }
 
     /**
-     * @description Refresh connection status for all orgs via Queueable
+     * Refresh connection status for all orgs via Queueable
      * @throws AuraHandledException if refresh fails
      */
     @AuraEnabled
@@ -150,7 +150,7 @@ public with sharing class MultiOrgManager {
     }
 
     /**
-     * @description Aggregate compliance data from all orgs
+     * Aggregate compliance data from all orgs
      * @return Aggregated compliance metrics
      * @throws AuraHandledException if aggregation fails
      */

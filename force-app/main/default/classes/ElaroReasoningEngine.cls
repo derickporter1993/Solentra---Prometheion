@@ -15,6 +15,8 @@
  * 
  * @author Elaro
  * @version 3.0
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 public without sharing class ElaroReasoningEngine {
     private static final Decimal MIN_CONFIDENCE = 0.85;

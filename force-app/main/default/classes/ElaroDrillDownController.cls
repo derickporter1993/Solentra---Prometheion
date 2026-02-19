@@ -12,6 +12,8 @@
  *
  * @author Derick Porter
  * @date 2026-01-03
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 public with sharing class ElaroDrillDownController {
 

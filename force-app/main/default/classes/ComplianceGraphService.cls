@@ -1,5 +1,5 @@
 /**
- * @description Service for generating compliance graph data for visualization.
+ * Service for generating compliance graph data for visualization.
  * Creates node and edge data for D3.js-based graph visualization.
  *
  * Features:
@@ -10,6 +10,7 @@
  *
  * @author Elaro Development Team
  * @since 2026-01
+ * @group Compliance Framework
  */
 public with sharing class ComplianceGraphService {
 
@@ -33,7 +34,7 @@ public with sharing class ComplianceGraphService {
     };
 
     /**
-     * @description Gets the complete compliance graph for the organization
+     * Gets the complete compliance graph for the organization
      * @return GraphData object containing nodes and edges
      */
     @AuraEnabled(cacheable=true)
@@ -119,7 +120,7 @@ public with sharing class ComplianceGraphService {
     }
 
     /**
-     * @description Gets graph data filtered by framework
+     * Gets graph data filtered by framework
      * @param framework The framework to filter by
      * @return GraphData filtered to the specified framework
      */
@@ -159,7 +160,7 @@ public with sharing class ComplianceGraphService {
     }
 
     /**
-     * @description Performs impact analysis for a specific entity
+     * Performs impact analysis for a specific entity
      * @param entityType The type of entity
      * @param entityId The ID of the entity
      * @return ImpactAnalysis containing affected items
@@ -219,7 +220,7 @@ public with sharing class ComplianceGraphService {
     }
 
     /**
-     * @description Gets graph statistics summary
+     * Gets graph statistics summary
      * @return GraphStats with summary metrics
      */
     @AuraEnabled(cacheable=true)
@@ -291,7 +292,7 @@ public with sharing class ComplianceGraphService {
     }
 
     /**
-     * @description Gets node details for a specific node
+     * Gets node details for a specific node
      * @param nodeId The ID of the node
      * @param nodeType The type of node (framework, policy, gap, entity)
      * @return NodeDetails with full information
@@ -501,7 +502,7 @@ public with sharing class ComplianceGraphService {
     // ============================================
 
     /**
-     * @description Complete graph data structure
+     * Complete graph data structure
      */
     public class GraphData {
         @AuraEnabled public List<GraphNode> nodes;
@@ -509,7 +510,7 @@ public with sharing class ComplianceGraphService {
     }
 
     /**
-     * @description Graph node representation
+     * Graph node representation
      */
     public class GraphNode {
         @AuraEnabled public String id;
@@ -521,7 +522,7 @@ public with sharing class ComplianceGraphService {
     }
 
     /**
-     * @description Graph edge representation
+     * Graph edge representation
      */
     public class GraphEdge {
         @AuraEnabled public String source;
@@ -538,7 +539,7 @@ public with sharing class ComplianceGraphService {
     }
 
     /**
-     * @description Impact analysis result
+     * Impact analysis result
      */
     public class ImpactAnalysis {
         @AuraEnabled public String entityType;
@@ -554,7 +555,7 @@ public with sharing class ComplianceGraphService {
     }
 
     /**
-     * @description Affected gap in impact analysis
+     * Affected gap in impact analysis
      */
     public class AffectedGap {
         @AuraEnabled public Id gapId;
@@ -566,7 +567,7 @@ public with sharing class ComplianceGraphService {
     }
 
     /**
-     * @description Graph statistics summary
+     * Graph statistics summary
      */
     public class GraphStats {
         @AuraEnabled public Integer totalGaps;
@@ -578,7 +579,7 @@ public with sharing class ComplianceGraphService {
     }
 
     /**
-     * @description Node detail information
+     * Node detail information
      */
     public class NodeDetails {
         @AuraEnabled public String nodeId;

@@ -1,8 +1,9 @@
 /**
- * @description Real-time event stream processing with risk scoring
+ * Real-time event stream processing with risk scoring
  * Provides immediate risk assessment and alert triggering for Shield events
  * @group Shield Integration
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class ElaroRealtimeMonitor {
     
@@ -45,7 +46,7 @@ public with sharing class ElaroRealtimeMonitor {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Process incoming real-time event
+     * Process incoming real-time event
      * @param eventData The event data to process
      */
     public static void processRealtimeEvent(Map&lt;String, Object&gt; eventData) {
@@ -74,7 +75,7 @@ public with sharing class ElaroRealtimeMonitor {
     }
     
     /**
-     * @description Calculate comprehensive risk score (0-100)
+     * Calculate comprehensive risk score (0-100)
      * @param eventData The event data to score
      * @return Risk score between 0 and 100
      */
@@ -106,7 +107,7 @@ public with sharing class ElaroRealtimeMonitor {
     }
     
     /**
-     * @description Trigger alert for high-risk event
+     * Trigger alert for high-risk event
      * @param userId The user ID associated with the event
      * @param riskScore The calculated risk score
      * @param reason The reason for the alert
@@ -131,7 +132,7 @@ public with sharing class ElaroRealtimeMonitor {
     }
     
     /**
-     * @description Get real-time statistics for a time window
+     * Get real-time statistics for a time window
      * @param timeWindowMinutes The number of minutes to look back
      * @return Map of statistics
      */
@@ -187,7 +188,7 @@ public with sharing class ElaroRealtimeMonitor {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Get base risk score for event type
+     * Get base risk score for event type
      * @param eventType The event type
      * @return Base risk score
      */
@@ -198,7 +199,7 @@ public with sharing class ElaroRealtimeMonitor {
     }
     
     /**
-     * @description Calculate time-based risk factor
+     * Calculate time-based risk factor
      * @param eventData The event data
      * @return Time factor score
      */
@@ -234,7 +235,7 @@ public with sharing class ElaroRealtimeMonitor {
     }
     
     /**
-     * @description Calculate location-based risk factor
+     * Calculate location-based risk factor
      * @param eventData The event data
      * @return Location factor score
      */
@@ -256,7 +257,7 @@ public with sharing class ElaroRealtimeMonitor {
     }
     
     /**
-     * @description Calculate volume-based risk factor
+     * Calculate volume-based risk factor
      * @param eventData The event data
      * @return Volume factor score
      */
@@ -286,7 +287,7 @@ public with sharing class ElaroRealtimeMonitor {
     }
     
     /**
-     * @description Calculate user-based risk factor
+     * Calculate user-based risk factor
      * @param eventData The event data
      * @return User factor score
      */
@@ -321,7 +322,7 @@ public with sharing class ElaroRealtimeMonitor {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Build human-readable risk reason
+     * Build human-readable risk reason
      * @param eventData The event data
      * @param riskScore The calculated risk score
      * @return Risk reason string
@@ -354,7 +355,7 @@ public with sharing class ElaroRealtimeMonitor {
     }
     
     /**
-     * @description Queue alert for async processing
+     * Queue alert for async processing
      * @param config The alert configuration
      */
     private static void queueAlert(AlertConfig config) {
@@ -376,7 +377,7 @@ public with sharing class ElaroRealtimeMonitor {
     }
     
     /**
-     * @description Publish platform event notification
+     * Publish platform event notification
      * @param parsedEvent The parsed event data
      * @param riskScore The calculated risk score
      */
@@ -398,7 +399,7 @@ public with sharing class ElaroRealtimeMonitor {
     }
     
     /**
-     * @description Safely get string from map
+     * Safely get string from map
      * @param data Source map
      * @param key Key to retrieve
      * @return String value or empty string
@@ -412,7 +413,7 @@ public with sharing class ElaroRealtimeMonitor {
     }
     
     /**
-     * @description Parse timestamp string
+     * Parse timestamp string
      * @param timestampStr The timestamp string
      * @return Parsed Datetime or null
      */
@@ -432,7 +433,7 @@ public with sharing class ElaroRealtimeMonitor {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Alert configuration wrapper
+     * Alert configuration wrapper
      */
     public class AlertConfig {
         public String userId;

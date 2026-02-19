@@ -11,6 +11,8 @@
  * 
  * @author Elaro TeamCRM
  * @version 1.0
+ * @since v3.1.0 (Spring '26)
+ * @group Event Monitoring
  */
 public without sharing class ElaroEventPublisher {
     

@@ -1,8 +1,9 @@
 /**
- * @description Shield Event Monitoring API integration service
+ * Shield Event Monitoring API integration service
  * Provides methods to query, parse, and process Shield EventLogFile data
  * @group Shield Integration
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class ElaroShieldService {
     
@@ -36,7 +37,7 @@ public with sharing class ElaroShieldService {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Query EventLogFile objects for specific event types
+     * Query EventLogFile objects for specific event types
      * @param eventType The type of event to query (e.g., 'Login', 'LoginAs')
      * @param startDate Start date for the query range
      * @param endDate End date for the query range
@@ -82,7 +83,7 @@ public with sharing class ElaroShieldService {
     }
     
     /**
-     * @description Parse EventLogFile CSV content into structured data
+     * Parse EventLogFile CSV content into structured data
      * @param logFileId The ID of the EventLogFile record
      * @return List of parsed event records as maps
      * @throws AuraHandledException if parsing fails
@@ -115,7 +116,7 @@ public with sharing class ElaroShieldService {
     }
     
     /**
-     * @description Batch process historical EventLogFiles
+     * Batch process historical EventLogFiles
      * @param eventType The event type to process
      * @param startDate Start date for processing
      * @param endDate End date for processing
@@ -140,7 +141,7 @@ public with sharing class ElaroShieldService {
     }
     
     /**
-     * @description Get available event types in the org
+     * Get available event types in the org
      * @return List of available event type names
      */
     @AuraEnabled(cacheable=true)
@@ -173,7 +174,7 @@ public with sharing class ElaroShieldService {
     }
     
     /**
-     * @description Check Shield license status and features
+     * Check Shield license status and features
      * @return Map containing Shield feature availability
      */
     @AuraEnabled(cacheable=true)
@@ -217,7 +218,7 @@ public with sharing class ElaroShieldService {
     }
     
     /**
-     * @description Get risk level for an event type
+     * Get risk level for an event type
      * @param eventType The event type to check
      * @return Risk level (CRITICAL, HIGH, MEDIUM, LOW)
      */
@@ -228,7 +229,7 @@ public with sharing class ElaroShieldService {
     }
     
     /**
-     * @description Get all supported event types with their risk levels
+     * Get all supported event types with their risk levels
      * @return Map of event type to risk level
      */
     @AuraEnabled(cacheable=true)
@@ -241,7 +242,7 @@ public with sharing class ElaroShieldService {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Parse CSV content into list of maps
+     * Parse CSV content into list of maps
      * @param csvContent The CSV string to parse
      * @return List of maps representing each row
      */
@@ -283,7 +284,7 @@ public with sharing class ElaroShieldService {
     }
     
     /**
-     * @description Parse a single CSV line handling quoted fields
+     * Parse a single CSV line handling quoted fields
      * @param line The CSV line to parse
      * @return List of field values
      */

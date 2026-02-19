@@ -9,6 +9,8 @@
  *
  * @author Elaro
  * @version 1.0
+ * @since v3.1.0 (Spring '26)
+ * @group Security
  */
 public with sharing class AccessReviewScheduler implements Schedulable {
 

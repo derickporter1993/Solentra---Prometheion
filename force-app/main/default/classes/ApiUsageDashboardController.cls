@@ -1,3 +1,10 @@
+/**
+ * Controller for the API usage monitoring dashboard.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
+ */
 public with sharing class ApiUsageDashboardController {
     private class Row {
         @AuraEnabled

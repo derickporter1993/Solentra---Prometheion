@@ -1,3 +1,10 @@
+/**
+ * Captures and stores Flow execution statistics and metrics.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Data Structures
+ */
 public with sharing class FlowExecutionStats {
     public class ExecAgg {
         @AuraEnabled public String flowName;

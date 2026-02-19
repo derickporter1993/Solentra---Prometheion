@@ -1,3 +1,10 @@
+/**
+ * Tracks and stores deployment metrics for change management auditing.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Data Structures
+ */
 public with sharing class DeploymentMetrics {
     public class Row {
         @AuraEnabled public String name;

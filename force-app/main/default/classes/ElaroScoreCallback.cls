@@ -217,7 +217,10 @@ global without sharing class ElaroScoreCallback {
      * Checks Custom Metadata Type for configured API key hash
      * @param apiKey The API key from request header
      * @return true if valid, false otherwise
-     */
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
+ */
     private static Boolean validateApiKey(String apiKey) {
         if (String.isBlank(apiKey)) {
             return false;

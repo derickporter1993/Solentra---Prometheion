@@ -1,3 +1,10 @@
+/**
+ * Manages alert history records for compliance and security event tracking.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group System Monitoring
+ */
 public with sharing class AlertHistoryService {
     private class AlertRow {
         @AuraEnabled public String metric;

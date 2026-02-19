@@ -1,5 +1,5 @@
 /**
- * @description Service for generating AI-assisted remediation suggestions for compliance gaps.
+ * Service for generating AI-assisted remediation suggestions for compliance gaps.
  * Analyzes gap type, severity, and framework to provide actionable remediation recommendations.
  *
  * Features:
@@ -10,6 +10,7 @@
  *
  * @author Elaro Development Team
  * @since 2026-01
+ * @group Compliance Framework
  */
 public with sharing class RemediationSuggestionService {
 
@@ -33,7 +34,7 @@ public with sharing class RemediationSuggestionService {
     };
 
     /**
-     * @description Generates remediation suggestions for a compliance gap
+     * Generates remediation suggestions for a compliance gap
      * @param gapId The ID of the compliance gap
      * @return List of generated suggestions
      */
@@ -81,7 +82,7 @@ public with sharing class RemediationSuggestionService {
     }
 
     /**
-     * @description Gets existing suggestions for a gap
+     * Gets existing suggestions for a gap
      * @param gapId The compliance gap ID
      * @return List of suggestions
      */
@@ -101,7 +102,7 @@ public with sharing class RemediationSuggestionService {
     }
 
     /**
-     * @description Gets all pending suggestions across gaps
+     * Gets all pending suggestions across gaps
      * @return List of pending suggestions with gap details
      */
     @AuraEnabled(cacheable=true)
@@ -135,7 +136,7 @@ public with sharing class RemediationSuggestionService {
     }
 
     /**
-     * @description Approves a suggestion for implementation
+     * Approves a suggestion for implementation
      * @param suggestionId The suggestion ID
      */
     @AuraEnabled
@@ -144,7 +145,7 @@ public with sharing class RemediationSuggestionService {
     }
 
     /**
-     * @description Rejects a suggestion
+     * Rejects a suggestion
      * @param suggestionId The suggestion ID
      * @param reason The rejection reason
      */
@@ -154,7 +155,7 @@ public with sharing class RemediationSuggestionService {
     }
 
     /**
-     * @description Bulk generates suggestions for multiple gaps
+     * Bulk generates suggestions for multiple gaps
      * @param gapIds List of gap IDs
      * @return Number of suggestions generated
      */
@@ -175,7 +176,7 @@ public with sharing class RemediationSuggestionService {
     }
 
     /**
-     * @description Recalculates priority scores for all pending suggestions
+     * Recalculates priority scores for all pending suggestions
      */
     @AuraEnabled
     public static void recalculatePriorities() {
@@ -582,7 +583,7 @@ public with sharing class RemediationSuggestionService {
     // ============================================
 
     /**
-     * @description Wrapper for suggestion with gap details
+     * Wrapper for suggestion with gap details
      */
     public class SuggestionWithGap {
         @AuraEnabled public Remediation_Suggestion__c suggestion;
@@ -593,7 +594,7 @@ public with sharing class RemediationSuggestionService {
     }
 
     /**
-     * @description Helper class for suggestion content
+     * Helper class for suggestion content
      */
     private class SuggestionContent {
         public String description;
@@ -601,7 +602,7 @@ public with sharing class RemediationSuggestionService {
     }
 
     /**
-     * @description Custom exception for remediation errors
+     * Custom exception for remediation errors
      */
     public class RemediationException extends Exception {}
 }

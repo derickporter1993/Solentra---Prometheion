@@ -3,6 +3,9 @@
  * 
  * One-click remediation for common compliance violations.
  * Automates fixes that would otherwise take hours of manual work.
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group AI Governance
  */
 public with sharing class ElaroQuickActionsService {
     

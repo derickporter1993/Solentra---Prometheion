@@ -3,7 +3,10 @@ public with sharing class SlackNotifier {
     /**
      * Send Slack notification using Queueable (recommended approach)
      * Provides retry logic, error handling, and better monitoring
-     */
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Integration
+ */
     public static void notifyAsyncQueueable(String text) {
         if (String.isBlank(text)) {
             ElaroLogger.warn( 'SlackNotifier: Empty text provided, skipping notification');

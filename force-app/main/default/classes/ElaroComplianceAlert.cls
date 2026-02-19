@@ -1,8 +1,9 @@
 /**
- * @description Compliance alert service for multi-channel notifications
+ * Compliance alert service for multi-channel notifications
  * Supports Email, Slack, PagerDuty, and Bell notifications
  * @group Automation & Alerting
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class ElaroComplianceAlert {
     
@@ -21,7 +22,7 @@ public with sharing class ElaroComplianceAlert {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Configure a new alert rule
+     * Configure a new alert rule
      * @param config The alert configuration
      * @return Id of the created alert configuration
      */
@@ -47,7 +48,7 @@ public with sharing class ElaroComplianceAlert {
     }
     
     /**
-     * @description Process an alert based on event data
+     * Process an alert based on event data
      * @param eventData The event data to evaluate
      * @return AlertResult with processing outcome
      */
@@ -86,7 +87,7 @@ public with sharing class ElaroComplianceAlert {
     }
     
     /**
-     * @description Queue an alert for asynchronous processing
+     * Queue an alert for asynchronous processing
      * @param config The alert configuration
      * @param eventData The event data
      * @param result The alert result
@@ -114,7 +115,7 @@ public with sharing class ElaroComplianceAlert {
     }
     
     /**
-     * @description Send alert notification to specified channel using Queueable
+     * Send alert notification to specified channel using Queueable
      * @param channel The notification channel
      * @param alertDataJson The alert data as JSON string
      */
@@ -125,7 +126,7 @@ public with sharing class ElaroComplianceAlert {
     }
     
     /**
-     * @description Queueable implementation for alert notifications
+     * Queueable implementation for alert notifications
      */
     public class AlertNotificationQueueable implements Queueable, Database.AllowsCallouts {
         private String channel;
@@ -165,7 +166,7 @@ public with sharing class ElaroComplianceAlert {
     }
     
     /**
-     * @description Get active alerts for the current user
+     * Get active alerts for the current user
      * @return List of active alerts
      */
     @AuraEnabled(cacheable=true)

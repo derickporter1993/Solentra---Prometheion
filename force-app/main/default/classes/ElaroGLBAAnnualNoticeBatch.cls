@@ -6,6 +6,8 @@
  *
  * @author Elaro
  * @version 1.0
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 public with sharing class ElaroGLBAAnnualNoticeBatch implements Database.Batchable<SObject>, Database.Stateful {
     private Integer noticesSent = 0;

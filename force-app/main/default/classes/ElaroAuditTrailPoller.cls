@@ -5,6 +5,9 @@
  * changes to AWS via Platform Events for processing.
  * 
  * Runs in system context to poll audit trail regardless of user permissions.
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 public without sharing class ElaroAuditTrailPoller implements Schedulable {
     

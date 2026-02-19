@@ -1,59 +1,60 @@
 /**
- * @description Interface for compliance framework modules
+ * Interface for compliance framework modules
  * Each framework (HIPAA, SOC2, GDPR, etc.) implements this interface
  * @group Framework Modules
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public interface IComplianceModule {
     
     /**
-     * @description Get the framework name
+     * Get the framework name
      * @return Framework name (e.g., 'HIPAA', 'SOC2')
      */
     String getFrameworkName();
     
     /**
-     * @description Get the framework version
+     * Get the framework version
      * @return Version string (e.g., '2.0', '2023')
      */
     String getFrameworkVersion();
     
     /**
-     * @description Get all controls for this framework
+     * Get all controls for this framework
      * @return List of Control objects
      */
     List<Control> getControls();
     
     /**
-     * @description Calculate compliance score for an audit package
+     * Calculate compliance score for an audit package
      * @param auditPackageId The audit package ID
      * @return Decimal score (0-100)
      */
     Decimal calculateScore(Id auditPackageId);
     
     /**
-     * @description Identify compliance gaps
+     * Identify compliance gaps
      * @param auditPackageId The audit package ID
      * @return List of Gap objects
      */
     List<Gap> identifyGaps(Id auditPackageId);
     
     /**
-     * @description Generate framework-specific report
+     * Generate framework-specific report
      * @param auditPackageId The audit package ID
      * @return PDF content as Blob
      */
     Blob generateReport(Id auditPackageId);
     
     /**
-     * @description Get control by ID
+     * Get control by ID
      * @param controlId The control ID
      * @return Control object or null
      */
     Control getControlById(String controlId);
     
     /**
-     * @description Evaluate a specific control
+     * Evaluate a specific control
      * @param controlId The control ID
      * @param context Evaluation context
      * @return ControlResult with evaluation outcome
@@ -65,7 +66,7 @@ public interface IComplianceModule {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Represents a compliance control
+     * Represents a compliance control
      */
     class Control {
         public String id;
@@ -87,7 +88,7 @@ public interface IComplianceModule {
     }
     
     /**
-     * @description Represents a compliance gap
+     * Represents a compliance gap
      */
     class Gap {
         public String id;
@@ -107,7 +108,7 @@ public interface IComplianceModule {
     }
     
     /**
-     * @description Result of control evaluation
+     * Result of control evaluation
      */
     class ControlResult {
         public String controlId;

@@ -1,8 +1,9 @@
 /**
- * @description Data residency service for regional compliance
+ * Data residency service for regional compliance
  * Supports US, EU, APAC data location validation
  * @group Enterprise Features
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class DataResidencyService {
     
@@ -27,7 +28,7 @@ public with sharing class DataResidencyService {
     };
     
     /**
-     * @description Get data residency configuration for the org
+     * Get data residency configuration for the org
      * @return ResidencyConfig with current settings
      */
     @AuraEnabled(cacheable=true)
@@ -48,7 +49,7 @@ public with sharing class DataResidencyService {
     }
     
     /**
-     * @description Validate data location for a record
+     * Validate data location for a record
      * @param recordId Record ID to validate
      * @param targetRegion Target region for the data
      * @return ValidationResult with compliance status
@@ -86,7 +87,7 @@ public with sharing class DataResidencyService {
     }
     
     /**
-     * @description Get data location summary for audit
+     * Get data location summary for audit
      * @return LocationSummary with data distribution info
      */
     @AuraEnabled(cacheable=true)
@@ -127,7 +128,7 @@ public with sharing class DataResidencyService {
     }
     
     /**
-     * @description Check GDPR compliance for EU data
+     * Check GDPR compliance for EU data
      * @return GDPRComplianceStatus
      */
     @AuraEnabled(cacheable=true)

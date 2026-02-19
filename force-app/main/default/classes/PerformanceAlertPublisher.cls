@@ -5,6 +5,9 @@
  * 
  * Note: Performance_Alert__e platform event not available due to org custom object limits.
  * This version stores alerts in Performance_Alert_History__c instead.
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group System Monitoring
  */
 public with sharing class PerformanceAlertPublisher {
     private static final String RATE_LIMIT_PARTITION = 'ElaroRateLimit';

@@ -1,8 +1,9 @@
 /**
- * @description Orchestrates automated remediation actions for compliance events
+ * Orchestrates automated remediation actions for compliance events
  * Supports actions like REVOKE_PERMISSION, LOCK_USER, NOTIFY_MANAGER
  * @group Automation & Alerting
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class RemediationOrchestrator {
     
@@ -35,7 +36,7 @@ public with sharing class RemediationOrchestrator {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Create a remediation case for an event
+     * Create a remediation case for an event
      * @param eventId The event ID to remediate
      * @param priority The case priority (High, Medium, Low)
      * @return Case ID of the created case
@@ -83,7 +84,7 @@ public with sharing class RemediationOrchestrator {
     }
     
     /**
-     * @description Execute a remediation action
+     * Execute a remediation action
      * @param actionType The type of action to execute
      * @param targetId The target (user, permission, etc.) ID
      * @param context Additional context for the action
@@ -140,7 +141,7 @@ public with sharing class RemediationOrchestrator {
     }
     
     /**
-     * @description Get available remediation actions for an event type
+     * Get available remediation actions for an event type
      * @param eventType The event type
      * @return List of available actions
      */
@@ -174,7 +175,7 @@ public with sharing class RemediationOrchestrator {
     }
     
     /**
-     * @description Get remediation history for an event
+     * Get remediation history for an event
      * @param eventId The event ID
      * @return List of remediation actions taken
      */

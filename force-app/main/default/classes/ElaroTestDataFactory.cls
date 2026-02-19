@@ -1,5 +1,5 @@
 /**
- * @description Test data factory for Elaro unit tests
+ * Test data factory for Elaro unit tests
  * Provides mock data for Shield events, audit packages, and evidence items
  * @group Tests
  * @author Elaro Team
@@ -12,9 +12,10 @@ public class ElaroTestDataFactory {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Create mock Login event data
+     * Create mock Login event data
      * @return Map of event fields simulating a Login event
-     */
+ * @since v3.1.0 (Spring '26)
+ */
     public static Map&lt;String, Object&gt; createMockLoginEvent() {
         return new Map&lt;String, Object&gt;{
             'EVENT_TYPE' =&gt; 'Login',
@@ -38,7 +39,7 @@ public class ElaroTestDataFactory {
     }
     
     /**
-     * @description Create mock LoginAs event data (impersonation)
+     * Create mock LoginAs event data (impersonation)
      * @return Map of event fields simulating a LoginAs event
      */
     public static Map&lt;String, Object&gt; createMockLoginAsEvent() {
@@ -56,7 +57,7 @@ public class ElaroTestDataFactory {
     }
     
     /**
-     * @description Create mock ReportExport event data
+     * Create mock ReportExport event data
      * @return Map of event fields simulating a ReportExport event
      */
     public static Map&lt;String, Object&gt; createMockReportExportEvent() {
@@ -75,7 +76,7 @@ public class ElaroTestDataFactory {
     }
     
     /**
-     * @description Create mock API event data
+     * Create mock API event data
      * @return Map of event fields simulating an API event
      */
     public static Map&lt;String, Object&gt; createMockApiEvent() {
@@ -97,7 +98,7 @@ public class ElaroTestDataFactory {
     }
     
     /**
-     * @description Create mock ContentDistribution event
+     * Create mock ContentDistribution event
      * @return Map of event fields simulating a ContentDistribution event
      */
     public static Map&lt;String, Object&gt; createMockContentDistributionEvent() {
@@ -115,7 +116,7 @@ public class ElaroTestDataFactory {
     }
     
     /**
-     * @description Create mock ApexExecution event
+     * Create mock ApexExecution event
      * @return Map of event fields simulating an ApexExecution event
      */
     public static Map&lt;String, Object&gt; createMockApexExecutionEvent() {
@@ -137,7 +138,7 @@ public class ElaroTestDataFactory {
     }
     
     /**
-     * @description Create mock PermissionSetEventLog
+     * Create mock PermissionSetEventLog
      * @return Map of event fields simulating a PermissionSetEvent
      */
     public static Map&lt;String, Object&gt; createMockPermissionSetEvent() {
@@ -154,7 +155,7 @@ public class ElaroTestDataFactory {
     }
     
     /**
-     * @description Create high-risk event for alert testing
+     * Create high-risk event for alert testing
      * @return Map of event fields with maximum risk factors
      */
     public static Map&lt;String, Object&gt; createHighRiskEvent() {
@@ -166,7 +167,7 @@ public class ElaroTestDataFactory {
     }
     
     /**
-     * @description Create mock event with specific risk level
+     * Create mock event with specific risk level
      * @param riskLevel The desired risk level (CRITICAL, HIGH, MEDIUM, LOW)
      * @return Map of event fields with specified risk level
      */
@@ -197,7 +198,7 @@ public class ElaroTestDataFactory {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Create mock CSV content for Login events
+     * Create mock CSV content for Login events
      * @param rowCount Number of rows to generate
      * @return CSV string with header and data rows
      */
@@ -213,7 +214,7 @@ public class ElaroTestDataFactory {
     }
     
     /**
-     * @description Create mock CSV content with various event types
+     * Create mock CSV content with various event types
      * @return CSV string with multiple event types
      */
     public static String createMockMixedEventCSV() {
@@ -229,7 +230,7 @@ public class ElaroTestDataFactory {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Create Audit Package record
+     * Create Audit Package record
      * @param framework The compliance framework (HIPAA, SOC2, GDPR, etc.)
      * @return Inserted Elaro_Audit_Package__c record
      */
@@ -246,7 +247,7 @@ public class ElaroTestDataFactory {
     }
     
     /**
-     * @description Create Audit Package without insert
+     * Create Audit Package without insert
      * @param framework The compliance framework
      * @return Non-inserted Elaro_Audit_Package__c record
      */
@@ -261,7 +262,7 @@ public class ElaroTestDataFactory {
     }
     
     /**
-     * @description Create Evidence Item record
+     * Create Evidence Item record
      * @param packageId The parent Audit Package ID
      * @return Inserted Elaro_Evidence_Item__c record
      */
@@ -278,7 +279,7 @@ public class ElaroTestDataFactory {
     }
     
     /**
-     * @description Create Evidence Item without insert
+     * Create Evidence Item without insert
      * @param packageId The parent Audit Package ID
      * @return Non-inserted Elaro_Evidence_Item__c record
      */
@@ -293,7 +294,7 @@ public class ElaroTestDataFactory {
     }
     
     /**
-     * @description Create multiple evidence items
+     * Create multiple evidence items
      * @param packageId The parent Audit Package ID
      * @param count Number of items to create
      * @return List of inserted Elaro_Evidence_Item__c records
@@ -319,7 +320,7 @@ public class ElaroTestDataFactory {
     }
     
     /**
-     * @description Create Framework Mapping record
+     * Create Framework Mapping record
      * @param framework The compliance framework
      * @param requirementCode The requirement/control code
      * @return Inserted Elaro_Framework_Mapping__c record
@@ -337,7 +338,7 @@ public class ElaroTestDataFactory {
     }
     
     /**
-     * @description Create multiple framework mappings for a framework
+     * Create multiple framework mappings for a framework
      * @param framework The compliance framework
      * @return List of inserted Elaro_Framework_Mapping__c records
      */
@@ -376,7 +377,7 @@ public class ElaroTestDataFactory {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Create mock Claude API response for compliance analysis
+     * Create mock Claude API response for compliance analysis
      * @return JSON string mimicking Claude API response
      */
     public static String createMockClaudeResponse() {
@@ -406,7 +407,7 @@ public class ElaroTestDataFactory {
     }
     
     /**
-     * @description Create mock risk prediction response
+     * Create mock risk prediction response
      * @return JSON string with risk predictions
      */
     public static String createMockRiskPredictionResponse() {
@@ -441,7 +442,7 @@ public class ElaroTestDataFactory {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Create test user with specific profile
+     * Create test user with specific profile
      * @param profileName The profile name to assign
      * @return Inserted User record
      */
@@ -466,7 +467,7 @@ public class ElaroTestDataFactory {
     }
     
     /**
-     * @description Assign permission set to user
+     * Assign permission set to user
      * @param userId The user ID to assign to
      * @param permissionSetName The permission set name
      */
@@ -488,7 +489,7 @@ public class ElaroTestDataFactory {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Generate a random IP address
+     * Generate a random IP address
      * @return Random IP address string
      */
     public static String generateRandomIP() {
@@ -499,7 +500,7 @@ public class ElaroTestDataFactory {
     }
     
     /**
-     * @description Generate event data with specific timestamp
+     * Generate event data with specific timestamp
      * @param eventType The event type
      * @param hoursAgo Hours in the past for the timestamp
      * @return Map of event data
@@ -516,7 +517,7 @@ public class ElaroTestDataFactory {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Create CCX_Settings__c custom setting with custom thresholds
+     * Create CCX_Settings__c custom setting with custom thresholds
      * @param cpuWarn CPU warning threshold (ms)
      * @param cpuCrit CPU critical threshold (ms)
      * @param heapWarn Heap warning threshold (KB)
@@ -549,7 +550,7 @@ public class ElaroTestDataFactory {
     }
     
     /**
-     * @description Create Performance_Alert_History__c record for testing
+     * Create Performance_Alert_History__c record for testing
      * @param metric The metric name (CPU, HEAP, SOQL, DML)
      * @param value The metric value
      * @param threshold The threshold value

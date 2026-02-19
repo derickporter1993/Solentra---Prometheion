@@ -5,6 +5,9 @@
  * 
  * Note: Performance_Alert__e platform event not available due to org custom object limits.
  * This version stores alerts in Performance_Alert_History__c instead.
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 public with sharing class PerformanceRuleEngine {
     public class EvalResult {

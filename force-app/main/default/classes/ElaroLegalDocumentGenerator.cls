@@ -76,7 +76,10 @@ public with sharing class ElaroLegalDocumentGenerator {
     /**
      * Check rate limit using Cache.OrgPartition
      * Returns true if within limit, false if limit exceeded
-     */
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
+ */
     private static Boolean checkRateLimit(String key) {
         try {
             Cache.OrgPartition orgPart = Cache.Org.getPartition(RATE_LIMIT_PARTITION);

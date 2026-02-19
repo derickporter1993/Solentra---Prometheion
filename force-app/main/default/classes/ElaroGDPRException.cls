@@ -8,5 +8,7 @@
  * 
  * @author Elaro
  * @version 1.0
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 public with sharing class ElaroGDPRException extends Exception {}

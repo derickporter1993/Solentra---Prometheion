@@ -11,6 +11,8 @@
  * 
  * @author Elaro
  * @version 1.0
+ * @since v3.1.0 (Spring '26)
+ * @group Utilities
  */
 public with sharing class ElaroConstants {
     

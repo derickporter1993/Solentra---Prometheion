@@ -1,5 +1,5 @@
 /**
- * @description Service for publishing mobile push notifications for compliance alerts.
+ * Service for publishing mobile push notifications for compliance alerts.
  * Integrates with Salesforce Custom Notifications API to send alerts to on-call users.
  *
  * Features:
@@ -11,13 +11,14 @@
  *
  * @author Elaro Development Team
  * @since 2026-01
+ * @group System Monitoring
  */
 public with sharing class MobileAlertPublisher {
 
     private static final String CRITICAL_NOTIFICATION_TYPE = 'Elaro_Critical_Alert';
 
     /**
-     * @description Publishes a critical alert to on-call users
+     * Publishes a critical alert to on-call users
      * @param alertId The ID of the alert record
      * @param title Alert title
      * @param message Alert message body
@@ -42,7 +43,7 @@ public with sharing class MobileAlertPublisher {
     }
 
     /**
-     * @description Publishes a high-priority alert to on-call users
+     * Publishes a high-priority alert to on-call users
      * @param alertId The ID of the alert record
      * @param title Alert title
      * @param message Alert message body
@@ -59,7 +60,7 @@ public with sharing class MobileAlertPublisher {
     }
 
     /**
-     * @description Publishes alert for a compliance gap based on severity
+     * Publishes alert for a compliance gap based on severity
      * @param gapId The Compliance_Gap__c record ID
      */
     @AuraEnabled
@@ -89,7 +90,7 @@ public with sharing class MobileAlertPublisher {
     }
 
     /**
-     * @description Acknowledges an alert to stop escalation
+     * Acknowledges an alert to stop escalation
      * @param alertId The alert record ID
      */
     @AuraEnabled
@@ -119,7 +120,7 @@ public with sharing class MobileAlertPublisher {
     }
 
     /**
-     * @description Snoozes an alert for a specified duration
+     * Snoozes an alert for a specified duration
      * @param alertId The alert record ID
      * @param minutes Number of minutes to snooze
      */
@@ -154,7 +155,7 @@ public with sharing class MobileAlertPublisher {
     }
 
     /**
-     * @description Gets current on-call users
+     * Gets current on-call users
      * @return List of on-call user IDs
      */
     @AuraEnabled(cacheable=true)
@@ -188,7 +189,7 @@ public with sharing class MobileAlertPublisher {
     }
 
     /**
-     * @description Gets the escalation path configuration
+     * Gets the escalation path configuration
      * @return List of escalation path entries
      */
     @AuraEnabled(cacheable=true)
@@ -366,7 +367,7 @@ public with sharing class MobileAlertPublisher {
     // ============================================
 
     /**
-     * @description Wrapper for on-call user information
+     * Wrapper for on-call user information
      */
     public class OnCallUser {
         @AuraEnabled public Id userId;
@@ -378,7 +379,7 @@ public with sharing class MobileAlertPublisher {
     }
 
     /**
-     * @description Wrapper for escalation path entries
+     * Wrapper for escalation path entries
      */
     public class EscalationPathEntry {
         @AuraEnabled public Id pathId;
@@ -392,7 +393,7 @@ public with sharing class MobileAlertPublisher {
     }
 
     /**
-     * @description Schedulable class for resending snoozed alerts
+     * Schedulable class for resending snoozed alerts
      */
     public class MobileAlertResender implements Schedulable {
         private String alertId;
@@ -423,7 +424,7 @@ public with sharing class MobileAlertPublisher {
     }
 
     /**
-     * @description Custom exception for mobile alert errors
+     * Custom exception for mobile alert errors
      */
     public class MobileAlertException extends Exception {}
 }

@@ -1,8 +1,9 @@
 /**
- * @description Blockchain-based evidence verification service
+ * Blockchain-based evidence verification service
  * Provides tamper-proof evidence anchoring using third-party services
  * @group Enterprise Features
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class BlockchainVerification {
     
@@ -10,7 +11,7 @@ public with sharing class BlockchainVerification {
     private static final String ORIGINSTAMP_ENDPOINT = 'https://api.originstamp.com/v4/timestamp';
     
     /**
-     * @description Anchor evidence to blockchain for immutability
+     * Anchor evidence to blockchain for immutability
      * @param contentVersionId ContentVersion ID of the evidence
      * @return AnchorResult with transaction details
      */
@@ -51,7 +52,7 @@ public with sharing class BlockchainVerification {
     }
     
     /**
-     * @description Verify evidence against blockchain anchor
+     * Verify evidence against blockchain anchor
      * @param contentVersionId ContentVersion ID to verify
      * @return VerificationResult with verification status
      */
@@ -118,7 +119,7 @@ public with sharing class BlockchainVerification {
     }
     
     /**
-     * @description Batch anchor multiple evidence items
+     * Batch anchor multiple evidence items
      * @param contentVersionIds List of ContentVersion IDs
      * @return List of AnchorResult
      */
@@ -199,7 +200,7 @@ public with sharing class BlockchainVerification {
     }
     
     /**
-     * @description Get verification history for an audit package
+     * Get verification history for an audit package
      * @param auditPackageId Audit package ID
      * @return List of verification records
      */
@@ -260,7 +261,7 @@ public with sharing class BlockchainVerification {
     }
     
     /**
-     * @description Generate certificate of authenticity
+     * Generate certificate of authenticity
      * @param contentVersionId ContentVersion ID
      * @return Certificate URL or content
      */

@@ -1,14 +1,15 @@
 /**
- * @description Controller for Escalation Path LWC component
+ * Controller for Escalation Path LWC component
  * Provides CRUD operations for Elaro_Escalation_Path__c records
  *
  * @author Elaro Development Team
  * @since 2026-01
+ * @group System Monitoring
  */
 public with sharing class EscalationPathController {
 
     /**
-     * @description Gets all escalation paths ordered by level
+     * Gets all escalation paths ordered by level
      * @return List of path records with related user info
      */
     @AuraEnabled(cacheable=true)
@@ -31,7 +32,7 @@ public with sharing class EscalationPathController {
     }
 
     /**
-     * @description Creates a new escalation path
+     * Creates a new escalation path
      * @param path The path record to create
      * @return The created path ID
      */
@@ -48,7 +49,7 @@ public with sharing class EscalationPathController {
     }
 
     /**
-     * @description Updates an existing escalation path
+     * Updates an existing escalation path
      * @param path The path record to update
      */
     @AuraEnabled
@@ -63,7 +64,7 @@ public with sharing class EscalationPathController {
     }
 
     /**
-     * @description Deletes an escalation path
+     * Deletes an escalation path
      * @param pathId The ID of the path to delete
      */
     @AuraEnabled
@@ -76,7 +77,7 @@ public with sharing class EscalationPathController {
     }
 
     /**
-     * @description Validates path data before save
+     * Validates path data before save
      * @param path The path to validate
      */
     private static void validatePath(Elaro_Escalation_Path__c path) {

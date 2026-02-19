@@ -1,5 +1,5 @@
 /**
- * @description Schedulable class that handles alert escalation.
+ * Schedulable class that handles alert escalation.
  * Checks if an alert has been acknowledged and escalates to the next level if not.
  *
  * Escalation levels:
@@ -9,6 +9,7 @@
  *
  * @author Elaro Development Team
  * @since 2026-01
+ * @group System Monitoring
  */
 public with sharing class MobileAlertEscalator implements Schedulable {
 
@@ -18,7 +19,7 @@ public with sharing class MobileAlertEscalator implements Schedulable {
     private String alertId;
 
     /**
-     * @description Constructor
+     * Constructor
      * @param alertId The ID of the alert to potentially escalate
      */
     public MobileAlertEscalator(String alertId) {
@@ -26,7 +27,7 @@ public with sharing class MobileAlertEscalator implements Schedulable {
     }
 
     /**
-     * @description Schedulable execute method
+     * Schedulable execute method
      * @param ctx SchedulableContext
      */
     public void execute(SchedulableContext ctx) {
@@ -34,7 +35,7 @@ public with sharing class MobileAlertEscalator implements Schedulable {
     }
 
     /**
-     * @description Main escalation processing logic
+     * Main escalation processing logic
      */
     private void processEscalation() {
         // Get the alert/gap details
@@ -100,7 +101,7 @@ public with sharing class MobileAlertEscalator implements Schedulable {
     }
 
     /**
-     * @description Gets recipients for a specific escalation level
+     * Gets recipients for a specific escalation level
      * @param level The escalation level (1, 2, or 3)
      * @return List of user IDs for that escalation level
      */
@@ -121,7 +122,7 @@ public with sharing class MobileAlertEscalator implements Schedulable {
     }
 
     /**
-     * @description Gets the escalation delay for a specific level
+     * Gets the escalation delay for a specific level
      * @param level The escalation level
      * @return Delay in minutes
      */
@@ -142,7 +143,7 @@ public with sharing class MobileAlertEscalator implements Schedulable {
     }
 
     /**
-     * @description Builds the escalated alert title
+     * Builds the escalated alert title
      */
     private String getEscalatedTitle(Compliance_Gap__c gap, Integer level) {
         String levelLabel = getLevelLabel(level);
@@ -150,7 +151,7 @@ public with sharing class MobileAlertEscalator implements Schedulable {
     }
 
     /**
-     * @description Builds the escalated alert message
+     * Builds the escalated alert message
      */
     private String getEscalatedMessage(Compliance_Gap__c gap, Integer level) {
         String levelLabel = getLevelLabel(level);
@@ -160,7 +161,7 @@ public with sharing class MobileAlertEscalator implements Schedulable {
     }
 
     /**
-     * @description Gets human-readable label for escalation level
+     * Gets human-readable label for escalation level
      */
     private String getLevelLabel(Integer level) {
         Map<Integer, String> labels = new Map<Integer, String>{
@@ -172,7 +173,7 @@ public with sharing class MobileAlertEscalator implements Schedulable {
     }
 
     /**
-     * @description Sends the escalated notification
+     * Sends the escalated notification
      */
     private void sendEscalatedNotification(String title, String body, List<Id> recipients) {
         try {
@@ -208,7 +209,7 @@ public with sharing class MobileAlertEscalator implements Schedulable {
     }
 
     /**
-     * @description Schedules the next escalation check
+     * Schedules the next escalation check
      */
     private void scheduleNextEscalation(String alertId, Integer nextLevel) {
         Integer delay = getEscalationDelay(nextLevel);
@@ -227,7 +228,7 @@ public with sharing class MobileAlertEscalator implements Schedulable {
     }
 
     /**
-     * @description Logs when maximum escalation level is reached
+     * Logs when maximum escalation level is reached
      */
     private void logMaxEscalationReached(Compliance_Gap__c gap) {
         ElaroLogger.warn( 'Maximum escalation level reached for gap: ' + gap.Name +

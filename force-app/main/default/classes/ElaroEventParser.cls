@@ -1,8 +1,9 @@
 /**
- * @description Factory class for parsing different Shield event types
+ * Factory class for parsing different Shield event types
  * Provides type-specific parsing for Login, LoginAs, API, ReportExport, etc.
  * @group Shield Integration
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class ElaroEventParser {
     
@@ -11,7 +12,7 @@ public with sharing class ElaroEventParser {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Factory method to parse event based on type
+     * Factory method to parse event based on type
      * @param eventType The type of event to parse
      * @param rawData The raw event data from EventLogFile
      * @return Parsed and normalized event data
@@ -64,7 +65,7 @@ public with sharing class ElaroEventParser {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Parse Login event data
+     * Parse Login event data
      * @param raw Raw event data
      * @return Parsed Login event
      */
@@ -101,7 +102,7 @@ public with sharing class ElaroEventParser {
     }
     
     /**
-     * @description Parse LoginAs (impersonation) event data
+     * Parse LoginAs (impersonation) event data
      * @param raw Raw event data
      * @return Parsed LoginAs event
      */
@@ -125,7 +126,7 @@ public with sharing class ElaroEventParser {
     }
     
     /**
-     * @description Parse ReportExport event data
+     * Parse ReportExport event data
      * @param raw Raw event data
      * @return Parsed ReportExport event
      */
@@ -151,7 +152,7 @@ public with sharing class ElaroEventParser {
     }
     
     /**
-     * @description Parse API event data
+     * Parse API event data
      * @param raw Raw event data
      * @return Parsed API event
      */
@@ -180,7 +181,7 @@ public with sharing class ElaroEventParser {
     }
     
     /**
-     * @description Parse ContentDistribution event data
+     * Parse ContentDistribution event data
      * @param raw Raw event data
      * @return Parsed ContentDistribution event
      */
@@ -205,7 +206,7 @@ public with sharing class ElaroEventParser {
     }
     
     /**
-     * @description Parse ApexExecution event data
+     * Parse ApexExecution event data
      * @param raw Raw event data
      * @return Parsed ApexExecution event
      */
@@ -234,7 +235,7 @@ public with sharing class ElaroEventParser {
     }
     
     /**
-     * @description Parse PermissionSetEventLog data
+     * Parse PermissionSetEventLog data
      * @param raw Raw event data
      * @return Parsed PermissionSet event
      */
@@ -262,7 +263,7 @@ public with sharing class ElaroEventParser {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Safely get string value from map
+     * Safely get string value from map
      * @param data The source map
      * @param key The key to retrieve
      * @return String value or empty string
@@ -276,7 +277,7 @@ public with sharing class ElaroEventParser {
     }
     
     /**
-     * @description Safely get integer value from map
+     * Safely get integer value from map
      * @param data The source map
      * @param key The key to retrieve
      * @return Integer value or 0
@@ -294,7 +295,7 @@ public with sharing class ElaroEventParser {
     }
     
     /**
-     * @description Parse timestamp string to Datetime
+     * Parse timestamp string to Datetime
      * @param timestampStr The timestamp string
      * @return Datetime value or null
      */
@@ -316,7 +317,7 @@ public with sharing class ElaroEventParser {
     }
     
     /**
-     * @description Build geo location string from components
+     * Build geo location string from components
      * @param city City name
      * @param subdivision State/province
      * @param country Country name
@@ -339,7 +340,7 @@ public with sharing class ElaroEventParser {
     }
     
     /**
-     * @description Determine if a login event is suspicious
+     * Determine if a login event is suspicious
      * @param loginData Parsed login event data
      * @return True if login appears suspicious
      */
@@ -366,7 +367,7 @@ public with sharing class ElaroEventParser {
     }
     
     /**
-     * @description Batch parse multiple events
+     * Batch parse multiple events
      * @param eventType The event type
      * @param rawEvents List of raw event data
      * @return List of parsed events

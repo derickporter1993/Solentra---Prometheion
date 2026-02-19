@@ -13,6 +13,8 @@
  *
  * @author Elaro Team
  * @version 1.1 (Updated to use generic event)
+ * @since v3.1.0 (Spring '26)
+ * @group Logging
  */
 public with sharing class ElaroPCIAccessLogger {
 
