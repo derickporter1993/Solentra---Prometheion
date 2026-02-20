@@ -1,9 +1,9 @@
 /**
- * @description Test class for RemediationSuggestionService
+ * Test class for RemediationSuggestionService
  * @author Elaro Development Team
  * @since 2026-01
  */
-@isTest
+@IsTest(testFor=RemediationSuggestionService.class)
 private class RemediationSuggestionServiceTest {
 
     @TestSetup

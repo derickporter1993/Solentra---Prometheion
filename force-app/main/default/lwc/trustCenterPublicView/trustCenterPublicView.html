@@ -1,0 +1,69 @@
+<template>
+    <div class="trust-center-public" role="main" aria-label={label.TC_PublicViewTitle}>
+        <!-- Loading State -->
+        <template lwc:if={isLoading}>
+            <div class="slds-align_absolute-center slds-p-around_xx-large" role="status">
+                <lightning-spinner
+                    alternative-text={label.TC_Loading}
+                    size="large">
+                </lightning-spinner>
+            </div>
+        </template>
+
+        <!-- Error / Invalid Token State -->
+        <template lwc:elseif={hasError}>
+            <div class="slds-box slds-theme_shade slds-align_absolute-center slds-m-around_large">
+                <div class="slds-text-align_center slds-p-around_large">
+                    <lightning-icon
+                        icon-name="utility:lock"
+                        size="large"
+                        alternative-text={label.TC_Error}
+                        class="slds-m-bottom_medium">
+                    </lightning-icon>
+                    <h1 class="slds-text-heading_medium slds-m-bottom_small">{label.TC_Error}</h1>
+                    <p class="slds-text-body_regular slds-text-color_weak">{displayErrorMessage}</p>
+                </div>
+            </div>
+        </template>
+
+        <!-- Empty State (valid token but no public views) -->
+        <template lwc:elseif={isValidButEmpty}>
+            <div class="slds-box slds-theme_shade slds-align_absolute-center slds-m-around_large">
+                <div class="slds-text-align_center slds-p-around_large">
+                    <h1 class="slds-text-heading_medium slds-m-bottom_small">{label.TC_PublicViewTitle}</h1>
+                    <p class="slds-text-body_regular slds-text-color_weak">{label.TC_NoFrameworks}</p>
+                </div>
+            </div>
+        </template>
+
+        <!-- Main Content: Public Compliance Views -->
+        <template lwc:else>
+            <div class="slds-p-around_medium">
+                <!-- Header -->
+                <div class="slds-text-align_center slds-m-bottom_large">
+                    <h1 class="slds-text-heading_large">{label.TC_PublicViewTitle}</h1>
+                    <p class="slds-text-body_regular slds-text-color_weak slds-m-top_x-small">
+                        {label.TC_ComplianceStatus}
+                    </p>
+                </div>
+
+                <!-- Badge Grid -->
+                <div class="slds-grid slds-wrap slds-gutters slds-grid_align-center" role="list" aria-label={label.TC_ComplianceStatus}>
+                    <template for:each={views} for:item="view">
+                        <div
+                            key={view.Id}
+                            class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3 slds-m-bottom_small"
+                            role="listitem">
+                            <c-trust-center-badge
+                                framework-name={view.Name}
+                                compliance-percentage={view.Compliance_Percentage__c}
+                                certification-status={view.Certification_Status__c}
+                                last-audit-date={view.Last_Audit_Date__c}>
+                            </c-trust-center-badge>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

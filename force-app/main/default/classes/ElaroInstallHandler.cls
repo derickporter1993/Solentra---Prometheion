@@ -1,8 +1,8 @@
 /**
- * @description Post-install handler for Elaro package
+ * Post-install handler for Elaro package
  * Executes configuration and initialization logic after package installation/upgrade
  *
- * @group Installation
+ * @group Utilities
  * @author Elaro Team
  * @version 3.0
  *
@@ -11,11 +11,13 @@
  * Security: Uses 'without sharing' because install handlers run during package
  * installation where the installing user may not have sharing access to all
  * objects that need to be initialized (Custom Settings, Audit Logs, etc.).
+ * @since v3.1.0 (Spring '26)
  */
+@SuppressWarnings('PMD.AvoidGlobalInstallUninstallHandlers')
 global without sharing class ElaroInstallHandler implements InstallHandler {
 
     /**
-     * @description Main installation handler method
+     * Main installation handler method
      * Called automatically by Salesforce after package install/upgrade
      *
      * @param context Installation context (version info, org ID, etc.)
@@ -51,7 +53,7 @@ global without sharing class ElaroInstallHandler implements InstallHandler {
     }
 
     /**
-     * @description Log installation details to system debug
+     * Log installation details to system debug
      * @param context Installation context
      */
     private void logInstallation(InstallContext context) {
@@ -75,7 +77,7 @@ global without sharing class ElaroInstallHandler implements InstallHandler {
     }
 
     /**
-     * @description Initialize AI settings with default values if not present
+     * Initialize AI settings with default values if not present
      * Creates Elaro_AI_Settings__c custom settings record
      */
     private void initializeAISettings() {
@@ -96,8 +98,7 @@ global without sharing class ElaroInstallHandler implements InstallHandler {
             );
 
             try {
-                ElaroSecurityUtils.validateCRUDAccess('Elaro_AI_Settings__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-                insert defaultSettings;
+                insert as user defaultSettings;
                 ElaroLogger.info( 'Created default AI settings: ' + defaultSettings.Id);
             } catch (DmlException e) {
                 ElaroLogger.warn( 'Could not create AI settings (may already exist): ' + e.getMessage());
@@ -108,7 +109,7 @@ global without sharing class ElaroInstallHandler implements InstallHandler {
     }
 
     /**
-     * @description Create welcome audit log entry
+     * Create welcome audit log entry
      * @param context Installation context
      */
     private void createWelcomeAuditLog(InstallContext context) {
@@ -139,8 +140,7 @@ global without sharing class ElaroInstallHandler implements InstallHandler {
         );
 
         try {
-            ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert welcomeLog;
+            insert as user welcomeLog;
             ElaroLogger.info( 'Created welcome audit log: ' + welcomeLog.Id);
         } catch (DmlException e) {
             ElaroLogger.warn( 'Could not create welcome audit log: ' + e.getMessage());
@@ -148,7 +148,7 @@ global without sharing class ElaroInstallHandler implements InstallHandler {
     }
 
     /**
-     * @description Create error audit log entry
+     * Create error audit log entry
      * @param e Exception that occurred
      * @param context Installation context
      */
@@ -163,12 +163,11 @@ global without sharing class ElaroInstallHandler implements InstallHandler {
             Severity__c = 'ERROR'
         );
 
-        ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-        insert errorLog;
+        insert as user errorLog;
     }
 
     /**
-     * @description Send installation notification to administrators
+     * Send installation notification to administrators
      * Attempts to send Chatter notification or email to admins
      * @param context Installation context
      */
@@ -207,8 +206,7 @@ global without sharing class ElaroInstallHandler implements InstallHandler {
                     Type = 'TextPost'
                 );
 
-                ElaroSecurityUtils.validateCRUDAccess('FeedItem', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-                insert post;
+                insert as user post;
                 ElaroLogger.info( 'Posted installation notification to Chatter');
             }
 
@@ -218,7 +216,7 @@ global without sharing class ElaroInstallHandler implements InstallHandler {
     }
 
     /**
-     * @description Get installation summary for debugging
+     * Get installation summary for debugging
      * @param context Installation context
      * @return Summary string
      */

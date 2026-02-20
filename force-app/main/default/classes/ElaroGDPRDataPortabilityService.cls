@@ -10,6 +10,8 @@
  *
  * @author Elaro
  * @version 1.0
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 public with sharing class ElaroGDPRDataPortabilityService {
 
@@ -74,9 +76,10 @@ public with sharing class ElaroGDPRDataPortabilityService {
             }
         }
 
-        String query = 'SELECT ' + String.join(fieldNames, ',') +
-                       ' FROM Contact WHERE Id = :contactId WITH USER_MODE LIMIT 1';
-        List<Contact> contacts = Database.query(query);
+        String query = 'SELECT ' + String.join(fieldNames, ',')
+            + ' FROM Contact WHERE Id = :contactId WITH USER_MODE LIMIT 1';
+        Map<String, Object> binds = new Map<String, Object>{ 'contactId' => contactId };
+        List<Contact> contacts = Database.queryWithBinds(query, binds, AccessLevel.USER_MODE);
 
         if (contacts.isEmpty()) {
             throw new GDPRException('Contact not found');

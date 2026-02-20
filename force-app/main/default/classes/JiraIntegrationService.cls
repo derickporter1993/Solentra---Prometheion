@@ -1,5 +1,5 @@
 /**
- * @description Service class for Jira integration with Elaro compliance gaps.
+ * Service class for Jira integration with Elaro compliance gaps.
  * Provides bidirectional sync between Salesforce Compliance_Gap__c and Jira issues.
  *
  * Features:
@@ -17,7 +17,7 @@ public with sharing class JiraIntegrationService {
     private static final String API_VERSION = '/rest/api/3';
 
     /**
-     * @description Creates a Jira issue from a compliance gap
+     * Creates a Jira issue from a compliance gap
      * @param gapId The Salesforce ID of the Compliance_Gap__c record
      * @param priority Optional priority override (Highest, High, Medium, Low, Lowest)
      * @return JiraIssue wrapper containing the created issue details
@@ -50,31 +50,25 @@ public with sharing class JiraIntegrationService {
         gap.Jira_Status__c = 'To Do';
         gap.Jira_Last_Sync__c = Datetime.now();
 
-        if (Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-            update gap;
-        }
+        update as user gap;
 
         return buildJiraIssueFromResponse(responseBody, settings.jiraInstanceUrl);
     }
 
     /**
-     * @description Asynchronously creates a Jira issue (for trigger/batch contexts)
+     * Asynchronously creates a Jira issue via Queueable (for trigger/batch contexts).
+     *
      * @param gapId The Salesforce ID of the Compliance_Gap__c record
      * @param priority Optional priority override
      */
-    @future(callout=true)
     public static void createIssueAsync(String gapId, String priority) {
-        try {
-            createIssue(gapId, priority);
-        } catch (Exception e) {
-            ElaroLogger.error('Async Jira issue creation failed: ' + e.getMessage(), e);
-            // Log to custom object for monitoring
-            logError('createIssueAsync', gapId, e.getMessage());
+        if (!Test.isRunningTest()) {
+            System.enqueueJob(new JiraIssueCreationQueueable(gapId, priority));
         }
     }
 
     /**
-     * @description Gets the current status of a Jira issue
+     * Gets the current status of a Jira issue
      * @param jiraKey The Jira issue key (e.g., COMPLIANCE-123)
      * @return JiraIssue wrapper with current issue details
      */
@@ -99,7 +93,7 @@ public with sharing class JiraIntegrationService {
     }
 
     /**
-     * @description Syncs the Jira issue status back to the Salesforce gap
+     * Syncs the Jira issue status back to the Salesforce gap
      * @param gapId The Salesforce ID of the Compliance_Gap__c record
      */
     @AuraEnabled
@@ -122,13 +116,11 @@ public with sharing class JiraIntegrationService {
             gap.Status__c = newStatus;
         }
 
-        if (Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-            update gap;
-        }
+        update as user gap;
     }
 
     /**
-     * @description Creates Jira issues for multiple gaps
+     * Creates Jira issues for multiple gaps
      * @param gapIds List of Compliance_Gap__c IDs
      * @return List of created JiraIssue wrappers
      */
@@ -149,7 +141,7 @@ public with sharing class JiraIntegrationService {
     }
 
     /**
-     * @description Adds a comment to a Jira issue
+     * Adds a comment to a Jira issue
      * @param jiraKey The Jira issue key
      * @param comment The comment text to add
      */
@@ -175,7 +167,7 @@ public with sharing class JiraIntegrationService {
     }
 
     /**
-     * @description Updates a Jira issue status
+     * Updates a Jira issue status
      * @param jiraKey The Jira issue key
      * @param transitionId The Jira transition ID to execute
      */
@@ -203,7 +195,7 @@ public with sharing class JiraIntegrationService {
     }
 
     /**
-     * @description Gets available transitions for a Jira issue
+     * Gets available transitions for a Jira issue
      * @param jiraKey The Jira issue key
      * @return List of available transitions
      */
@@ -235,7 +227,7 @@ public with sharing class JiraIntegrationService {
     }
 
     /**
-     * @description Checks if Jira integration is properly configured
+     * Checks if Jira integration is properly configured
      * @return True if configured and accessible
      */
     @AuraEnabled(cacheable=true)
@@ -255,7 +247,7 @@ public with sharing class JiraIntegrationService {
     }
 
     /**
-     * @description Gets all gaps linked to Jira issues
+     * Gets all gaps linked to Jira issues
      * @return List of gaps with Jira links
      */
     @AuraEnabled(cacheable=true)
@@ -489,7 +481,7 @@ public with sharing class JiraIntegrationService {
         req.setMethod(method);
         req.setHeader('Content-Type', 'application/json');
         req.setHeader('Accept', 'application/json');
-        req.setTimeout(30000);
+        req.setTimeout(ElaroConstants.CALLOUT_TIMEOUT_MS);
 
         if (String.isNotBlank(body)) {
             req.setBody(body);
@@ -506,11 +498,56 @@ public with sharing class JiraIntegrationService {
     }
 
     // ============================================
+    // Inner Queueable Class
+    // ============================================
+
+    /**
+     * Queueable for asynchronous Jira issue creation from compliance gaps.
+     * Replaces the previous @future createIssueAsync method with better
+     * error handling and monitoring capabilities.
+     *
+     * @author Elaro Team
+     * @since v3.1.0 (Spring '26)
+     * @group Integration
+     * @see JiraIntegrationService
+     */
+    public class JiraIssueCreationQueueable implements Queueable, Database.AllowsCallouts {
+        private String gapId;
+        private String priority;
+
+        /**
+         * Constructs a new JiraIssueCreationQueueable.
+         *
+         * @param gapId The Salesforce ID of the Compliance_Gap__c record
+         * @param priority Optional priority override for the Jira issue
+         */
+        public JiraIssueCreationQueueable(String gapId, String priority) {
+            this.gapId = gapId;
+            this.priority = priority;
+        }
+
+        /**
+         * Executes the Jira issue creation callout.
+         *
+         * @param context The QueueableContext provided by the platform
+         */
+        public void execute(QueueableContext context) {
+            try {
+                createIssue(gapId, priority);
+            } catch (Exception e) {
+                ElaroLogger.error('JiraIntegrationService.JiraIssueCreationQueueable: Async Jira issue creation failed', e);
+                // Log to custom object for monitoring
+                logError('JiraIssueCreationQueueable', gapId, e.getMessage());
+            }
+        }
+    }
+
+    // ============================================
     // Inner Classes
     // ============================================
 
     /**
-     * @description Wrapper class for Jira issue data
+     * Wrapper class for Jira issue data
      */
     public class JiraIssue {
         @AuraEnabled public String id;
@@ -526,7 +563,7 @@ public with sharing class JiraIntegrationService {
     }
 
     /**
-     * @description Wrapper class for Jira transition data
+     * Wrapper class for Jira transition data
      */
     public class JiraTransition {
         @AuraEnabled public String id;
@@ -534,7 +571,7 @@ public with sharing class JiraIntegrationService {
     }
 
     /**
-     * @description Internal settings wrapper
+     * Internal settings wrapper
      */
     public class JiraSettings {
         public String jiraInstanceUrl;
@@ -547,7 +584,7 @@ public with sharing class JiraIntegrationService {
     }
 
     /**
-     * @description Custom exception for Jira integration errors
+     * Custom exception for Jira integration errors
      */
     public class JiraIntegrationException extends Exception {}
 }

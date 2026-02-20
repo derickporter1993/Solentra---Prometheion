@@ -13,6 +13,8 @@
  * 
  * @author Elaro Team
  * @version 1.1
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 public with sharing class ElaroComplianceScorer {
     

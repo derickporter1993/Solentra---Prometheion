@@ -1,8 +1,9 @@
 /**
- * @description Orchestrates automated remediation actions for compliance events
+ * Orchestrates automated remediation actions for compliance events
  * Supports actions like REVOKE_PERMISSION, LOCK_USER, NOTIFY_MANAGER
- * @group Automation & Alerting
+ * @group System Monitoring
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class RemediationOrchestrator {
     
@@ -35,7 +36,7 @@ public with sharing class RemediationOrchestrator {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Create a remediation case for an event
+     * Create a remediation case for an event
      * @param eventId The event ID to remediate
      * @param priority The case priority (High, Medium, Low)
      * @return Case ID of the created case
@@ -53,6 +54,7 @@ public with sharing class RemediationOrchestrator {
                 SELECT Id, Name, Evidence_Type__c, Description__c, Evidence_Date__c
                 FROM Elaro_Evidence_Item__c
                 WHERE Id = :eventId
+                WITH USER_MODE
                 LIMIT 1
             ];
         } catch (Exception e) {
@@ -74,8 +76,8 @@ public with sharing class RemediationOrchestrator {
             OwnerId = UserInfo.getUserId()
         );
         
-        insert remedCase;
-        
+        insert as user remedCase;
+
         // Link case to event (if lookup field exists)
         updateEventWithCase(event.Id, remedCase.Id);
         
@@ -83,7 +85,7 @@ public with sharing class RemediationOrchestrator {
     }
     
     /**
-     * @description Execute a remediation action
+     * Execute a remediation action
      * @param actionType The type of action to execute
      * @param targetId The target (user, permission, etc.) ID
      * @param context Additional context for the action
@@ -140,7 +142,7 @@ public with sharing class RemediationOrchestrator {
     }
     
     /**
-     * @description Get available remediation actions for an event type
+     * Get available remediation actions for an event type
      * @param eventType The event type
      * @return List of available actions
      */
@@ -174,7 +176,7 @@ public with sharing class RemediationOrchestrator {
     }
     
     /**
-     * @description Get remediation history for an event
+     * Get remediation history for an event
      * @param eventId The event ID
      * @return List of remediation actions taken
      */
@@ -197,11 +199,12 @@ public with sharing class RemediationOrchestrator {
             List<PermissionSetAssignment> assignments = [
                 SELECT Id FROM PermissionSetAssignment
                 WHERE AssigneeId = :userId AND PermissionSetId = :permissionSetId
+                WITH USER_MODE
                 LIMIT 1
             ];
-            
+
             if (!assignments.isEmpty()) {
-                delete assignments;
+                delete as user assignments;
                 result.success = true;
                 result.message = 'Permission set assignment removed successfully';
             } else {
@@ -220,7 +223,7 @@ public with sharing class RemediationOrchestrator {
         try {
             User u = [SELECT Id, IsActive FROM User WHERE Id = :targetId WITH USER_MODE LIMIT 1];
             u.IsActive = false;
-            update u;
+            update as user u;
             
             result.success = true;
             result.message = 'User account has been deactivated';
@@ -283,8 +286,8 @@ public with sharing class RemediationOrchestrator {
             Type = 'Compliance'
         );
         
-        insert remedCase;
-        
+        insert as user remedCase;
+
         result.success = true;
         result.message = 'Case created: ' + remedCase.Id;
         result.resultId = remedCase.Id;
@@ -303,12 +306,13 @@ public with sharing class RemediationOrchestrator {
         try {
             // Delete active sessions for the user
             List<AuthSession> sessions = [
-                SELECT Id FROM AuthSession 
+                SELECT Id FROM AuthSession
                 WHERE UsersId = :targetId AND IsCurrent = false
+                WITH USER_MODE
             ];
-            
+
             if (!sessions.isEmpty()) {
-                delete sessions;
+                delete as user sessions;
             }
             
             result.success = true;
@@ -339,7 +343,7 @@ public with sharing class RemediationOrchestrator {
                 Id = eventId,
                 Status__c = 'Under Review'
             );
-            update event;
+            update as user event;
         } catch (Exception e) {
             ElaroLogger.warn( 'Could not update event: ' + e.getMessage());
         }

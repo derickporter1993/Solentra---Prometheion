@@ -143,7 +143,9 @@ public inherited sharing class ConfigDriftDetector implements Schedulable {
 
     /**
      * Publishes detected drift events as ConfigurationDrift__e Platform Events
-     * via the ComplianceAlertPublisher.
+     * via a single bulk {@link ComplianceAlertPublisher#publishDriftAlerts} call.
+     * Collects all events into a list first to avoid hitting the 150 DML limit
+     * that individual EventBus.publish calls inside a loop would cause.
      *
      * @param driftEvents List of detected drift events to publish
      */
@@ -152,20 +154,39 @@ public inherited sharing class ConfigDriftDetector implements Schedulable {
             return;
         }
 
+        List<ConfigurationDrift__e> platformEvents = new List<ConfigurationDrift__e>();
         for (DriftEvent drift : driftEvents) {
-            ComplianceAlertPublisher.publishDriftAlert(
-                drift.changeType,
-                drift.changedBy,
-                drift.changedObject,
-                drift.oldValue,
-                drift.newValue,
-                drift.riskLevel
-            );
+            platformEvents.add(new ConfigurationDrift__e(
+                Change_Type__c = drift.changeType,
+                Changed_By__c = drift.changedBy,
+                Changed_Object__c = drift.changedObject,
+                Old_Value__c = drift.oldValue,
+                New_Value__c = drift.newValue,
+                Risk_Level__c = drift.riskLevel ?? ElaroConstants.SEVERITY_MEDIUM,
+                Detection_Timestamp__c = drift.detectionTimestamp ?? System.now()
+            ));
         }
+
+        ComplianceAlertPublisher.publishDriftAlerts(platformEvents);
 
         ElaroLogger.info(CLASS_NAME + '.publishDriftEvents: Published drift events', new Map<String, Object>{
             'count' => driftEvents.size()
         });
+    }
+
+    /**
+     * Detects configuration drift and converts detected drift events into
+     * normalized ComplianceFinding objects via {@link RuleEngineEventBridge}.
+     * This enables the Rule Engine to incorporate drift detection results
+     * into compliance scoring and gap analysis pipelines.
+     *
+     * @param hoursBack Number of hours to look back for changes
+     * @return List of ComplianceFinding objects for any detected drift
+     * @see RuleEngineEventBridge#convertDriftEventsToFindings
+     */
+    public List<RuleEngineEventBridge.ComplianceFinding> detectAndConvertToFindings(Integer hoursBack) {
+        List<DriftEvent> driftEvents = detectDrift(hoursBack);
+        return RuleEngineEventBridge.convertDriftEventsToFindings(driftEvents);
     }
 
     /**

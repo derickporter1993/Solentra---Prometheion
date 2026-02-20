@@ -5,6 +5,8 @@
  * 
  * @author Elaro
  * @version 1.0
+ * @since v3.1.0 (Spring '26)
+ * @group AI Governance
  */
 public with sharing class ElaroAIRiskPredictor {
     

@@ -6,6 +6,8 @@
  *
  * @author Elaro
  * @version 1.0
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 public with sharing class HIPAAPrivacyRuleService extends ComplianceServiceBase {
 
@@ -153,13 +155,14 @@ public with sharing class HIPAAPrivacyRuleService extends ComplianceServiceBase 
             objectName + 'History';
 
         try {
-            String query = 'SELECT Id, Field, OldValue, NewValue, CreatedById, CreatedBy.Name, CreatedDate ' +
-                          'FROM ' + historyObjectName + ' ' +
-                          'WHERE ParentId = :recordId ' +
-                          'WITH USER_MODE ' +
-                          'ORDER BY CreatedDate DESC LIMIT 100';
+            String query = 'SELECT Id, Field, OldValue, NewValue, CreatedById, CreatedBy.Name, CreatedDate '
+                + 'FROM ' + String.escapeSingleQuotes(historyObjectName) + ' '
+                + 'WHERE ParentId = :recordId '
+                + 'WITH USER_MODE '
+                + 'ORDER BY CreatedDate DESC LIMIT 100';
 
-            List<SObject> historyRecords = Database.query(query);
+            Map<String, Object> binds = new Map<String, Object>{ 'recordId' => recordId };
+            List<SObject> historyRecords = Database.queryWithBinds(query, binds, AccessLevel.USER_MODE);
 
             for (SObject hist : historyRecords) {
                 PHIAccessLog log = new PHIAccessLog();
@@ -214,7 +217,7 @@ public with sharing class HIPAAPrivacyRuleService extends ComplianceServiceBase 
             Origin = 'H'
         );
         ElaroSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
-        insert cv;
+        insert as user cv;
 
         cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH USER_MODE];
 

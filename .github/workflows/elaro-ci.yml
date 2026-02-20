@@ -28,10 +28,10 @@ jobs:
         run: npm audit --audit-level=high
 
       - name: Format Check
-        run: npm run fmt:check || echo "⚠️  Format check failed"
+        run: npm run fmt:check
 
       - name: Lint Code
-        run: npm run lint || echo "⚠️  Lint check failed"
+        run: npm run lint
 
   unit-tests:
     runs-on: ubuntu-latest
@@ -70,40 +70,38 @@ jobs:
 
       - name: Run AppExchange Security Scan (HTML)
         run: |
-          echo "🔍 Running Salesforce Code Analyzer with AppExchange selectors..."
+          echo "🔍 Running Salesforce Code Analyzer with AppExchange engine..."
           sf scanner run \
             --target "force-app/" \
-            --rule-selector "AppExchange" \
-            --rule-selector "Recommended:Security" \
+            --engine pmd-appexchange \
             --format "html" \
             --outfile "scanner-reports/code-analyzer-appexchange.html" \
-            --severity-threshold 2 || echo "⚠️ AppExchange scan found issues (review HTML report)"
+            --severity-threshold 2
 
       - name: Run AppExchange Security Scan (JSON)
         run: |
           echo "📊 Generating JSON report for CI analysis..."
           sf scanner run \
             --target "force-app/" \
-            --rule-selector "AppExchange" \
-            --rule-selector "Recommended:Security" \
+            --engine pmd-appexchange \
             --format "json" \
-            --outfile "scanner-reports/code-analyzer-appexchange.json" || true
+            --outfile "scanner-reports/code-analyzer-appexchange.json" \
+            --severity-threshold 2
 
       - name: Run AppExchange Security Scan (Table)
         run: |
           echo "📋 Displaying scan results in console..."
           sf scanner run \
             --target "force-app/" \
-            --rule-selector "AppExchange" \
-            --rule-selector "Recommended:Security" \
+            --engine pmd-appexchange \
             --format "table" \
-            --severity-threshold 2 || echo "⚠️ Review scanner reports for details"
+            --severity-threshold 2
 
       - name: Generate SARIF Report
         if: always()
         run: |
           sf scanner run --target "force-app" \
-            --rule-selector "Recommended:Security" \
+            --engine pmd \
             --format sarif \
             --outfile scanner-results.sarif || true
 

@@ -1,8 +1,8 @@
 /**
- * @description Unit tests for RootCauseAnalysisEngine
+ * Unit tests for RootCauseAnalysisEngine
  * @group Tests
  */
-@isTest
+@IsTest(testFor=RootCauseAnalysisEngine.class)
 private class RootCauseAnalysisEngineTest {
     
     @testSetup

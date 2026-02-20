@@ -1,0 +1,79 @@
+<template>
+    <lightning-card title={label.TC_DashboardTitle} icon-name="standard:trusted_application">
+        <div slot="actions">
+            <lightning-button
+                label={label.TC_RunAggregation}
+                variant="neutral"
+                icon-name="utility:refresh"
+                onclick={handleAggregation}
+                disabled={isAggregating}
+                aria-label={label.TC_RunAggregation}>
+            </lightning-button>
+        </div>
+
+        <div class="slds-card__body slds-card__body_inner">
+            <!-- Loading State -->
+            <template lwc:if={isLoading}>
+                <div class="slds-align_absolute-center slds-p-around_large" role="status">
+                    <lightning-spinner
+                        alternative-text={label.TC_Loading}
+                        size="medium">
+                    </lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Error State -->
+            <template lwc:elseif={hasError}>
+                <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                    <span class="slds-assistive-text">{label.TC_Error}</span>
+                    <h2>{label.TC_Error}</h2>
+                    <p>{errorMessage}</p>
+                </div>
+            </template>
+
+            <!-- Empty State -->
+            <template lwc:elseif={isEmpty}>
+                <div class="slds-illustration slds-illustration_small slds-align_absolute-center">
+                    <div class="slds-illustration__body">
+                        <p class="slds-text-heading_medium slds-text-color_weak">
+                            {label.TC_NoFrameworks}
+                        </p>
+                        <p class="slds-text-body_regular slds-text-color_weak slds-m-top_small">
+                            {label.TC_NoViews}
+                        </p>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Main Content -->
+            <template lwc:else>
+                <!-- Compliance Status Section -->
+                <h3 class="slds-text-heading_small slds-m-bottom_medium">
+                    {label.TC_ComplianceStatus}
+                </h3>
+
+                <!-- Badge Grid -->
+                <div class="slds-grid slds-wrap slds-gutters" role="list" aria-label={label.TC_ComplianceStatus}>
+                    <template for:each={views} for:item="view">
+                        <div
+                            key={view.Id}
+                            class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3 slds-m-bottom_small"
+                            role="listitem">
+                            <c-trust-center-badge
+                                framework-name={view.Name}
+                                compliance-percentage={view.Compliance_Percentage__c}
+                                certification-status={view.Certification_Status__c}
+                                last-audit-date={view.Last_Audit_Date__c}>
+                            </c-trust-center-badge>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Link Manager Section -->
+                <div class="slds-m-top_large">
+                    <c-trust-center-link-manager></c-trust-center-link-manager>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

@@ -1,9 +1,9 @@
 /**
- * @description Test class for ElaroClaudeAPIMock
+ * Test class for ElaroClaudeAPIMock
  * @group Tests
  * @see ElaroClaudeAPIMock
  */
-@isTest
+@IsTest(testFor=ElaroClaudeAPIMock.class)
 private class ElaroClaudeAPIMockTest {
     
     @isTest

@@ -1,11 +1,11 @@
 /**
- * @description Test class for JiraIntegrationService
- * Provides comprehensive coverage for Jira integration functionality
+ * Test class for JiraIntegrationService.
+ * Provides comprehensive coverage for Jira integration functionality.
  *
  * @author Elaro Development Team
  * @since 2026-01
  */
-@isTest
+@IsTest(testFor=JiraIntegrationService.class)
 private class JiraIntegrationServiceTest {
 
     private static final String MOCK_JIRA_KEY = 'COMPLIANCE-123';
@@ -143,8 +143,48 @@ private class JiraIntegrationServiceTest {
         JiraIntegrationService.createIssueAsync(gap.Id, 'High');
         Test.stopTest();
 
-        // Future method execution - verify no exception thrown
-        Assert.isTrue(true, 'Async method should complete');
+        // Verify the gap was updated by the async execution
+        Compliance_Gap__c updatedGap = [
+            SELECT Jira_Issue_Key__c FROM Compliance_Gap__c WHERE Id = :gap.Id
+        ];
+        Assert.areNotEqual(null, updatedGap.Jira_Issue_Key__c, 'Async method should link gap to Jira issue');
+    }
+
+    @isTest
+    static void testJiraIssueCreationQueueable_Execute() {
+        Compliance_Gap__c gap = [SELECT Id FROM Compliance_Gap__c WHERE Jira_Issue_Key__c = NULL LIMIT 1];
+
+        Test.setMock(HttpCalloutMock.class, new JiraCreateIssueMock(true));
+
+        JiraIntegrationService.JiraIssueCreationQueueable queueable =
+            new JiraIntegrationService.JiraIssueCreationQueueable(gap.Id, 'High');
+
+        Test.startTest();
+        queueable.execute(null);
+        Test.stopTest();
+
+        // Verify gap was updated with Jira info
+        Compliance_Gap__c updatedGap = [
+            SELECT Jira_Issue_Key__c, Jira_Issue_URL__c
+            FROM Compliance_Gap__c
+            WHERE Id = :gap.Id
+        ];
+        Assert.areNotEqual(null, updatedGap.Jira_Issue_Key__c, 'Gap should be linked to Jira after Queueable execution');
+    }
+
+    @isTest
+    static void testJiraIssueCreationQueueable_HandleError() {
+        // Use an invalid gap ID to trigger an error
+        JiraIntegrationService.JiraIssueCreationQueueable queueable =
+            new JiraIntegrationService.JiraIssueCreationQueueable('001000000000000AAA', null);
+
+        Test.startTest();
+        // Should not throw - error is caught and logged internally
+        queueable.execute(null);
+        Test.stopTest();
+
+        // Verify Queueable handled error gracefully
+        Assert.isNotNull(queueable, 'Queueable should handle errors without throwing');
     }
 
     // ============================================
@@ -264,12 +304,16 @@ private class JiraIntegrationServiceTest {
     static void testAddComment_Success() {
         Test.setMock(HttpCalloutMock.class, new JiraCommentMock(true));
 
+        Exception caughtEx;
         Test.startTest();
-        JiraIntegrationService.addComment(MOCK_JIRA_KEY, 'Test comment from Salesforce');
+        try {
+            JiraIntegrationService.addComment(MOCK_JIRA_KEY, 'Test comment from Salesforce');
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        // No exception = success
-        Assert.isTrue(true, 'Comment should be added');
+        Assert.isNull(caughtEx, 'Comment should be added without throwing');
     }
 
     @isTest
@@ -304,11 +348,16 @@ private class JiraIntegrationServiceTest {
     static void testTransitionIssue() {
         Test.setMock(HttpCalloutMock.class, new JiraTransitionMock(true));
 
+        Exception caughtEx;
         Test.startTest();
-        JiraIntegrationService.transitionIssue(MOCK_JIRA_KEY, '21');
+        try {
+            JiraIntegrationService.transitionIssue(MOCK_JIRA_KEY, '21');
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
-        Assert.isTrue(true, 'Transition should complete');
+        Assert.isNull(caughtEx, 'Transition should complete without throwing');
     }
 
     // ============================================

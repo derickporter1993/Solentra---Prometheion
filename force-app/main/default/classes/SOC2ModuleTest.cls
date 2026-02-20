@@ -1,11 +1,11 @@
 /**
- * @description Test class for SOC2Module
+ * Test class for SOC2Module
  * Covers all IComplianceModule interface methods and internal evaluation logic
  * for SOC 2 Trust Service Criteria (CC6, CC7, CC8, CC9)
  * @group Tests
  * @author Elaro Team
  */
-@IsTest
+@IsTest(testFor=SOC2Module.class)
 private class SOC2ModuleTest {
 
     @TestSetup

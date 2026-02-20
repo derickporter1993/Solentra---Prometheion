@@ -1,7 +1,7 @@
 /**
- * @description HTTP Callout Mock for Claude API
+ * HTTP Callout Mock for Claude API
  * Provides mock responses for Anthropic Claude API testing
- * @group Tests
+ * @group Utilities
  * @author Elaro Team
  */
 @isTest
@@ -27,15 +27,16 @@ public class ElaroClaudeAPIMock implements HttpCalloutMock {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Default constructor - returns successful response
-     */
+     * Default constructor - returns successful response
+ * @since v3.1.0 (Spring '26)
+ */
     public ElaroClaudeAPIMock() {
         this.responseType = ResponseType.SUCCESS;
         configureResponse();
     }
     
     /**
-     * @description Constructor with specific response type
+     * Constructor with specific response type
      * @param responseType The type of response to return
      */
     public ElaroClaudeAPIMock(ResponseType responseType) {
@@ -44,7 +45,7 @@ public class ElaroClaudeAPIMock implements HttpCalloutMock {
     }
     
     /**
-     * @description Constructor with custom status code and body
+     * Constructor with custom status code and body
      * @param statusCode HTTP status code
      * @param responseBody JSON response body
      */
@@ -58,7 +59,7 @@ public class ElaroClaudeAPIMock implements HttpCalloutMock {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Implements HttpCalloutMock interface
+     * Implements HttpCalloutMock interface
      * @param req The HTTP request
      * @return Mock HTTP response
      */
@@ -100,7 +101,7 @@ public class ElaroClaudeAPIMock implements HttpCalloutMock {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Create successful Claude API response
+     * Create successful Claude API response
      * @return JSON string with compliance recommendation
      */
     private static String createSuccessResponse() {
@@ -134,7 +135,7 @@ public class ElaroClaudeAPIMock implements HttpCalloutMock {
     }
     
     /**
-     * @description Create error response
+     * Create error response
      * @return JSON string with error details
      */
     private static String createErrorResponse() {
@@ -149,7 +150,7 @@ public class ElaroClaudeAPIMock implements HttpCalloutMock {
     }
     
     /**
-     * @description Create rate limit response
+     * Create rate limit response
      * @return JSON string with rate limit error
      */
     private static String createRateLimitResponse() {
@@ -164,7 +165,7 @@ public class ElaroClaudeAPIMock implements HttpCalloutMock {
     }
     
     /**
-     * @description Create timeout response
+     * Create timeout response
      * @return JSON string with timeout error
      */
     private static String createTimeoutResponse() {
@@ -183,7 +184,7 @@ public class ElaroClaudeAPIMock implements HttpCalloutMock {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Create mock for successful response
+     * Create mock for successful response
      * @return Configured mock instance
      */
     public static ElaroClaudeAPIMock success() {
@@ -191,7 +192,7 @@ public class ElaroClaudeAPIMock implements HttpCalloutMock {
     }
     
     /**
-     * @description Create mock for error response
+     * Create mock for error response
      * @return Configured mock instance
      */
     public static ElaroClaudeAPIMock error() {
@@ -199,7 +200,7 @@ public class ElaroClaudeAPIMock implements HttpCalloutMock {
     }
     
     /**
-     * @description Create mock for rate limit response
+     * Create mock for rate limit response
      * @return Configured mock instance
      */
     public static ElaroClaudeAPIMock rateLimited() {
@@ -207,7 +208,7 @@ public class ElaroClaudeAPIMock implements HttpCalloutMock {
     }
     
     /**
-     * @description Create mock for timeout response
+     * Create mock for timeout response
      * @return Configured mock instance
      */
     public static ElaroClaudeAPIMock timeout() {

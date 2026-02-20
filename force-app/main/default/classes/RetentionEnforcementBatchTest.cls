@@ -1,10 +1,10 @@
 /**
- * @description Test class for RetentionEnforcementBatch
+ * Test class for RetentionEnforcementBatch
  * Tests batch processing of data retention enforcement and erasure workflows
  * @group Tests
  * @see RetentionEnforcementBatch
  */
-@isTest
+@IsTest(testFor=RetentionEnforcementBatch.class)
 private class RetentionEnforcementBatchTest {
 
     @TestSetup

@@ -140,7 +140,8 @@ private class ElaroSchedulerTests {
         Test.stopTest();
 
         // Should complete without errors
-        Assert.isTrue(true, 'Scheduler should handle empty data gracefully');
+        List<CCPA_Request__c> remaining = [SELECT Id FROM CCPA_Request__c WHERE Status__c = 'Overdue'];
+        Assert.areEqual(0, remaining.size(), 'Scheduler should handle empty data gracefully with no overdue requests');
     }
 
     // ========================================
@@ -149,15 +150,20 @@ private class ElaroSchedulerTests {
 
     @IsTest
     static void testDormantAccountAlertScheduler_Execute() {
+        Exception caughtEx;
         Test.startTest();
 
-        ElaroDormantAccountAlertScheduler scheduler = new ElaroDormantAccountAlertScheduler();
-        scheduler.execute(null);
+        try {
+            ElaroDormantAccountAlertScheduler scheduler = new ElaroDormantAccountAlertScheduler();
+            scheduler.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
 
         Test.stopTest();
 
         // Scheduler should complete without errors
-        Assert.isTrue(true, 'Scheduler should execute successfully');
+        Assert.isNull(caughtEx, 'Scheduler should execute successfully without throwing');
     }
 
     @IsTest
@@ -185,14 +191,19 @@ private class ElaroSchedulerTests {
         // set LastLoginDate. This test verifies the scheduler handles
         // the scenario where no dormant users are found.
 
+        Exception caughtEx;
         Test.startTest();
 
-        ElaroDormantAccountAlertScheduler scheduler = new ElaroDormantAccountAlertScheduler();
-        scheduler.execute(null);
+        try {
+            ElaroDormantAccountAlertScheduler scheduler = new ElaroDormantAccountAlertScheduler();
+            scheduler.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
 
         Test.stopTest();
 
-        Assert.isTrue(true, 'Scheduler should handle no dormant users gracefully');
+        Assert.isNull(caughtEx, 'Scheduler should handle no dormant users gracefully');
     }
 
     // ========================================
@@ -201,15 +212,20 @@ private class ElaroSchedulerTests {
 
     @IsTest
     static void testGLBAAnnualNoticeScheduler_Execute_BusinessDay() {
+        Exception caughtEx;
         Test.startTest();
 
-        ElaroGLBAAnnualNoticeScheduler scheduler = new ElaroGLBAAnnualNoticeScheduler();
-        scheduler.execute(null);
+        try {
+            ElaroGLBAAnnualNoticeScheduler scheduler = new ElaroGLBAAnnualNoticeScheduler();
+            scheduler.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
 
         Test.stopTest();
 
         // Should complete without errors
-        Assert.isTrue(true, 'Scheduler should execute successfully');
+        Assert.isNull(caughtEx, 'Scheduler should execute successfully without throwing');
     }
 
     @IsTest
@@ -237,28 +253,38 @@ private class ElaroSchedulerTests {
 
     @IsTest
     static void testISO27001QuarterlyScheduler_Execute_Quarterly() {
+        Exception caughtEx;
         Test.startTest();
 
-        ElaroISO27001QuarterlyScheduler scheduler = new ElaroISO27001QuarterlyScheduler();
-        scheduler.execute(null);
+        try {
+            ElaroISO27001QuarterlyScheduler scheduler = new ElaroISO27001QuarterlyScheduler();
+            scheduler.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
 
         Test.stopTest();
 
         // Should complete without errors
-        Assert.isTrue(true, 'Scheduler should execute successfully');
+        Assert.isNull(caughtEx, 'Scheduler should execute successfully without throwing');
     }
 
     @IsTest
     static void testISO27001QuarterlyScheduler_Execute_Privileged() {
+        Exception caughtEx;
         Test.startTest();
 
-        ElaroISO27001QuarterlyScheduler scheduler = new ElaroISO27001QuarterlyScheduler('privileged');
-        scheduler.execute(null);
+        try {
+            ElaroISO27001QuarterlyScheduler scheduler = new ElaroISO27001QuarterlyScheduler('privileged');
+            scheduler.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
 
         Test.stopTest();
 
         // Should complete without errors
-        Assert.isTrue(true, 'Privileged scheduler should execute successfully');
+        Assert.isNull(caughtEx, 'Privileged scheduler should execute successfully without throwing');
     }
 
     @IsTest
@@ -287,12 +313,17 @@ private class ElaroSchedulerTests {
     static void testISO27001QuarterlyScheduler_DefaultConstructor() {
         ElaroISO27001QuarterlyScheduler scheduler = new ElaroISO27001QuarterlyScheduler();
 
+        Exception caughtEx;
         Test.startTest();
-        scheduler.execute(null);
+        try {
+            scheduler.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
         Test.stopTest();
 
         // Default should run quarterly reviews
-        Assert.isTrue(true, 'Default constructor should work');
+        Assert.isNull(caughtEx, 'Default constructor should execute without throwing');
     }
 
     // ========================================
@@ -301,41 +332,56 @@ private class ElaroSchedulerTests {
 
     @IsTest
     static void testEventScheduler_DefaultConstructor() {
+        Exception caughtEx;
         Test.startTest();
 
-        ElaroEventScheduler scheduler = new ElaroEventScheduler();
-        scheduler.execute(null);
+        try {
+            ElaroEventScheduler scheduler = new ElaroEventScheduler();
+            scheduler.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
 
         Test.stopTest();
 
         // Should complete without errors
-        Assert.isTrue(true, 'Default scheduler should execute successfully');
+        Assert.isNull(caughtEx, 'Default scheduler should execute successfully without throwing');
     }
 
     @IsTest
     static void testEventScheduler_ParameterizedConstructor() {
+        Exception caughtEx;
         Test.startTest();
 
-        ElaroEventScheduler scheduler = new ElaroEventScheduler('LOGOUT', 14, 'HIPAA');
-        scheduler.execute(null);
+        try {
+            ElaroEventScheduler scheduler = new ElaroEventScheduler('LOGOUT', 14, 'HIPAA');
+            scheduler.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
 
         Test.stopTest();
 
         // Should complete without errors
-        Assert.isTrue(true, 'Parameterized scheduler should execute successfully');
+        Assert.isNull(caughtEx, 'Parameterized scheduler should execute successfully without throwing');
     }
 
     @IsTest
     static void testEventScheduler_NullParameters() {
+        Exception caughtEx;
         Test.startTest();
 
-        ElaroEventScheduler scheduler = new ElaroEventScheduler('LOGIN', null, null);
-        scheduler.execute(null);
+        try {
+            ElaroEventScheduler scheduler = new ElaroEventScheduler('LOGIN', null, null);
+            scheduler.execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
 
         Test.stopTest();
 
         // Should use defaults and complete without errors
-        Assert.isTrue(true, 'Scheduler should handle null parameters gracefully');
+        Assert.isNull(caughtEx, 'Scheduler should handle null parameters gracefully without throwing');
     }
 
     // ========================================
@@ -384,15 +430,20 @@ private class ElaroSchedulerTests {
         Test.startTest();
 
         // All schedulers should handle empty data gracefully
-        new ElaroCCPASLAMonitorScheduler().execute(null);
-        new ElaroDormantAccountAlertScheduler().execute(null);
-        new ElaroGLBAAnnualNoticeScheduler().execute(null);
-        new ElaroISO27001QuarterlyScheduler().execute(null);
-        new ElaroEventScheduler().execute(null);
+        Exception caughtEx;
+        try {
+            new ElaroCCPASLAMonitorScheduler().execute(null);
+            new ElaroDormantAccountAlertScheduler().execute(null);
+            new ElaroGLBAAnnualNoticeScheduler().execute(null);
+            new ElaroISO27001QuarterlyScheduler().execute(null);
+            new ElaroEventScheduler().execute(null);
+        } catch (Exception e) {
+            caughtEx = e;
+        }
 
         Test.stopTest();
 
-        Assert.isTrue(true, 'All schedulers should handle empty data gracefully');
+        Assert.isNull(caughtEx, 'All schedulers should handle empty data gracefully without throwing');
     }
 
     @IsTest

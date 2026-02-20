@@ -24,6 +24,7 @@
 
     <!-- Auto Scan Step -->
     <template lwc:if={isAutoScan}>
+      <!-- Scanning spinner -->
       <template lwc:if={isScanning}>
         <div class="slds-align_absolute-center slds-p-around_medium">
           <lightning-spinner
@@ -33,14 +34,88 @@
           <span class="slds-m-left_small">{label.AW_AutoScanRunning}</span>
         </div>
       </template>
+
+      <!-- Scan Error -->
+      <template lwc:elseif={hasScanError}>
+        <div class="slds-notify slds-notify_alert slds-alert_error slds-m-bottom_small" role="alert">
+          <span class="slds-assistive-text">error</span>
+          <h2>{scanErrorMessage}</h2>
+        </div>
+        <div class="slds-m-top_small">
+          <lightning-button
+            label="Retry Scan"
+            variant="neutral"
+            onclick={handleRetryAutoScan}
+            icon-name="utility:refresh"
+          ></lightning-button>
+        </div>
+      </template>
+
+      <!-- Scan Complete with Findings -->
       <template lwc:elseif={scanComplete}>
-        <div class="slds-theme_success slds-p-around_small slds-m-bottom_small">
-          <lightning-icon
-            icon-name="utility:check"
-            size="x-small"
-            class="slds-m-right_x-small"
-          ></lightning-icon>
-          {label.AW_AutoScanComplete}
+        <div class="slds-m-bottom_medium">
+          <!-- Summary badges -->
+          <div class="slds-grid slds-grid_align-start slds-m-bottom_small" role="status">
+            <span class="slds-badge slds-theme_success slds-m-right_small">
+              <lightning-icon
+                icon-name="utility:check"
+                size="xx-small"
+                class="slds-m-right_xx-small"
+                alternative-text="passed"
+              ></lightning-icon>
+              {passCountLabel}
+            </span>
+            <template lwc:if={failCount}>
+              <span class="slds-badge slds-theme_error">
+                <lightning-icon
+                  icon-name="utility:close"
+                  size="xx-small"
+                  class="slds-m-right_xx-small"
+                  alternative-text="failed"
+                ></lightning-icon>
+                {failCountLabel}
+              </span>
+            </template>
+          </div>
+
+          <!-- Findings list -->
+          <template lwc:if={hasFindings}>
+            <table
+              class="slds-table slds-table_cell-buffer slds-table_bordered"
+              role="grid"
+              aria-label="Scan findings"
+            >
+              <thead>
+                <tr class="slds-line-height_reset">
+                  <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" title="Control">Control</div>
+                  </th>
+                  <th class="slds-text-title_caps" scope="col">
+                    <div class="slds-truncate" title="Result">Result</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <template for:each={scanFindings} for:item="finding">
+                  <tr key={finding.key}>
+                    <td data-label="Control">
+                      <div class="slds-truncate">{finding.control}</div>
+                    </td>
+                    <td data-label="Result">
+                      <span class={finding.badgeClass}>{finding.result}</span>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </template>
+
+          <!-- No findings -->
+          <template lwc:else>
+            <p class="slds-text-body_small slds-text-color_weak">
+              {label.AW_AutoScanNoFindings}
+            </p>
+          </template>
         </div>
       </template>
     </template>

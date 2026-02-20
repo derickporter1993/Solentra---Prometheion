@@ -3,7 +3,10 @@ public with sharing class SlackNotifier {
     /**
      * Send Slack notification using Queueable (recommended approach)
      * Provides retry logic, error handling, and better monitoring
-     */
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Integration
+ */
     public static void notifyAsyncQueueable(String text) {
         if (String.isBlank(text)) {
             ElaroLogger.warn( 'SlackNotifier: Empty text provided, skipping notification');
@@ -131,17 +134,15 @@ public with sharing class SlackNotifier {
     private static void logBulkAsyncError(String errorType, String errorMessage, String correlationId, String context) {
         ElaroLogger.error('SlackNotifier: ' + errorMessage + '. CorrelationId: ' + correlationId);
         try {
-            if (Schema.sObjectType.Integration_Error__c.isCreateable()) {
-                Integration_Error__c error = new Integration_Error__c(
-                    Error_Type__c = 'SLACK_' + errorType,
-                    Error_Message__c = errorMessage,
-                    Correlation_Id__c = correlationId,
-                    Context__c = context != null && context.length() > 32000 ? context.substring(0, 32000) : context,
-                    Status__c = 'NEW',
-                    Timestamp__c = System.now()
-                );
-                Database.insert(error, false, AccessLevel.USER_MODE);
-            }
+            Integration_Error__c error = new Integration_Error__c(
+                Error_Type__c = 'SLACK_' + errorType,
+                Error_Message__c = errorMessage,
+                Correlation_Id__c = correlationId,
+                Context__c = context != null && context.length() > 32000 ? context.substring(0, 32000) : context,
+                Status__c = 'NEW',
+                Timestamp__c = System.now()
+            );
+            Database.insert(error, false, AccessLevel.USER_MODE);
         } catch (Exception e) {
             ElaroLogger.error('SlackNotifier: Failed to log bulk async error: ' + e.getMessage());
         }

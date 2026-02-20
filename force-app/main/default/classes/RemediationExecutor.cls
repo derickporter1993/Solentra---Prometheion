@@ -1,5 +1,5 @@
 /**
- * @description Executor service for applying approved remediation suggestions.
+ * Executor service for applying approved remediation suggestions.
  * Handles both auto-remediation and manual remediation tracking.
  *
  * Features:
@@ -10,11 +10,12 @@
  *
  * @author Elaro Development Team
  * @since 2026-01
+ * @group Compliance Framework
  */
 public with sharing class RemediationExecutor {
 
     /**
-     * @description Executes an approved remediation suggestion
+     * Executes an approved remediation suggestion
      * @param suggestionId The ID of the suggestion to execute
      * @return Result of the remediation execution
      */
@@ -79,7 +80,7 @@ public with sharing class RemediationExecutor {
     }
 
     /**
-     * @description Marks a suggestion as manually applied
+     * Marks a suggestion as manually applied
      * @param suggestionId The suggestion ID
      * @param notes Optional notes about the manual implementation
      */
@@ -111,16 +112,14 @@ public with sharing class RemediationExecutor {
             suggestion.Implementation_Steps__c += '\n\n--- Manual Implementation Notes ---\n' + notes;
         }
 
-        if (Schema.sObjectType.Remediation_Suggestion__c.isUpdateable()) {
-            update suggestion;
-        }
+        update as user suggestion;
 
         // Update the related gap
         updateGapAsRemediated(suggestion.Compliance_Gap__c);
     }
 
     /**
-     * @description Gets remediation execution history
+     * Gets remediation execution history
      * @return List of recently executed remediations
      */
     @AuraEnabled(cacheable=true)
@@ -156,7 +155,7 @@ public with sharing class RemediationExecutor {
     }
 
     /**
-     * @description Bulk executes multiple approved suggestions
+     * Bulk executes multiple approved suggestions
      * @param suggestionIds List of suggestion IDs to execute
      * @return Summary of execution results
      */
@@ -247,8 +246,8 @@ public with sharing class RemediationExecutor {
         }
 
         // Single DML: Update all suggestions
-        if (!suggestionsToUpdate.isEmpty() && Schema.sObjectType.Remediation_Suggestion__c.isUpdateable()) {
-            update suggestionsToUpdate;
+        if (!suggestionsToUpdate.isEmpty()) {
+            update as user suggestionsToUpdate;
         }
 
         // Single SOQL + Single DML: Update all gaps
@@ -364,18 +363,14 @@ public with sharing class RemediationExecutor {
         suggestion.Applied_At__c = Datetime.now();
         suggestion.Applied_By__c = UserInfo.getUserId();
 
-        if (Schema.sObjectType.Remediation_Suggestion__c.isUpdateable()) {
-            update suggestion;
-        }
+        update as user suggestion;
     }
 
     private static void updateSuggestionAsFailed(Remediation_Suggestion__c suggestion, String errorMessage) {
         suggestion.Status__c = 'FAILED';
         suggestion.Error_Message__c = errorMessage;
 
-        if (Schema.sObjectType.Remediation_Suggestion__c.isUpdateable()) {
-            update suggestion;
-        }
+        update as user suggestion;
     }
 
     private static void updateGapAsRemediated(Id gapId) {
@@ -392,9 +387,7 @@ public with sharing class RemediationExecutor {
             gap.Status__c = 'REMEDIATED';
             gap.Actual_Remediation_Date__c = Date.today();
 
-            if (Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-                update gap;
-            }
+            update as user gap;
         }
     }
 
@@ -415,8 +408,8 @@ public with sharing class RemediationExecutor {
             gap.Actual_Remediation_Date__c = Date.today();
         }
 
-        if (!gaps.isEmpty() && Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-            update gaps;
+        if (!gaps.isEmpty()) {
+            update as user gaps;
         }
     }
 
@@ -432,7 +425,7 @@ public with sharing class RemediationExecutor {
     // ============================================
 
     /**
-     * @description Result wrapper for remediation execution
+     * Result wrapper for remediation execution
      */
     public class RemediationResult {
         @AuraEnabled public String suggestionId;
@@ -443,7 +436,7 @@ public with sharing class RemediationExecutor {
     }
 
     /**
-     * @description Execution history item
+     * Execution history item
      */
     public class ExecutionHistory {
         @AuraEnabled public Id suggestionId;
@@ -458,7 +451,7 @@ public with sharing class RemediationExecutor {
     }
 
     /**
-     * @description Bulk execution result wrapper
+     * Bulk execution result wrapper
      */
     public class BulkExecutionResult {
         @AuraEnabled public Integer totalProcessed = 0;

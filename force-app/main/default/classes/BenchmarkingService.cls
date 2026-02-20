@@ -1,8 +1,9 @@
 /**
- * @description Industry benchmarking service for compliance maturity
+ * Industry benchmarking service for compliance maturity
  * Provides industry comparisons and maturity assessments
- * @group Enterprise Features
+ * @group Compliance Framework
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class BenchmarkingService {
     
@@ -43,7 +44,7 @@ public with sharing class BenchmarkingService {
     };
     
     /**
-     * @description Get industry benchmarks for comparison
+     * Get industry benchmarks for comparison
      * @param industry Industry name
      * @return IndustryBenchmarks with comparison data
      */
@@ -75,7 +76,7 @@ public with sharing class BenchmarkingService {
     }
     
     /**
-     * @description Compare organization to industry benchmarks
+     * Compare organization to industry benchmarks
      * @param industry Industry for comparison
      * @return ComparisonResult with detailed comparison
      */
@@ -137,7 +138,7 @@ public with sharing class BenchmarkingService {
     }
     
     /**
-     * @description Assess compliance maturity level
+     * Assess compliance maturity level
      * @return MaturityAssessment with maturity details
      */
     @AuraEnabled
@@ -183,7 +184,7 @@ public with sharing class BenchmarkingService {
     }
     
     /**
-     * @description Get available industries for benchmarking
+     * Get available industries for benchmarking
      * @return List of industry names
      */
     @AuraEnabled(cacheable=true)

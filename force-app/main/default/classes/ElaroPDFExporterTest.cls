@@ -1,8 +1,8 @@
 /**
- * @description Unit tests for ElaroPDFExporter
+ * Unit tests for ElaroPDFExporter
  * @group Tests
  */
-@isTest
+@IsTest(testFor=ElaroPDFExporter.class)
 private class ElaroPDFExporterTest {
     
     @testSetup
@@ -63,7 +63,7 @@ private class ElaroPDFExporterTest {
             ElaroPDFExporter.generateAuditPackagePDF('001000000000000AAA');
             Assert.fail( 'Should throw exception');
         } catch (AuraHandledException e) {
-            Assert.isTrue(true, 'Should throw exception for invalid ID');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message for invalid ID');
         }
         Test.stopTest();
     }

@@ -2,11 +2,11 @@
 set -euo pipefail
 alias_name="${1:-Elaro}"
 # Ensure DevHub exists
-if ! sfdx force:org:list --json | grep -q '"isDevHub": true'; then
-  echo "Please auth a DevHub first: sfdx auth:web:login -d -a DevHub"
+if ! sf org list --json | grep -q '"isDevHub": true'; then
+  echo "Please auth a DevHub first: sf org login web -d -a DevHub"
 fi
-sfdx force:org:create -f config/project-scratch-def.json -a "$alias_name" -s -d 7
-sfdx force:source:push -u "$alias_name"
-sfdx force:user:permset:assign -n Elaro_Admin -u "$alias_name"
+sf org create scratch -f config/elaro-scratch-def.json -a "$alias_name" --set-default -y 7
+sf project deploy start -o "$alias_name"
+sf org assign permset -n Elaro_Admin -o "$alias_name"
 echo "Open org..."
-sfdx force:org:open -u "$alias_name" -p /lightning/setup/SetupOneHome/home
+sf org open -o "$alias_name" -p /lightning/setup/SetupOneHome/home

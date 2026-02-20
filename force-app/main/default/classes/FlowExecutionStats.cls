@@ -1,3 +1,10 @@
+/**
+ * Captures and stores Flow execution statistics and metrics.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Data Structures
+ */
 public with sharing class FlowExecutionStats {
     public class ExecAgg {
         @AuraEnabled public String flowName;
@@ -22,6 +29,7 @@ public with sharing class FlowExecutionStats {
                    COUNT(Id) runs,
                    MAX(Run_Time__c) lastRun
             FROM Flow_Execution__c
+            WITH USER_MODE
             GROUP BY Flow_Name__c
             ORDER BY COUNT(Id) DESC
             LIMIT :recordLimit
@@ -39,6 +47,7 @@ public with sharing class FlowExecutionStats {
                 SELECT Flow_Name__c fn, COUNT(Id) faultCount
                 FROM Flow_Execution__c
                 WHERE Flow_Name__c IN :flowNames AND Status__c = 'Fault'
+                WITH USER_MODE
                 GROUP BY Flow_Name__c
             ];
             for (AggregateResult fa : faultArs) {

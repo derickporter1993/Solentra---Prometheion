@@ -9,6 +9,8 @@
  *
  * @author Elaro
  * @version 1.0
+ * @since v3.1.0 (Spring '26)
+ * @group Security
  */
 public with sharing class AccessReviewScheduler implements Schedulable {
 
@@ -21,7 +23,14 @@ public with sharing class AccessReviewScheduler implements Schedulable {
     public void execute(SchedulableContext ctx) {
         // Run in Queueable context for better error handling and monitoring
         if (!Test.isRunningTest()) {
-            System.enqueueJob(new AccessReviewQueueable());
+            AsyncOptions options = new AsyncOptions();
+            options.setMaximumQueueableStackDepth(5);
+            options.setDuplicateSignature(
+                new QueueableDuplicateSignature.Builder()
+                    .addString('AccessReviewMonthly')
+                    .build()
+            );
+            System.enqueueJob(new AccessReviewQueueable(), options);
         } else {
             // Run synchronously in tests
             performAccessReview();
@@ -66,7 +75,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
             // Insert review records
             if (!reviews.isEmpty()) {
                 ElaroSecurityUtils.validateCRUDAccess('Access_Review__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-                insert reviews;
+                insert as user reviews;
             }
 
             // Check for stale permissions
@@ -197,7 +206,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
             gap.Due_Date__c = Date.today().addDays(30);
 
             ElaroSecurityUtils.validateCRUDAccess('Compliance_Gap__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert gap;
+            insert as user gap;
         } catch (Exception e) {
             ElaroLogger.error( 'Failed to create compliance gap: ' + e.getMessage());
         }
@@ -214,7 +223,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
             log.Details__c = message + '. Records processed: ' + recordsProcessed;
             log.User__c = UserInfo.getUserId();
             ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert log;
+            insert as user log;
         } catch (Exception e) {
             ElaroLogger.error( 'Failed to log execution: ' + e.getMessage());
         }
@@ -231,7 +240,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
             log.Details__c = message;
             log.User__c = UserInfo.getUserId();
             ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert log;
+            insert as user log;
         } catch (Exception e) {
             ElaroLogger.error( 'Failed to log error: ' + e.getMessage());
         }

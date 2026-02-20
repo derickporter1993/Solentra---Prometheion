@@ -1,11 +1,11 @@
 /**
- * @description Test class for GDPRModule
+ * Test class for GDPRModule
  * Covers all IComplianceModule interface methods and internal evaluation logic
  * for GDPR Articles 5-37 including DSR, ROPA, and Breach Notification
  * @group Tests
  * @author Elaro Team
  */
-@IsTest
+@IsTest(testFor=GDPRModule.class)
 private class GDPRModuleTest {
 
     @TestSetup

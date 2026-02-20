@@ -1,3 +1,10 @@
+/**
+ * Logs Flow execution events for compliance audit trails.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Logging
+ */
 public with sharing class FlowExecutionLogger {
     // Rate limiting constants
     private static final String RATE_LIMIT_PARTITION = 'ElaroRateLimit';
@@ -41,7 +48,7 @@ public with sharing class FlowExecutionLogger {
                 toInsert
             );
             if (!accessibleRecords.isEmpty()) {
-                insert accessibleRecords;
+                insert as user accessibleRecords;
             }
         }
     }

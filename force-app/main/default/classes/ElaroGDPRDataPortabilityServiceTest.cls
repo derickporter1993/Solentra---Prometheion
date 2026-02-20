@@ -5,7 +5,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest
+@IsTest(testFor=ElaroGDPRDataPortabilityService.class)
 private class ElaroGDPRDataPortabilityServiceTest {
 
     @TestSetup
@@ -131,7 +131,7 @@ private class ElaroGDPRDataPortabilityServiceTest {
             String jsonData = ElaroGDPRDataPortabilityService.exportContactData(null);
             Assert.fail( 'Should throw exception');
         } catch (Exception e) {
-            Assert.isTrue(true, 'Expected exception for null contact');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message for null contact');
         }
         Test.stopTest();
     }

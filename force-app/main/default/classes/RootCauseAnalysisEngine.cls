@@ -1,8 +1,9 @@
 /**
- * @description AI-powered root cause analysis engine for compliance events
+ * AI-powered root cause analysis engine for compliance events
  * Uses Claude API to analyze event chains and identify root causes
- * @group AI Integration
+ * @group AI Governance
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class RootCauseAnalysisEngine {
     
@@ -19,7 +20,7 @@ public with sharing class RootCauseAnalysisEngine {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Analyze compliance event for root cause
+     * Analyze compliance event for root cause
      * @param eventId The evidence item ID to analyze
      * @return RootCauseResult with analysis findings
      */
@@ -39,11 +40,12 @@ public with sharing class RootCauseAnalysisEngine {
         try {
             // Query the primary event
             Elaro_Evidence_Item__c primaryEvent = [
-                SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, 
+                SELECT Id, Name, Evidence_Type__c, Evidence_Date__c,
                        Description__c, Status__c, Audit_Package__c,
                        Audit_Package__r.Framework__c
                 FROM Elaro_Evidence_Item__c
                 WHERE Id = :eventId
+                WITH USER_MODE
                 LIMIT 1
             ];
             
@@ -71,7 +73,7 @@ public with sharing class RootCauseAnalysisEngine {
     }
     
     /**
-     * @description Batch analyze multiple events
+     * Batch analyze multiple events
      * @param eventIds List of evidence item IDs
      * @return List of RootCauseResult objects
      */
@@ -98,7 +100,7 @@ public with sharing class RootCauseAnalysisEngine {
     }
     
     /**
-     * @description Get analysis summary for multiple events
+     * Get analysis summary for multiple events
      * @param eventIds List of evidence item IDs
      * @return Aggregated analysis summary
      */
@@ -152,7 +154,7 @@ public with sharing class RootCauseAnalysisEngine {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Query related events within time window
+     * Query related events within time window
      */
     private static List&lt;Elaro_Evidence_Item__c&gt; queryRelatedEvents(Elaro_Evidence_Item__c primaryEvent) {
         Date eventDate = primaryEvent.Evidence_Date__c;
@@ -166,13 +168,14 @@ public with sharing class RootCauseAnalysisEngine {
             AND Id != :primaryEvent.Id
             AND Evidence_Date__c &gt;= :startDate
             AND Evidence_Date__c &lt;= :endDate
+            WITH USER_MODE
             ORDER BY Evidence_Date__c ASC
             LIMIT 50
         ];
     }
     
     /**
-     * @description Build analysis context for AI
+     * Build analysis context for AI
      */
     private static AnalysisContext buildAnalysisContext(Elaro_Evidence_Item__c primary, 
                                                         List&lt;Elaro_Evidence_Item__c&gt; related) {
@@ -192,7 +195,7 @@ public with sharing class RootCauseAnalysisEngine {
     }
     
     /**
-     * @description Perform AI analysis
+     * Perform AI analysis
      */
     private static RootCauseResult performAIAnalysis(AnalysisContext context) {
         // Build prompt
@@ -211,7 +214,7 @@ public with sharing class RootCauseAnalysisEngine {
     }
     
     /**
-     * @description Build RCA prompt
+     * Build RCA prompt
      */
     private static String buildRCAPrompt(AnalysisContext context) {
         return 'Perform root cause analysis for the following compliance event:\n\n' +
@@ -230,7 +233,7 @@ public with sharing class RootCauseAnalysisEngine {
     }
     
     /**
-     * @description Call AI service
+     * Call AI service
      */
     private static String callAI(String prompt) {
         HttpRequest req = new HttpRequest();
@@ -264,7 +267,7 @@ public with sharing class RootCauseAnalysisEngine {
     }
     
     /**
-     * @description Parse RCA response
+     * Parse RCA response
      */
     private static RootCauseResult parseRCAResponse(String response) {
         RootCauseResult result = new RootCauseResult();

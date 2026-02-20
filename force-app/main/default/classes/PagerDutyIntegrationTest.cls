@@ -1,10 +1,10 @@
 /**
- * @description Unit tests for PagerDutyIntegration
+ * Unit tests for PagerDutyIntegration
  * Tests HTTP callouts, incident triggering, resolution, and acknowledgment
  * @group Tests
  * @author Elaro Team
  */
-@isTest
+@IsTest(testFor=PagerDutyIntegration.class)
 private class PagerDutyIntegrationTest {
     
     /**

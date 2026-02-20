@@ -1,6 +1,5 @@
 # Dependencies
 node_modules/
-package-lock.json
 
 # Build artifacts and patches
 dist/
@@ -75,6 +74,9 @@ private.key
 coverage/
 sf/
 scanner-reports/
+
+# Review state (Solentra Codebase Review System)
+.review-state/
 
 # Temporary documentation and analysis files
 FAILED_PRS_SUMMARY.md

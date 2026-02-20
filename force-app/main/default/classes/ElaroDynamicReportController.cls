@@ -12,6 +12,8 @@
  *
  * @author Derick Porter
  * @date 2026-01-03
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 public with sharing class ElaroDynamicReportController {
 
@@ -123,22 +125,25 @@ public with sharing class ElaroDynamicReportController {
         try {
             cfg = (ReportConfiguration)JSON.deserialize(reportConfigJson, ReportConfiguration.class);
         } catch (JSONException e) {
-            throw new AuraHandledException('Invalid report configuration format: ' + e.getMessage());
+            ElaroLogger.error('ElaroDynamicReportController.executeReport', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to parse the report configuration. Please verify the request format and try again.');
         } catch (Exception e) {
-            throw new AuraHandledException('Invalid report configuration format');
+            ElaroLogger.error('ElaroDynamicReportController.executeReport', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to parse the report configuration. Please verify the request format and try again.');
         }
 
         // Validate configuration security
         validateReportConfigSecurity(cfg);
 
-        // Build and execute secure SOQL
-        String soql = buildSecureSOQL(cfg);
+        // Build and execute secure SOQL with bind variables
+        QueryWithBinds qwb = buildSecureSOQL(cfg);
 
         List<SObject> rows;
         try {
-            rows = Database.query(soql);
+            rows = Database.queryWithBinds(qwb.query, qwb.binds, AccessLevel.USER_MODE);
         } catch (QueryException e) {
-            throw new AuraHandledException('Query failed: ' + e.getMessage());
+            ElaroLogger.error('ElaroDynamicReportController.executeReport', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to execute the report query. Please verify you have the required permissions and try again.');
         }
 
         // Strip inaccessible fields for FLS security
@@ -325,9 +330,13 @@ public with sharing class ElaroDynamicReportController {
     }
 
     /**
-     * Build secure SOQL query
+     * Build secure SOQL query with bind variables
+     *
+     * @param cfg The report configuration containing object, fields, filters, and options
+     * @return QueryWithBinds containing the parameterized query and bind map
      */
-    private static String buildSecureSOQL(ReportConfiguration cfg) {
+    private static QueryWithBinds buildSecureSOQL(ReportConfiguration cfg) {
+        Map<String, Object> binds = new Map<String, Object>();
         List<String> selectFields = new List<String>();
 
         for (String field : cfg.fields) {
@@ -347,33 +356,40 @@ public with sharing class ElaroDynamicReportController {
         String soql = 'SELECT ' + String.join(selectFields, ', ') +
                       ' FROM ' + cfg.objectApiName;
 
-        // Build WHERE clause
+        // Build WHERE clause with bind variables
         if (cfg.filters != null && !cfg.filters.isEmpty()) {
             List<String> whereParts = new List<String>();
+            Integer bindIndex = 0;
 
             for (FilterCriteria fc : cfg.filters) {
                 String field = sanitizeFieldName(fc.field);
                 String op = fc.operator.toUpperCase();
-                String val = String.escapeSingleQuotes(fc.value);
+                String bindKey = 'filterVal_' + bindIndex;
+                bindIndex++;
 
                 if (op == 'LIKE') {
-                    whereParts.add(field + ' LIKE \'%' + val + '%\'');
+                    binds.put(bindKey, '%' + fc.value + '%');
+                    whereParts.add(field + ' LIKE :' + bindKey);
                 } else if (op == 'IN' || op == 'NOT IN') {
                     List<String> vals = new List<String>();
                     for (String v : fc.value.split(',')) {
-                        vals.add('\'' + String.escapeSingleQuotes(v.trim()) + '\'');
+                        vals.add(v.trim());
                     }
-                    whereParts.add(field + ' ' + op + ' (' + String.join(vals, ', ') + ')');
+                    binds.put(bindKey, vals);
+                    whereParts.add(field + ' ' + op + ' :' + bindKey);
                 } else {
                     // Handle different data types
                     if (isNumericValue(fc.value)) {
-                        whereParts.add(field + ' ' + op + ' ' + fc.value);
+                        binds.put(bindKey, Decimal.valueOf(fc.value));
+                        whereParts.add(field + ' ' + op + ' :' + bindKey);
                     } else if (fc.value.equalsIgnoreCase('true') || fc.value.equalsIgnoreCase('false')) {
-                        whereParts.add(field + ' ' + op + ' ' + fc.value.toLowerCase());
+                        binds.put(bindKey, Boolean.valueOf(fc.value));
+                        whereParts.add(field + ' ' + op + ' :' + bindKey);
                     } else if (fc.value.equalsIgnoreCase('null')) {
                         whereParts.add(field + ' ' + op + ' null');
                     } else {
-                        whereParts.add(field + ' ' + op + ' \'' + val + '\'');
+                        binds.put(bindKey, fc.value);
+                        whereParts.add(field + ' ' + op + ' :' + bindKey);
                     }
                 }
             }
@@ -393,10 +409,14 @@ public with sharing class ElaroDynamicReportController {
             soql += ' ORDER BY ' + cleanOrderBy + ' ' + direction;
         }
 
-        // Add LIMIT
-        soql += ' LIMIT ' + cfg.maxRows;
+        // Add LIMIT with bind variable
+        binds.put('queryLimit', cfg.maxRows);
+        soql += ' LIMIT :queryLimit';
 
-        return soql;
+        QueryWithBinds result = new QueryWithBinds();
+        result.query = soql;
+        result.binds = binds;
+        return result;
     }
 
     /**
@@ -511,5 +531,13 @@ public with sharing class ElaroDynamicReportController {
     public class ObjectOption {
         @AuraEnabled public String label;
         @AuraEnabled public String value;
+    }
+
+    /**
+     * Wrapper for a parameterized SOQL query and its bind variable map
+     */
+    private class QueryWithBinds {
+        public String query;
+        public Map<String, Object> binds;
     }
 }

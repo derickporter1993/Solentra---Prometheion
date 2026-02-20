@@ -6,6 +6,8 @@
  *
  * @author Elaro
  * @version 1.0
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 public with sharing class HIPAAAuditControlService extends ComplianceServiceBase {
 
@@ -266,7 +268,7 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
         cv.PathOnClient = cv.Title + '.txt';
         cv.VersionData = Blob.valueOf(reportContent);
         ElaroSecurityUtils.validateCRUDAccess('ContentVersion', DmlOperation.DML_INSERT);
-        insert cv;
+        insert as user cv;
 
         // Get ContentDocumentId
         cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH USER_MODE];
@@ -439,13 +441,11 @@ public with sharing class HIPAAAuditControlService extends ComplianceServiceBase
             afterHoursCount.put(lh.UserId, afterHoursCount.get(lh.UserId) + 1);
         }
 
-        // Get additional user names
+        // Bounded: userIds capped by LIMIT 100 on afterHours + HAVING threshold on highVolume
         if (!userIds.isEmpty()) {
-            for (User u : [SELECT Id, Name FROM User WHERE Id IN :userIds WITH USER_MODE]) {
-                if (!users.containsKey(u.Id)) {
-                    users.put(u.Id, u);
-                }
-            }
+            users.putAll(new Map<Id, User>([
+                SELECT Id, Name FROM User WHERE Id IN :userIds WITH USER_MODE
+            ]));
         }
 
         for (Id userId : afterHoursCount.keySet()) {

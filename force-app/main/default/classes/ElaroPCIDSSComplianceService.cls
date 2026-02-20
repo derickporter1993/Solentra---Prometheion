@@ -10,6 +10,8 @@
  * 
  * @author Elaro
  * @version 3.0
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 public with sharing class ElaroPCIDSSComplianceService implements IRiskScoringService {
     private static final String FRAMEWORK = ElaroConstants.FRAMEWORK_PCI_DSS;

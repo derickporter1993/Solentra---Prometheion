@@ -4,7 +4,7 @@
  * @author Derick Porter
  * @date 2026-01-03
  */
-@isTest
+@IsTest(testFor=ElaroDynamicReportController.class)
 private class ElaroDynamicReportControllerTest {
 
     @testSetup
@@ -486,7 +486,7 @@ private class ElaroDynamicReportControllerTest {
             Assert.areNotEqual(null, result, 'Result should not be null');
         } catch (Exception e) {
             // Field validation may fail for some fields
-            Assert.isTrue(true, 'Query may fail');
+            Assert.isNotNull(e.getMessage(), 'Exception should have a message if query fails');
         }
         Test.stopTest();
     }

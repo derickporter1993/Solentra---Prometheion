@@ -6,7 +6,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest
+@IsTest(testFor=MetadataChangeTracker.class)
 private class MetadataChangeTrackerTest {
     
     @IsTest
@@ -46,7 +46,7 @@ private class MetadataChangeTrackerTest {
             MetadataChangeTracker.trackChange('', 'ApexClass', 'TestClass', null, '{}');
             Assert.fail( 'Should have thrown IllegalArgumentException');
         } catch (IllegalArgumentException e) {
-            Assert.isTrue(true, 'Expected exception for blank parameters');
+            Assert.isNotNull(e.getMessage(), 'Expected exception for blank parameters should have a message');
         }
         Test.stopTest();
     }

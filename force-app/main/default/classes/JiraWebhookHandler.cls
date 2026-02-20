@@ -1,5 +1,5 @@
 /**
- * @description REST resource for handling incoming Jira webhooks.
+ * REST resource for handling incoming Jira webhooks.
  * Enables bidirectional sync between Jira issues and Salesforce Compliance_Gap__c records.
  *
  * Supported webhook events:
@@ -21,7 +21,7 @@ global with sharing class JiraWebhookHandler {
     private static final String LOG_SOURCE = 'JiraWebhookHandler';
 
     /**
-     * @description Handles incoming POST requests from Jira webhooks
+     * Handles incoming POST requests from Jira webhooks
      */
     @HttpPost
     global static void handleWebhook() {
@@ -71,10 +71,11 @@ global with sharing class JiraWebhookHandler {
     }
 
     /**
-     * @description Handles issue updated events - syncs status to Salesforce
+     * Handles issue updated events - syncs status to Salesforce
      * @param payload The webhook payload
      * @return WebhookResult indicating success or failure
-     */
+ * @group Integration
+ */
     private static WebhookResult handleIssueUpdated(Map<String, Object> payload) {
         Map<String, Object> issue = (Map<String, Object>) payload.get('issue');
         if (issue == null) {
@@ -131,15 +132,13 @@ global with sharing class JiraWebhookHandler {
             gap.Status__c = newSalesforceStatus;
         }
 
-        if (Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-            update gap;
-        }
+        update as user gap;
 
         return new WebhookResult(true, 'Updated gap ' + gap.Name + ' with status ' + newJiraStatus);
     }
 
     /**
-     * @description Handles issue deleted events - clears Jira link from gap
+     * Handles issue deleted events - clears Jira link from gap
      * @param payload The webhook payload
      * @return WebhookResult indicating success or failure
      */
@@ -174,15 +173,13 @@ global with sharing class JiraWebhookHandler {
         gap.Jira_Status__c = null;
         gap.Jira_Last_Sync__c = null;
 
-        if (Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-            update gap;
-        }
+        update as user gap;
 
         return new WebhookResult(true, 'Cleared Jira link from gap ' + gap.Name);
     }
 
     /**
-     * @description Handles comment created events - logs comment to Salesforce notes
+     * Handles comment created events - logs comment to Salesforce notes
      * @param payload The webhook payload
      * @return WebhookResult indicating success or failure
      */
@@ -230,15 +227,13 @@ global with sharing class JiraWebhookHandler {
 
         gap.Notes__c = (gap.Notes__c != null ? gap.Notes__c : '') + noteEntry;
 
-        if (Schema.sObjectType.Compliance_Gap__c.isUpdateable()) {
-            update gap;
-        }
+        update as user gap;
 
         return new WebhookResult(true, 'Added comment to gap ' + gap.Name);
     }
 
     /**
-     * @description Validates the webhook secret from request headers
+     * Validates the webhook secret from request headers
      * @param req The REST request
      * @return True if valid or no secret configured
      */
@@ -259,7 +254,7 @@ global with sharing class JiraWebhookHandler {
     }
 
     /**
-     * @description Maps Jira status to Salesforce gap status
+     * Maps Jira status to Salesforce gap status
      * @param jiraStatus The Jira status name
      * @return The corresponding Salesforce status, or null if no mapping
      */
@@ -288,7 +283,7 @@ global with sharing class JiraWebhookHandler {
     }
 
     /**
-     * @description Extracts plain text from Jira comment body (handles ADF format)
+     * Extracts plain text from Jira comment body (handles ADF format)
      * @param comment The comment object from webhook
      * @return Plain text comment content
      */
@@ -309,7 +304,7 @@ global with sharing class JiraWebhookHandler {
     }
 
     /**
-     * @description Recursively extracts text from Atlassian Document Format
+     * Recursively extracts text from Atlassian Document Format
      * @param adfNode The ADF node
      * @return Concatenated plain text
      */
@@ -343,7 +338,7 @@ global with sharing class JiraWebhookHandler {
     }
 
     /**
-     * @description Result wrapper for webhook processing
+     * Result wrapper for webhook processing
      */
     global class WebhookResult {
         public Boolean success;

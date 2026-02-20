@@ -1,8 +1,9 @@
 /**
- * @description Controller extension for Visualforce PDF pages
+ * Controller extension for Visualforce PDF pages
  * Provides data for audit package, executive summary, and evidence report PDFs
- * @group Export &amp; Delivery
+ * @group Integration
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class ElaroPDFController {
     
@@ -32,7 +33,7 @@ public with sharing class ElaroPDFController {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Constructor for standard controller extension
+     * Constructor for standard controller extension
      * @param stdController The standard controller for Elaro_Audit_Package__c
      */
     public ElaroPDFController(ApexPages.StandardController stdController) {
@@ -56,7 +57,7 @@ public with sharing class ElaroPDFController {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Load audit package data
+     * Load audit package data
      * @param packageId The package ID
      */
     private void loadPackageData(Id packageId) {
@@ -82,7 +83,7 @@ public with sharing class ElaroPDFController {
     }
     
     /**
-     * @description Load evidence items for the package
+     * Load evidence items for the package
      * @param packageId The package ID
      */
     private void loadEvidenceData(Id packageId) {
@@ -95,17 +96,18 @@ public with sharing class ElaroPDFController {
         }
         
         // Build query
-        String query = 'SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, ' +
-                       'Description__c, Status__c, CreatedDate ' +
-                       'FROM Elaro_Evidence_Item__c ' +
-                       'WHERE Audit_Package__c = :packageId ';
-        
+        String query = 'SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, '
+            + 'Description__c, Status__c, CreatedDate '
+            + 'FROM Elaro_Evidence_Item__c '
+            + 'WHERE Audit_Package__c = :packageId ';
+
         // Note: Control filtering would require a Control_Reference__c field
         // For now, we'll load all evidence
-        
+
         query += 'WITH USER_MODE ORDER BY Evidence_Date__c DESC LIMIT 5000';
 
-        evidenceItems = Database.query(query);
+        Map<String, Object> binds = new Map<String, Object>{ 'packageId' => packageId };
+        evidenceItems = Database.queryWithBinds(query, binds, AccessLevel.USER_MODE);
 
         // Strip inaccessible fields for FLS security
         evidenceItems = (List&lt;Elaro_Evidence_Item__c&gt;) ElaroSecurityUtils.stripInaccessibleFields(
@@ -117,7 +119,7 @@ public with sharing class ElaroPDFController {
     }
     
     /**
-     * @description Calculate risk statistics
+     * Calculate risk statistics
      */
     private void calculateStatistics() {
         criticalCount = 0;
@@ -155,7 +157,7 @@ public with sharing class ElaroPDFController {
     }
     
     /**
-     * @description Build control summary for the package
+     * Build control summary for the package
      */
     private void buildControlSummary() {
         controlSummary = new List&lt;ControlSummary&gt;();
@@ -187,7 +189,7 @@ public with sharing class ElaroPDFController {
     }
     
     /**
-     * @description Generate document metadata
+     * Generate document metadata
      */
     private void generateDocumentMetadata() {
         generatedAt = Datetime.now();
@@ -202,7 +204,7 @@ public with sharing class ElaroPDFController {
     }
     
     /**
-     * @description Get human-readable control name
+     * Get human-readable control name
      * @param eventType The event type
      * @return Control name
      */
@@ -229,7 +231,7 @@ public with sharing class ElaroPDFController {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Get compliance score percentage
+     * Get compliance score percentage
      * @return Compliance score
      */
     public Decimal getComplianceScore() {
@@ -252,7 +254,7 @@ public with sharing class ElaroPDFController {
     }
     
     /**
-     * @description Get formatted date range
+     * Get formatted date range
      * @return Date range string
      */
     public String getDateRange() {
@@ -271,7 +273,7 @@ public with sharing class ElaroPDFController {
     }
     
     /**
-     * @description Get risk color class for styling
+     * Get risk color class for styling
      * @param riskLevel The risk level
      * @return CSS color class
      */
@@ -293,7 +295,7 @@ public with sharing class ElaroPDFController {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Control summary wrapper class
+     * Control summary wrapper class
      */
     public class ControlSummary implements Comparable {
         public String controlId { get; set; }

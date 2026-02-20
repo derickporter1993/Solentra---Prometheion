@@ -6,6 +6,8 @@
  * 
  * @author Elaro
  * @version 1.0
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 public with sharing class ElaroDashboardController {
     
@@ -20,13 +22,16 @@ public with sharing class ElaroDashboardController {
             framework = null;
         }
         
-        String soql = 'SELECT Id, Name, Package_Name__c, Framework__c, Status__c, ' +
-                      'Audit_Period_Start__c, Audit_Period_End__c, CreatedDate, ' +
-                      'Created_By__r.Name, LastModifiedDate ' +
-                      'FROM Elaro_Audit_Package__c ';
+        String soql = 'SELECT Id, Name, Package_Name__c, Framework__c, Status__c, '
+            + 'Audit_Period_Start__c, Audit_Period_End__c, CreatedDate, '
+            + 'Created_By__r.Name, LastModifiedDate '
+            + 'FROM Elaro_Audit_Package__c ';
+
+        Map<String, Object> binds = new Map<String, Object>();
 
         if (framework != null) {
             soql += 'WHERE Framework__c = :framework ';
+            binds.put('framework', framework);
         }
 
         soql += 'WITH USER_MODE ORDER BY CreatedDate DESC LIMIT 10';
@@ -34,11 +39,7 @@ public with sharing class ElaroDashboardController {
         List<Elaro_Audit_Package__c> packages = new List<Elaro_Audit_Package__c>();
 
         try {
-            if (framework != null) {
-                packages = Database.query(soql);
-            } else {
-                packages = Database.query(soql.replace('WHERE Framework__c = :framework ', ''));
-            }
+            packages = Database.queryWithBinds(soql, binds, AccessLevel.USER_MODE);
 
             // Strip inaccessible fields for FLS security
             packages = (List<Elaro_Audit_Package__c>) ElaroSecurityUtils.stripInaccessibleFields(
@@ -46,7 +47,8 @@ public with sharing class ElaroDashboardController {
                 packages
             );
         } catch (Exception e) {
-            throw new AuraHandledException('Error querying audit packages: ' + e.getMessage());
+            ElaroLogger.error('ElaroDashboardController.getAuditPackages', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to retrieve audit packages. Please verify you have the required permissions and try again.');
         }
         
         List<AuditPackageInfo> result = new List<AuditPackageInfo>();

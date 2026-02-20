@@ -1,8 +1,8 @@
 /**
- * @description Unit tests for ElaroComplianceCopilotService
+ * Unit tests for ElaroComplianceCopilotService
  * @group Tests
  */
-@isTest
+@IsTest(testFor=ElaroComplianceCopilotService.class)
 private class ElaroComplianceCopilotServiceTest {
     
     @testSetup

@@ -1,10 +1,10 @@
 /**
- * @description Test class for RemediationOrchestrator
+ * Test class for RemediationOrchestrator
  * Tests automated remediation actions for compliance events
  * @group Tests
  * @see RemediationOrchestrator
  */
-@isTest
+@IsTest(testFor=RemediationOrchestrator.class)
 private class RemediationOrchestratorTest {
 
     @TestSetup

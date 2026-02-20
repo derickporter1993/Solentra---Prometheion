@@ -1,8 +1,9 @@
 /**
- * @description Batch processor for historical Shield EventLogFiles
+ * Batch processor for historical Shield EventLogFiles
  * Processes large volumes of historical events with heap limit protection
- * @group Shield Integration
+ * @group Security
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class ElaroHistoricalEventBatch implements Database.Batchable&lt;SObject&gt;, Database.Stateful {
     
@@ -35,7 +36,7 @@ public with sharing class ElaroHistoricalEventBatch implements Database.Batchabl
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Constructor for the batch job
+     * Constructor for the batch job
      * @param eventType The event type to process
      * @param startDate Start date for processing
      * @param endDate End date for processing
@@ -51,7 +52,7 @@ public with sharing class ElaroHistoricalEventBatch implements Database.Batchabl
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Start method - query EventLogFiles for processing
+     * Start method - query EventLogFiles for processing
      * @param bc Batchable context
      * @return QueryLocator for EventLogFile records
      */
@@ -65,12 +66,13 @@ public with sharing class ElaroHistoricalEventBatch implements Database.Batchabl
             WHERE EventType = :eventType
             AND LogDate &gt;= :startDate
             AND LogDate &lt;= :endDate
+            WITH USER_MODE
             ORDER BY LogDate ASC
         ]);
     }
     
     /**
-     * @description Execute method - process batch of EventLogFiles
+     * Execute method - process batch of EventLogFiles
      * @param bc Batchable context
      * @param scope List of EventLogFile records to process
      */
@@ -89,7 +91,7 @@ public with sharing class ElaroHistoricalEventBatch implements Database.Batchabl
     }
     
     /**
-     * @description Finish method - send completion notification
+     * Finish method - send completion notification
      * @param bc Batchable context
      */
     public void finish(Database.BatchableContext bc) {
@@ -112,7 +114,7 @@ public with sharing class ElaroHistoricalEventBatch implements Database.Batchabl
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Process a single EventLogFile
+     * Process a single EventLogFile
      * @param logFile The EventLogFile to process
      */
     private void processLogFile(EventLogFile logFile) {
@@ -125,7 +127,7 @@ public with sharing class ElaroHistoricalEventBatch implements Database.Batchabl
     }
     
     /**
-     * @description Process a normal-sized log file
+     * Process a normal-sized log file
      * @param logFile The EventLogFile to process
      */
     private void processNormalLogFile(EventLogFile logFile) {
@@ -140,7 +142,7 @@ public with sharing class ElaroHistoricalEventBatch implements Database.Batchabl
     }
     
     /**
-     * @description Process a large log file in chunks
+     * Process a large log file in chunks
      * @param logFile The EventLogFile to process
      */
     private void processLargeLogFile(EventLogFile logFile) {
@@ -188,7 +190,7 @@ public with sharing class ElaroHistoricalEventBatch implements Database.Batchabl
     }
     
     /**
-     * @description Process parsed events and publish Platform Events
+     * Process parsed events and publish Platform Events
      * @param events List of parsed event data
      * @param logDate The date of the log file
      */
@@ -234,7 +236,7 @@ public with sharing class ElaroHistoricalEventBatch implements Database.Batchabl
     }
     
     /**
-     * @description Publish Platform Events
+     * Publish Platform Events
      * @param events List of events to publish
      */
     private void publishEvents(List&lt;Elaro_Event__e&gt; events) {
@@ -264,7 +266,7 @@ public with sharing class ElaroHistoricalEventBatch implements Database.Batchabl
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Parse CSV content into list of maps
+     * Parse CSV content into list of maps
      * @param csvContent The CSV string to parse
      * @return List of parsed rows
      */
@@ -305,7 +307,7 @@ public with sharing class ElaroHistoricalEventBatch implements Database.Batchabl
     }
     
     /**
-     * @description Parse a single CSV line handling quoted fields
+     * Parse a single CSV line handling quoted fields
      * @param line The CSV line to parse
      * @return List of field values
      */
@@ -347,7 +349,7 @@ public with sharing class ElaroHistoricalEventBatch implements Database.Batchabl
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Publish completion event
+     * Publish completion event
      */
     private void publishCompletionEvent() {
         try {
@@ -371,7 +373,7 @@ public with sharing class ElaroHistoricalEventBatch implements Database.Batchabl
     }
     
     /**
-     * @description Send error notification email
+     * Send error notification email
      */
     private void sendErrorNotification() {
         // Build error summary
@@ -412,7 +414,7 @@ public with sharing class ElaroHistoricalEventBatch implements Database.Batchabl
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Get processing statistics
+     * Get processing statistics
      * @return Map of statistics
      */
     public Map&lt;String, Object&gt; getStatistics() {

@@ -1,10 +1,10 @@
 /**
- * @description Test class for ServiceNowIntegration
+ * Test class for ServiceNowIntegration
  * Tests ServiceNow integration for controls, evidence, and incidents
  * @group Tests
  * @see ServiceNowIntegration
  */
-@isTest
+@IsTest(testFor=ServiceNowIntegration.class)
 private class ServiceNowIntegrationTest {
 
     private class ServiceNowMock implements HttpCalloutMock {

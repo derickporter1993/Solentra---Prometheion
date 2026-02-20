@@ -1,11 +1,11 @@
 /**
- * @description Test class for FINRAModule
+ * Test class for FINRAModule
  * Covers all IComplianceModule interface methods and internal evaluation logic
  * for FINRA Rules 3110 (Supervision), 4511 (Records), 4370 (BCP)
  * @group Tests
  * @author Elaro Team
  */
-@IsTest
+@IsTest(testFor=FINRAModule.class)
 private class FINRAModuleTest {
 
     @TestSetup

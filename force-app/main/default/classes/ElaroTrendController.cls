@@ -12,6 +12,8 @@
  *
  * @author Derick Porter
  * @date 2026-01-03
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 public with sharing class ElaroTrendController {
 
@@ -64,10 +66,10 @@ public with sharing class ElaroTrendController {
         // Bound the date range
         Integer safeMonthsBack = boundMonthsBack(monthsBack);
 
-        // Build the aggregation query
+        // Build the aggregation query with bind variables
         String bucketExpr = getBucketExpression(safeGranularity, safeDateField);
 
-        String soql = buildTrendQuery(
+        QueryWithBinds qwb = buildTrendQuery(
             objectApiName,
             bucketExpr,
             safeMetricField,
@@ -78,9 +80,12 @@ public with sharing class ElaroTrendController {
 
         List<AggregateResult> results;
         try {
-            results = Database.query(soql);
+            results = (List<AggregateResult>) Database.queryWithBinds(
+                qwb.query, qwb.binds, AccessLevel.USER_MODE
+            );
         } catch (Exception e) {
-            throw new AuraHandledException('Trend query failed: ' + e.getMessage());
+            ElaroLogger.error('ElaroTrendController.getTimeSeries', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to execute the trend query. Please verify you have the required permissions and try again.');
         }
 
         // Transform to trend data
@@ -291,9 +296,17 @@ public with sharing class ElaroTrendController {
     }
 
     /**
-     * Build the trend query
+     * Build the trend query with bind variables
+     *
+     * @param objectName The SObject API name to query
+     * @param bucketExpr The date bucket expression for grouping
+     * @param metricField The field to aggregate
+     * @param dateField The date field for filtering and grouping
+     * @param monthsBack Number of months to look back
+     * @param additionalFilters Optional additional filter clause
+     * @return QueryWithBinds containing the parameterized query and bind map
      */
-    private static String buildTrendQuery(
+    private static QueryWithBinds buildTrendQuery(
         String objectName,
         String bucketExpr,
         String metricField,
@@ -301,6 +314,8 @@ public with sharing class ElaroTrendController {
         Integer monthsBack,
         String additionalFilters
     ) {
+        Map<String, Object> binds = new Map<String, Object>();
+
         // Determine aggregate function
         String aggExpr;
         if (metricField.equalsIgnoreCase('Id')) {
@@ -309,6 +324,7 @@ public with sharing class ElaroTrendController {
             aggExpr = 'SUM(' + metricField + ')';
         }
 
+        // LAST_N_MONTHS is a SOQL date literal and must be inlined
         String soql = 'SELECT ' + bucketExpr + ' bucketDate, ' +
                                   aggExpr + ' metricValue, ' +
                                   'CALENDAR_YEAR(' + dateField + ') bucketYear ' +
@@ -325,12 +341,16 @@ public with sharing class ElaroTrendController {
             }
         }
 
+        binds.put('queryLimit', MAX_DATA_POINTS);
         soql += ' GROUP BY ' + bucketExpr + ', CALENDAR_YEAR(' + dateField + ')' +
                 ' ORDER BY CALENDAR_YEAR(' + dateField + '), ' + bucketExpr +
                 ' WITH USER_MODE' +
-                ' LIMIT ' + MAX_DATA_POINTS;
+                ' LIMIT :queryLimit';
 
-        return soql;
+        QueryWithBinds result = new QueryWithBinds();
+        result.query = soql;
+        result.binds = binds;
+        return result;
     }
 
     /**
@@ -487,6 +507,14 @@ public with sharing class ElaroTrendController {
         @AuraEnabled public String apiName;
         @AuraEnabled public String label;
         @AuraEnabled public String fieldType;
+    }
+
+    /**
+     * Wrapper for a parameterized SOQL query and its bind variable map
+     */
+    private class QueryWithBinds {
+        public String query;
+        public Map<String, Object> binds;
     }
 
     /**

@@ -5,14 +5,17 @@
  *
  * @author Elaro Team
  * @since v3.1.0 (Spring '26)
- * @group Command Center
+ * @group Compliance Framework
  * @see CommandCenterController
+ * @see OrchestrationService
  * @see Compliance_Action__mdt
  */
 public inherited sharing class ComplianceContextEngine {
 
     /**
      * DTO representing the aggregated compliance context for the Command Center.
+     * Includes orchestration metadata so the UI can display last-scan status
+     * and available framework coverage.
      */
     public class ComplianceContext {
         @AuraEnabled public List<FrameworkSummary> frameworkSummaries;
@@ -20,6 +23,10 @@ public inherited sharing class ComplianceContextEngine {
         @AuraEnabled public List<GapSummary> recentGaps;
         @AuraEnabled public ComplianceOverview overview;
         @AuraEnabled public Datetime contextTimestamp;
+        /** Timestamp of the most recent orchestrated scan. Null if no scan recorded. */
+        @AuraEnabled public Datetime lastScanTimestamp;
+        /** List of framework codes registered in the Orchestration Engine. */
+        @AuraEnabled public List<String> registeredFrameworks;
 
         public ComplianceContext() {
             this.frameworkSummaries = new List<FrameworkSummary>();
@@ -27,6 +34,7 @@ public inherited sharing class ComplianceContextEngine {
             this.recentGaps = new List<GapSummary>();
             this.overview = new ComplianceOverview();
             this.contextTimestamp = Datetime.now();
+            this.registeredFrameworks = new List<String>();
         }
     }
 
@@ -108,6 +116,8 @@ public inherited sharing class ComplianceContextEngine {
 
     /**
      * Builds the full compliance context for the Command Center.
+     * Enriches the context with orchestration metadata from
+     * {@link OrchestrationService} and {@link ComplianceServiceFactory}.
      *
      * @return ComplianceContext containing all aggregated compliance data
      */
@@ -117,7 +127,30 @@ public inherited sharing class ComplianceContextEngine {
         ctx.overview = buildOverview(ctx.frameworkSummaries);
         ctx.prioritizedActions = loadPrioritizedActions();
         ctx.recentGaps = loadRecentGaps();
+        enrichWithOrchestrationData(ctx);
         return ctx;
+    }
+
+    /**
+     * Enriches the compliance context with orchestration engine metadata:
+     * last scan timestamp and the set of registered frameworks available
+     * for scanning.
+     *
+     * @param ctx The ComplianceContext to enrich in place
+     */
+    @TestVisible
+    private void enrichWithOrchestrationData(ComplianceContext ctx) {
+        try {
+            OrchestrationService orchestrator = new OrchestrationService();
+            ctx.lastScanTimestamp = orchestrator.getLastScanTimestamp();
+            ctx.registeredFrameworks = new List<String>(
+                ComplianceServiceFactory.getSupportedFrameworks()
+            );
+        } catch (Exception e) {
+            ElaroLogger.warn('ComplianceContextEngine.enrichWithOrchestrationData: '
+                + 'Failed to load orchestration data: ' + e.getMessage());
+            // Graceful degradation: leave orchestration fields at defaults
+        }
     }
 
     /**
@@ -243,23 +276,17 @@ public inherited sharing class ComplianceContextEngine {
 
     /**
      * Loads prioritized compliance actions from Compliance_Action__mdt,
-     * sorted by priority order.
+     * sorted by priority order. Uses Platform Cache (60-min TTL) to avoid
+     * repeated Custom Metadata queries across transactions.
      *
      * @return List of ComplianceActionItem sorted by priority
      */
     @TestVisible
     private List<ComplianceActionItem> loadPrioritizedActions() {
+        List<Compliance_Action__mdt> cachedActions = getCachedActions();
         List<ComplianceActionItem> actions = new List<ComplianceActionItem>();
 
-        for (Compliance_Action__mdt action : [
-            SELECT DeveloperName, Action_Title__c, Action_Description__c, Framework__c,
-                   Severity__c, Category__c, Setup_Path__c, Priority_Order__c,
-                   Control_Reference__c, Remediation_Steps__c, Is_Active__c
-            FROM Compliance_Action__mdt
-            WHERE Is_Active__c = TRUE
-            WITH USER_MODE
-            ORDER BY Priority_Order__c ASC
-        ]) {
+        for (Compliance_Action__mdt action : cachedActions) {
             ComplianceActionItem item = new ComplianceActionItem();
             item.title = action.Action_Title__c;
             item.description = action.Action_Description__c;
@@ -272,6 +299,46 @@ public inherited sharing class ComplianceContextEngine {
             item.controlReference = action.Control_Reference__c;
             item.remediationSteps = action.Remediation_Steps__c;
             actions.add(item);
+        }
+
+        return actions;
+    }
+
+    /**
+     * Retrieves Compliance_Action__mdt records from Platform Cache, falling
+     * back to a SOQL query on cache miss. Caches results for 60 minutes
+     * to reduce repeated metadata queries.
+     *
+     * @return List of active Compliance_Action__mdt records sorted by priority
+     */
+    @TestVisible
+    private static List<Compliance_Action__mdt> getCachedActions() {
+        String cacheKey = 'complianceActions';
+        try {
+            Cache.OrgPartition orgPart = Cache.Org.getPartition('local.ElaroCache');
+            List<Compliance_Action__mdt> actions = (List<Compliance_Action__mdt>) orgPart.get(cacheKey);
+            if (actions != null) {
+                return actions;
+            }
+        } catch (Exception e) {
+            ElaroLogger.warn('ComplianceContextEngine.getCachedActions: Cache read failed, querying directly: ' + e.getMessage());
+        }
+
+        List<Compliance_Action__mdt> actions = [
+            SELECT DeveloperName, Action_Title__c, Action_Description__c, Framework__c,
+                   Severity__c, Category__c, Setup_Path__c, Priority_Order__c,
+                   Control_Reference__c, Remediation_Steps__c, Is_Active__c
+            FROM Compliance_Action__mdt
+            WHERE Is_Active__c = TRUE
+            WITH USER_MODE
+            ORDER BY Priority_Order__c ASC
+        ];
+
+        try {
+            Cache.OrgPartition orgPart = Cache.Org.getPartition('local.ElaroCache');
+            orgPart.put(cacheKey, actions, 3600); // 60-min TTL
+        } catch (Exception e) {
+            ElaroLogger.warn('ComplianceContextEngine.getCachedActions: Cache write failed: ' + e.getMessage());
         }
 
         return actions;

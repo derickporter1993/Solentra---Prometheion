@@ -8,6 +8,8 @@
  * 
  * @author Elaro
  * @version 3.0
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 public with sharing class PCIDataProtectionService extends ComplianceServiceBase {
     
@@ -56,6 +58,7 @@ public with sharing class PCIDataProtectionService extends ComplianceServiceBase
      * @param cardholderData Cardholder data to tokenize
      * @return Token
      */
+    @SuppressWarnings('PMD.AvoidHardcodedCredentialsInVarDecls')
     public String tokenizeData(String cardholderData) {
         validateRequired('cardholderData', cardholderData);
         

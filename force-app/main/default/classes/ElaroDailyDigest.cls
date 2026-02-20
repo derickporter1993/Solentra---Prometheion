@@ -1,8 +1,9 @@
 /**
- * @description Schedulable class for daily compliance digest
+ * Schedulable class for daily compliance digest
  * Sends daily summary at 6 AM with statistics, top risks, and AI summary
- * @group Automation & Alerting
+ * @group System Monitoring
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class ElaroDailyDigest implements Schedulable {
     
@@ -19,7 +20,7 @@ public with sharing class ElaroDailyDigest implements Schedulable {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Execute scheduled job
+     * Execute scheduled job
      * @param sc SchedulableContext
      */
     public void execute(SchedulableContext sc) {
@@ -31,7 +32,7 @@ public with sharing class ElaroDailyDigest implements Schedulable {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Schedule the daily digest
+     * Schedule the daily digest
      * @param cronExpression The cron expression (default: 6 AM daily)
      * @return Scheduled job ID
      */
@@ -44,8 +45,10 @@ public with sharing class ElaroDailyDigest implements Schedulable {
         
         String jobName = 'Elaro_Daily_Digest_' + UserInfo.getUserId();
         
-        // Remove existing job if present
-        for (CronTrigger ct : [SELECT Id FROM CronTrigger WHERE CronJobDetail.Name = :jobName WITH USER_MODE]) {
+        List<CronTrigger> existingJobs = [
+            SELECT Id FROM CronTrigger WHERE CronJobDetail.Name = :jobName WITH USER_MODE
+        ];
+        for (CronTrigger ct : existingJobs) {
             System.abortJob(ct.Id);
         }
         
@@ -53,7 +56,7 @@ public with sharing class ElaroDailyDigest implements Schedulable {
     }
     
     /**
-     * @description Generate and send digest immediately
+     * Generate and send digest immediately
      */
     @AuraEnabled
     public static void generateAndSendDigest() {
@@ -63,7 +66,7 @@ public with sharing class ElaroDailyDigest implements Schedulable {
     }
     
     /**
-     * @description Get digest preview without sending
+     * Get digest preview without sending
      * @return DigestData containing the digest content
      */
     @AuraEnabled(cacheable=true)
@@ -76,7 +79,7 @@ public with sharing class ElaroDailyDigest implements Schedulable {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Compile all digest data
+     * Compile all digest data
      * @return DigestData with all statistics and risks
      */
     private static DigestData compileDigestData() {
@@ -105,7 +108,7 @@ public with sharing class ElaroDailyDigest implements Schedulable {
     }
     
     /**
-     * @description Get event statistics for the digest period
+     * Get event statistics for the digest period
      */
     private static EventStatistics getEventStatistics() {
         EventStatistics stats = new EventStatistics();
@@ -164,7 +167,7 @@ public with sharing class ElaroDailyDigest implements Schedulable {
     }
     
     /**
-     * @description Get top risk items
+     * Get top risk items
      */
     private static List<RiskItem> getTopRisks() {
         List<RiskItem> risks = new List<RiskItem>();
@@ -205,7 +208,7 @@ public with sharing class ElaroDailyDigest implements Schedulable {
     }
     
     /**
-     * @description Get current compliance score
+     * Get current compliance score
      */
     private static Decimal getComplianceScore() {
         try {
@@ -217,7 +220,7 @@ public with sharing class ElaroDailyDigest implements Schedulable {
     }
     
     /**
-     * @description Generate AI summary for the digest
+     * Generate AI summary for the digest
      */
     private static String generateAISummary(DigestData digest) {
         // Build summary from data
@@ -245,7 +248,7 @@ public with sharing class ElaroDailyDigest implements Schedulable {
     }
     
     /**
-     * @description Get trending items (improving or declining)
+     * Get trending items (improving or declining)
      */
     private static List<String> getTrendingItems(String direction) {
         List<String> items = new List<String>();
@@ -262,7 +265,7 @@ public with sharing class ElaroDailyDigest implements Schedulable {
     }
     
     /**
-     * @description Send digest via email
+     * Send digest via email
      */
     private static void sendDigestEmail(DigestData digest) {
         String subject = '📊 Elaro Daily Compliance Digest - ' + Date.today().format();
@@ -282,11 +285,18 @@ public with sharing class ElaroDailyDigest implements Schedulable {
     }
     
     /**
-     * @description Send digest to Slack using Queueable
+     * Send digest to Slack using Queueable
      */
     private static void sendDigestToSlack(DigestData digest) {
         if (!Test.isRunningTest()) {
-            System.enqueueJob(new SlackDigestQueueable(digest));
+            AsyncOptions options = new AsyncOptions();
+            options.setMaximumQueueableStackDepth(5);
+            options.setDuplicateSignature(
+                new QueueableDuplicateSignature.Builder()
+                    .addString('SlackDailyDigest')
+                    .build()
+            );
+            System.enqueueJob(new SlackDigestQueueable(digest), options);
         }
     }
     

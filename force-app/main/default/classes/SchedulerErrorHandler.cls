@@ -9,6 +9,8 @@
  *
  * @author Elaro
  * @version 1.0
+ * @since v3.1.0 (Spring '26)
+ * @group Utilities
  */
 public without sharing class SchedulerErrorHandler {
     // System context ensures error logging always works regardless of user permissions
@@ -20,7 +22,7 @@ public without sharing class SchedulerErrorHandler {
      */
     public static void logError(String schedulerName, Exception e) {
         try {
-            insert new Integration_Error__c(
+            insert as user new Integration_Error__c(
                 Error_Type__c = 'SCHEDULER_FAILURE',
                 Error_Message__c = e.getMessage() != null ? e.getMessage().left(255) : 'Unknown error',
                 Stack_Trace__c = e.getStackTraceString() != null ? e.getStackTraceString().left(32000) : '',
@@ -39,7 +41,7 @@ public without sharing class SchedulerErrorHandler {
      */
     public static void logSuccess(String schedulerName, String details) {
         try {
-            insert new Integration_Error__c(
+            insert as user new Integration_Error__c(
                 Error_Type__c = 'SCHEDULER_SUCCESS',
                 Error_Message__c = details != null ? details.left(255) : 'Scheduler completed successfully',
                 Context__c = schedulerName,

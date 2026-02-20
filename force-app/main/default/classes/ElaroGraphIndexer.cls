@@ -27,6 +27,8 @@
  * @version 3.0
  * @see Elaro_Compliance_Graph__b
  * @see ElaroConstants
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 public with sharing class ElaroGraphIndexer {
     private static final String GRAPH_VERSION = 'v3.0';

@@ -1,15 +1,16 @@
 /**
- * @description ServiceNow integration service for Elaro
+ * ServiceNow integration service for Elaro
  * Provides control sync, evidence push, and incident creation
- * @group Integrations
+ * @group Integration
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class ServiceNowIntegration {
     
     private static final String NAMED_CREDENTIAL = 'callout:ServiceNow_API';
     
     /**
-     * @description Sync controls from Elaro to ServiceNow GRC using Queueable
+     * Sync controls from Elaro to ServiceNow GRC using Queueable
      * @param frameworkName Framework name (HIPAA, SOC2, etc.)
      */
     public static void syncControls(String frameworkName) {
@@ -19,7 +20,7 @@ public with sharing class ServiceNowIntegration {
     }
     
     /**
-     * @description Push evidence to ServiceNow using Queueable
+     * Push evidence to ServiceNow using Queueable
      * @param evidenceId Evidence item ID
      */
     public static void pushEvidence(String evidenceId) {
@@ -29,7 +30,7 @@ public with sharing class ServiceNowIntegration {
     }
     
     /**
-     * @description Sync compliance status to ServiceNow using Queueable
+     * Sync compliance status to ServiceNow using Queueable
      * @param auditPackageId Audit package ID
      */
     public static void syncComplianceStatus(String auditPackageId) {
@@ -82,6 +83,7 @@ public with sharing class ServiceNowIntegration {
                     SELECT Id, Name, Evidence_Type__c, Description__c, Evidence_Date__c, Status__c
                     FROM Elaro_Evidence_Item__c
                     WHERE Id = :evidenceId
+                    WITH USER_MODE
                     LIMIT 1
                 ];
                 
@@ -136,6 +138,7 @@ public with sharing class ServiceNowIntegration {
                     SELECT Id, Name, Package_Name__c, Framework__c, Status__c
                     FROM Elaro_Audit_Package__c
                     WHERE Id = :auditPackageId
+                    WITH USER_MODE
                     LIMIT 1
                 ];
                 
@@ -179,7 +182,7 @@ public with sharing class ServiceNowIntegration {
     }
     
     /**
-     * @description Create incident in ServiceNow
+     * Create incident in ServiceNow
      * @param incidentData Incident details
      * @return ServiceNow incident sys_id
      */
@@ -213,15 +216,17 @@ public with sharing class ServiceNowIntegration {
                 Map<String, Object> result = (Map<String, Object>)response.get('result');
                 return (String)result.get('sys_id');
             } else {
-                throw new AuraHandledException('ServiceNow incident creation failed: ' + res.getBody());
+                ElaroLogger.error('ServiceNowIntegration.createIncident', 'ServiceNow incident creation failed with status ' + res.getStatusCode() + ': ' + res.getBody(), '');
+                throw new AuraHandledException('ServiceNow incident creation failed. Please verify your ServiceNow configuration and try again.');
             }
         } catch (CalloutException e) {
-            throw new AuraHandledException('ServiceNow connection failed: ' + e.getMessage());
+            ElaroLogger.error('ServiceNowIntegration.createIncident', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to connect to ServiceNow. Please verify your connection settings and try again.');
         }
     }
     
     /**
-     * @description Get incident status from ServiceNow
+     * Get incident status from ServiceNow
      * @param incidentSysId ServiceNow incident sys_id
      * @return Incident status
      */
@@ -231,7 +236,7 @@ public with sharing class ServiceNowIntegration {
         req.setEndpoint(NAMED_CREDENTIAL + '/api/now/table/incident/' + incidentSysId);
         req.setMethod('GET');
         req.setHeader('Accept', 'application/json');
-        req.setTimeout(30000);
+        req.setTimeout(ElaroConstants.CALLOUT_TIMEOUT_MS);
         
         try {
             Http http = new Http();

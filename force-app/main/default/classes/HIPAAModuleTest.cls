@@ -1,11 +1,11 @@
 /**
- * @description Test class for HIPAAModule
+ * Test class for HIPAAModule
  * Covers all IComplianceModule interface methods and internal evaluation logic
  * for HIPAA 164.308 (Administrative), 164.310 (Physical), 164.312 (Technical) safeguards
  * @group Tests
  * @author Elaro Team
  */
-@IsTest
+@IsTest(testFor=HIPAAModule.class)
 private class HIPAAModuleTest {
 
     @TestSetup

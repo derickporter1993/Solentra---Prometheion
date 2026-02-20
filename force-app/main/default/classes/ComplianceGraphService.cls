@@ -1,5 +1,5 @@
 /**
- * @description Service for generating compliance graph data for visualization.
+ * Service for generating compliance graph data for visualization.
  * Creates node and edge data for D3.js-based graph visualization.
  *
  * Features:
@@ -10,6 +10,7 @@
  *
  * @author Elaro Development Team
  * @since 2026-01
+ * @group Compliance Framework
  */
 public with sharing class ComplianceGraphService {
 
@@ -33,7 +34,7 @@ public with sharing class ComplianceGraphService {
     };
 
     /**
-     * @description Gets the complete compliance graph for the organization
+     * Gets the complete compliance graph for the organization
      * @return GraphData object containing nodes and edges
      */
     @AuraEnabled(cacheable=true)
@@ -41,6 +42,9 @@ public with sharing class ComplianceGraphService {
         GraphData graph = new GraphData();
         graph.nodes = new List<GraphNode>();
         graph.edges = new List<GraphEdge>();
+
+        // Track existing node IDs for O(1) duplicate checks instead of nested loop scans
+        Set<String> existingNodeIds = new Set<String>();
 
         // Query gaps once and reuse
         List<Compliance_Gap__c> gaps = getGapsForGraph();
@@ -52,14 +56,18 @@ public with sharing class ComplianceGraphService {
         }
 
         for (String framework : frameworks) {
-            graph.nodes.add(createFrameworkNode(framework));
+            GraphNode frameworkNode = createFrameworkNode(framework);
+            graph.nodes.add(frameworkNode);
+            existingNodeIds.add(frameworkNode.id);
         }
 
         // Add policy nodes and connect to frameworks
         Map<String, List<Compliance_Policy__mdt>> policiesByFramework = getPoliciesByFramework();
         for (String framework : policiesByFramework.keySet()) {
             for (Compliance_Policy__mdt policy : policiesByFramework.get(framework)) {
-                graph.nodes.add(createPolicyNode(policy));
+                GraphNode policyNode = createPolicyNode(policy);
+                graph.nodes.add(policyNode);
+                existingNodeIds.add(policyNode.id);
                 graph.edges.add(new GraphEdge(
                     'framework-' + framework,
                     'policy-' + policy.DeveloperName,
@@ -69,9 +77,12 @@ public with sharing class ComplianceGraphService {
             }
         }
 
-        // Add gap nodes and connect to policies and frameworks
+        // Add gap nodes and connect to policies and frameworks.
+        // Entity dedup uses Set lookup (O(1)) instead of scanning all nodes (O(n)).
         for (Compliance_Gap__c gap : gaps) {
-            graph.nodes.add(createGapNode(gap));
+            GraphNode gapNode = createGapNode(gap);
+            graph.nodes.add(gapNode);
+            existingNodeIds.add(gapNode.id);
 
             // Connect to policy
             graph.edges.add(new GraphEdge(
@@ -93,17 +104,10 @@ public with sharing class ComplianceGraphService {
             if (String.isNotBlank(gap.Entity_Type__c) && String.isNotBlank(gap.Entity_Id__c)) {
                 String entityNodeId = 'entity-' + gap.Entity_Type__c + '-' + gap.Entity_Id__c;
 
-                // Check if entity node already exists
-                Boolean entityExists = false;
-                for (GraphNode node : graph.nodes) {
-                    if (node.id == entityNodeId) {
-                        entityExists = true;
-                        break;
-                    }
-                }
-
-                if (!entityExists) {
+                // O(1) Set lookup replaces O(n) linear scan of graph.nodes
+                if (!existingNodeIds.contains(entityNodeId)) {
                     graph.nodes.add(createEntityNode(gap.Entity_Type__c, gap.Entity_Id__c));
+                    existingNodeIds.add(entityNodeId);
                 }
 
                 graph.edges.add(new GraphEdge(
@@ -119,7 +123,7 @@ public with sharing class ComplianceGraphService {
     }
 
     /**
-     * @description Gets graph data filtered by framework
+     * Gets graph data filtered by framework
      * @param framework The framework to filter by
      * @return GraphData filtered to the specified framework
      */
@@ -159,7 +163,7 @@ public with sharing class ComplianceGraphService {
     }
 
     /**
-     * @description Performs impact analysis for a specific entity
+     * Performs impact analysis for a specific entity
      * @param entityType The type of entity
      * @param entityId The ID of the entity
      * @return ImpactAnalysis containing affected items
@@ -219,7 +223,7 @@ public with sharing class ComplianceGraphService {
     }
 
     /**
-     * @description Gets graph statistics summary
+     * Gets graph statistics summary
      * @return GraphStats with summary metrics
      */
     @AuraEnabled(cacheable=true)
@@ -291,7 +295,7 @@ public with sharing class ComplianceGraphService {
     }
 
     /**
-     * @description Gets node details for a specific node
+     * Gets node details for a specific node
      * @param nodeId The ID of the node
      * @param nodeType The type of node (framework, policy, gap, entity)
      * @return NodeDetails with full information
@@ -318,6 +322,7 @@ public with sharing class ComplianceGraphService {
                 SELECT Label, Description__c, Risk_Category__c, Framework__c
                 FROM Compliance_Policy__mdt
                 WHERE DeveloperName = :policyName
+                WITH USER_MODE
                 LIMIT 1
             ];
 
@@ -392,7 +397,8 @@ public with sharing class ComplianceGraphService {
         Map<String, List<Compliance_Policy__mdt>> result = new Map<String, List<Compliance_Policy__mdt>>();
 
         for (Compliance_Policy__mdt policy : [SELECT DeveloperName, Label, Framework__c, Description__c, Risk_Category__c
-                                               FROM Compliance_Policy__mdt]) {
+                                               FROM Compliance_Policy__mdt
+                                               WITH USER_MODE]) {
             if (!result.containsKey(policy.Framework__c)) {
                 result.put(policy.Framework__c, new List<Compliance_Policy__mdt>());
             }
@@ -405,7 +411,8 @@ public with sharing class ComplianceGraphService {
     private static List<Compliance_Policy__mdt> getPoliciesForFramework(String framework) {
         return [SELECT DeveloperName, Label, Framework__c, Description__c, Risk_Category__c
                 FROM Compliance_Policy__mdt
-                WHERE Framework__c = :framework];
+                WHERE Framework__c = :framework
+                WITH USER_MODE];
     }
 
     private static GraphNode createFrameworkNode(String framework) {
@@ -501,7 +508,7 @@ public with sharing class ComplianceGraphService {
     // ============================================
 
     /**
-     * @description Complete graph data structure
+     * Complete graph data structure
      */
     public class GraphData {
         @AuraEnabled public List<GraphNode> nodes;
@@ -509,7 +516,7 @@ public with sharing class ComplianceGraphService {
     }
 
     /**
-     * @description Graph node representation
+     * Graph node representation
      */
     public class GraphNode {
         @AuraEnabled public String id;
@@ -521,7 +528,7 @@ public with sharing class ComplianceGraphService {
     }
 
     /**
-     * @description Graph edge representation
+     * Graph edge representation
      */
     public class GraphEdge {
         @AuraEnabled public String source;
@@ -538,7 +545,7 @@ public with sharing class ComplianceGraphService {
     }
 
     /**
-     * @description Impact analysis result
+     * Impact analysis result
      */
     public class ImpactAnalysis {
         @AuraEnabled public String entityType;
@@ -554,7 +561,7 @@ public with sharing class ComplianceGraphService {
     }
 
     /**
-     * @description Affected gap in impact analysis
+     * Affected gap in impact analysis
      */
     public class AffectedGap {
         @AuraEnabled public Id gapId;
@@ -566,7 +573,7 @@ public with sharing class ComplianceGraphService {
     }
 
     /**
-     * @description Graph statistics summary
+     * Graph statistics summary
      */
     public class GraphStats {
         @AuraEnabled public Integer totalGaps;
@@ -578,7 +585,7 @@ public with sharing class ComplianceGraphService {
     }
 
     /**
-     * @description Node detail information
+     * Node detail information
      */
     public class NodeDetails {
         @AuraEnabled public String nodeId;

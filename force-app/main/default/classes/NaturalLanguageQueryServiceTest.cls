@@ -1,8 +1,8 @@
 /**
- * @description Unit tests for NaturalLanguageQueryService
+ * Unit tests for NaturalLanguageQueryService
  * @group Tests
  */
-@isTest
+@IsTest(testFor=NaturalLanguageQueryService.class)
 private class NaturalLanguageQueryServiceTest {
     
     @testSetup

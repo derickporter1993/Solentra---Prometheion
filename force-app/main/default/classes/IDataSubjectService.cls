@@ -4,6 +4,8 @@
  * 
  * @author Elaro
  * @version 3.0
+ * @since v3.1.0 (Spring '26)
+ * @group Interfaces
  */
 public interface IDataSubjectService {
     /**

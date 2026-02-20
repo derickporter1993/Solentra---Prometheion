@@ -1,0 +1,123 @@
+<template>
+    <lightning-card title={label.TC_LinkManager} icon-name="utility:link">
+        <div slot="actions">
+            <lightning-button
+                label={label.TC_CreateLink}
+                variant="brand"
+                icon-name="utility:add"
+                onclick={handleOpenCreateModal}
+                aria-label={label.TC_CreateLink}>
+            </lightning-button>
+        </div>
+
+        <div class="slds-card__body slds-card__body_inner">
+            <!-- Loading State -->
+            <template lwc:if={isLoading}>
+                <div class="slds-align_absolute-center slds-p-around_large" role="status">
+                    <lightning-spinner
+                        alternative-text={label.TC_Loading}
+                        size="medium">
+                    </lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Error State -->
+            <template lwc:elseif={hasError}>
+                <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                    <span class="slds-assistive-text">{label.TC_Error}</span>
+                    <h2>{label.TC_Error}</h2>
+                    <p>{errorMessage}</p>
+                </div>
+            </template>
+
+            <!-- Empty State -->
+            <template lwc:elseif={isEmpty}>
+                <div class="slds-illustration slds-illustration_small slds-align_absolute-center">
+                    <div class="slds-illustration__body">
+                        <p class="slds-text-heading_medium slds-text-color_weak">
+                            {label.TC_ShareableLinks}
+                        </p>
+                        <p class="slds-text-body_regular slds-text-color_weak slds-m-top_small">
+                            {emptyStateMessage}
+                        </p>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Links Datatable -->
+            <template lwc:else>
+                <lightning-datatable
+                    key-field="Id"
+                    data={tableData}
+                    columns={columns}
+                    hide-checkbox-column
+                    onrowaction={handleRowAction}
+                    aria-label={label.TC_ShareableLinks}>
+                </lightning-datatable>
+            </template>
+        </div>
+    </lightning-card>
+
+    <!-- Create Link Modal -->
+    <template lwc:if={isModalOpen}>
+        <section
+            role="dialog"
+            tabindex="-1"
+            aria-label={label.TC_CreateLink}
+            aria-modal="true"
+            class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={handleCloseModal} aria-label="Close">
+                    <lightning-icon icon-name="utility:close" alternative-text="Close" size="small"></lightning-icon>
+                </button>
+                <div class="slds-modal__header">
+                    <h2 class="slds-modal__title slds-hyphenate">{label.TC_CreateLink}</h2>
+                </div>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <lightning-combobox
+                        name="accessTier"
+                        label={label.TC_AccessTier}
+                        value={newLinkAccessTier}
+                        options={accessTierOptions}
+                        onchange={handleAccessTierChange}
+                        required>
+                    </lightning-combobox>
+                    <lightning-input
+                        type="number"
+                        name="expirationDays"
+                        label={label.TC_ExpirationDays}
+                        value={newLinkExpirationDays}
+                        min="1"
+                        max="365"
+                        onchange={handleExpirationDaysChange}
+                        class="slds-m-top_small"
+                        required>
+                    </lightning-input>
+                    <lightning-input
+                        type="text"
+                        name="createdFor"
+                        label={label.TC_CreatedFor}
+                        value={newLinkCreatedFor}
+                        placeholder="Company or individual name"
+                        onchange={handleCreatedForChange}
+                        class="slds-m-top_small">
+                    </lightning-input>
+                </div>
+                <div class="slds-modal__footer">
+                    <lightning-button
+                        label="Cancel"
+                        onclick={handleCloseModal}>
+                    </lightning-button>
+                    <lightning-button
+                        label={label.TC_CreateLink}
+                        variant="brand"
+                        onclick={handleCreateLink}
+                        disabled={isCreating}
+                        class="slds-m-left_x-small">
+                    </lightning-button>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+</template>

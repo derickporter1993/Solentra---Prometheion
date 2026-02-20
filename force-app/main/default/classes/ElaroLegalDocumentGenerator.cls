@@ -55,7 +55,7 @@ public with sharing class ElaroLegalDocumentGenerator {
             if (accessibleContent.isEmpty()) {
                 throw new AuraHandledException('Insufficient field-level security access for ContentVersion');
             }
-            insert accessibleContent;
+            insert as user accessibleContent;
             cv = (ContentVersion)accessibleContent[0];
 
             // Get ContentDocumentId
@@ -69,14 +69,18 @@ public with sharing class ElaroLegalDocumentGenerator {
 
             return cv.ContentDocumentId;
         } catch (Exception e) {
-            throw new AuraHandledException('Error generating evidence pack: ' + e.getMessage());
+            ElaroLogger.error('ElaroLegalDocumentGenerator.generateLegalAttestation', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to generate the evidence pack. Please verify you have the required permissions and try again.');
         }
     }
 
     /**
      * Check rate limit using Cache.OrgPartition
      * Returns true if within limit, false if limit exceeded
-     */
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
+ */
     private static Boolean checkRateLimit(String key) {
         try {
             Cache.OrgPartition orgPart = Cache.Org.getPartition(RATE_LIMIT_PARTITION);
@@ -105,15 +109,13 @@ public with sharing class ElaroLegalDocumentGenerator {
      */
     private static void logAuditEvent(String action, String framework, Date startDate, Date endDate, String documentId) {
         try {
-            if (Schema.sObjectType.Elaro_Audit_Log__c.isCreateable()) {
-                Elaro_Audit_Log__c auditLog = new Elaro_Audit_Log__c(
-                    Action__c = action,
-                    User__c = UserInfo.getUserId(),
-                    Timestamp__c = System.now(),
-                    Details__c = 'Framework: ' + framework + ', Period: ' + startDate + ' to ' + endDate + ', DocumentId: ' + documentId
-                );
-                insert auditLog;
-            }
+            Elaro_Audit_Log__c auditLog = new Elaro_Audit_Log__c(
+                Action__c = action,
+                User__c = UserInfo.getUserId(),
+                Timestamp__c = System.now(),
+                Details__c = 'Framework: ' + framework + ', Period: ' + startDate + ' to ' + endDate + ', DocumentId: ' + documentId
+            );
+            insert as user auditLog;
         } catch (Exception e) {
             // Don't fail the main operation if audit logging fails
             ElaroLogger.warn('ElaroLegalDocumentGenerator: Failed to log audit event: ' + e.getMessage());

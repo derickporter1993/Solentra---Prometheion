@@ -6,6 +6,8 @@
  *
  * @author Elaro
  * @version 1.0
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 public with sharing class ElaroGLBAAnnualNoticeBatch implements Database.Batchable<SObject>, Database.Stateful {
     private Integer noticesSent = 0;
@@ -68,7 +70,7 @@ public with sharing class ElaroGLBAAnnualNoticeBatch implements Database.Batchab
         }
 
         if (!newNotices.isEmpty()) {
-            List<Database.SaveResult> results = Database.insert(newNotices, false);
+            List<Database.SaveResult> results = Database.insert(newNotices, false, AccessLevel.USER_MODE);
             for (Integer i = 0; i < results.size(); i++) {
                 if (!results[i].isSuccess()) {
                     errors++;
@@ -114,6 +116,7 @@ public with sharing class ElaroGLBAAnnualNoticeBatch implements Database.Batchab
                 SELECT Id, Status, NumberOfErrors, JobItemsProcessed, TotalJobItems, CreatedBy.Email
                 FROM AsyncApexJob
                 WHERE Id = :bc.getJobId()
+                WITH USER_MODE
                 LIMIT 1
             ];
         } catch (Exception e) {

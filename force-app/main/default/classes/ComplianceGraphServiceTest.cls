@@ -1,9 +1,9 @@
 /**
- * @description Test class for ComplianceGraphService
+ * Test class for ComplianceGraphService
  * @author Elaro Development Team
  * @since 2026-01
  */
-@isTest
+@IsTest(testFor=ComplianceGraphService.class)
 private class ComplianceGraphServiceTest {
 
     @TestSetup

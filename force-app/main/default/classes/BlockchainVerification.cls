@@ -1,8 +1,9 @@
 /**
- * @description Blockchain-based evidence verification service
+ * Blockchain-based evidence verification service
  * Provides tamper-proof evidence anchoring using third-party services
- * @group Enterprise Features
+ * @group Compliance Framework
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class BlockchainVerification {
     
@@ -10,7 +11,7 @@ public with sharing class BlockchainVerification {
     private static final String ORIGINSTAMP_ENDPOINT = 'https://api.originstamp.com/v4/timestamp';
     
     /**
-     * @description Anchor evidence to blockchain for immutability
+     * Anchor evidence to blockchain for immutability
      * @param contentVersionId ContentVersion ID of the evidence
      * @return AnchorResult with transaction details
      */
@@ -51,7 +52,7 @@ public with sharing class BlockchainVerification {
     }
     
     /**
-     * @description Verify evidence against blockchain anchor
+     * Verify evidence against blockchain anchor
      * @param contentVersionId ContentVersion ID to verify
      * @return VerificationResult with verification status
      */
@@ -118,7 +119,7 @@ public with sharing class BlockchainVerification {
     }
     
     /**
-     * @description Batch anchor multiple evidence items
+     * Batch anchor multiple evidence items
      * @param contentVersionIds List of ContentVersion IDs
      * @return List of AnchorResult
      */
@@ -188,18 +189,15 @@ public with sharing class BlockchainVerification {
 
         // Single bulk insert for all verification records
         if (!anchorsToInsert.isEmpty()) {
-            if (!Schema.sObjectType.Elaro_Evidence_Anchor__c.isCreateable()) {
-                throw new AuraHandledException('Insufficient permissions to create Evidence Anchor records');
-            }
             ElaroSecurityUtils.validateCRUDAccess('Elaro_Evidence_Anchor__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert anchorsToInsert;
+            insert as user anchorsToInsert;
         }
 
         return results;
     }
     
     /**
-     * @description Get verification history for an audit package
+     * Get verification history for an audit package
      * @param auditPackageId Audit package ID
      * @return List of verification records
      */
@@ -260,10 +258,11 @@ public with sharing class BlockchainVerification {
     }
     
     /**
-     * @description Generate certificate of authenticity
+     * Generate certificate of authenticity
      * @param contentVersionId ContentVersion ID
      * @return Certificate URL or content
      */
+    @SuppressWarnings('PMD.AvoidHardcodedCredentialsInVarDecls')
     @AuraEnabled
     public static String generateCertificate(String contentVersionId) {
         VerificationResult verification = verifyEvidence(contentVersionId);
@@ -294,16 +293,11 @@ public with sharing class BlockchainVerification {
         // Generate a mock transaction ID
         // In production, this would come from the blockchain
         return '0x' + EncodingUtil.convertToHex(
-            Crypto.generateAesKey(128)
+            Crypto.generateAesKey(256)
         ).toLowerCase();
     }
     
     private static void storeVerificationRecord(AnchorResult result, String fileName) {
-        // CRUD check before insert
-        if (!Schema.sObjectType.Elaro_Evidence_Anchor__c.isCreateable()) {
-            throw new AuraHandledException('Insufficient permissions to create Evidence Anchor records');
-        }
-
         Elaro_Evidence_Anchor__c anchor = new Elaro_Evidence_Anchor__c(
             Name = 'ANCHOR-' + result.contentVersionId.left(10),
             Content_Version_Id__c = result.contentVersionId,
@@ -315,7 +309,7 @@ public with sharing class BlockchainVerification {
         );
 
         ElaroSecurityUtils.validateCRUDAccess('Elaro_Evidence_Anchor__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-        insert anchor;
+        insert as user anchor;
     }
     
     // ═══════════════════════════════════════════════════════════════

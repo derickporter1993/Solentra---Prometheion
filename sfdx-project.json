@@ -4,8 +4,8 @@
       "path": "force-app",
       "default": true,
       "package": "elaro",
-      "versionName": "v3.0 Enterprise",
-      "versionNumber": "3.0.0.NEXT",
+      "versionName": "Spring 26",
+      "versionNumber": "3.1.0.NEXT",
       "definitionFile": "config/elaro-scratch-def.json"
     },
     {
@@ -17,7 +17,9 @@
     }
   ],
   "name": "Elaro",
-  "namespace": "",
+  "namespace": "elaro",
+  "_TODO_namespace": "Register 'elaro' namespace in DevHub before creating package versions",
+  "_TODO_HC_namespace": "Register 'elaroHC' namespace in DevHub for Health Check package",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "66.0",
   "packageAliases": {

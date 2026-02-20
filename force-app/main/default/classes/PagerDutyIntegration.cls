@@ -1,41 +1,36 @@
 /**
- * @description PagerDuty integration service for Elaro
+ * PagerDuty integration service for Elaro
  * Provides incident triggering and resolution
- * @group Integrations
+ * @group Integration
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class PagerDutyIntegration {
     
     private static final String EVENTS_API = 'https://events.pagerduty.com/v2/enqueue';
     
     /**
-     * @description Trigger a PagerDuty incident using Queueable
+     * Trigger a PagerDuty incident using Queueable
      * @param alertDataJson Alert information as JSON
      */
     public static void triggerIncident(String alertDataJson) {
-        if (!Test.isRunningTest()) {
-            System.enqueueJob(new PagerDutyTriggerQueueable(alertDataJson, 'trigger'));
-        }
+        System.enqueueJob(new PagerDutyTriggerQueueable(alertDataJson, 'trigger'));
     }
     
     /**
-     * @description Resolve a PagerDuty incident using Queueable
+     * Resolve a PagerDuty incident using Queueable
      * @param dedupKey The dedup key used when triggering
      */
     public static void resolveIncident(String dedupKey) {
-        if (!Test.isRunningTest()) {
-            System.enqueueJob(new PagerDutyResolveQueueable(dedupKey, 'resolve'));
-        }
+        System.enqueueJob(new PagerDutyResolveQueueable(dedupKey, 'resolve'));
     }
     
     /**
-     * @description Acknowledge a PagerDuty incident using Queueable
+     * Acknowledge a PagerDuty incident using Queueable
      * @param dedupKey The dedup key used when triggering
      */
     public static void acknowledgeIncident(String dedupKey) {
-        if (!Test.isRunningTest()) {
-            System.enqueueJob(new PagerDutyResolveQueueable(dedupKey, 'acknowledge'));
-        }
+        System.enqueueJob(new PagerDutyResolveQueueable(dedupKey, 'acknowledge'));
     }
     
     /**
@@ -141,7 +136,7 @@ public with sharing class PagerDutyIntegration {
     }
     
     /**
-     * @description Trigger incident with severity mapping
+     * Trigger incident with severity mapping
      * @param title Incident title
      * @param description Incident description
      * @param severity Severity (CRITICAL, HIGH, MEDIUM, LOW)
@@ -166,7 +161,7 @@ public with sharing class PagerDutyIntegration {
     }
     
     /**
-     * @description Get PagerDuty incident history (mock - PD API requires different auth)
+     * Get PagerDuty incident history (mock - PD API requires different auth)
      * @return List of recent incidents
      */
     @AuraEnabled(cacheable=true)
@@ -194,7 +189,7 @@ public with sharing class PagerDutyIntegration {
         req.setMethod('POST');
         req.setHeader('Content-Type', 'application/json');
         req.setBody(JSON.serialize(event));
-        req.setTimeout(30000);
+        req.setTimeout(ElaroConstants.CALLOUT_TIMEOUT_MS);
         
         try {
             Http http = new Http();

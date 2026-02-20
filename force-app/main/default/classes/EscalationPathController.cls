@@ -1,14 +1,15 @@
 /**
- * @description Controller for Escalation Path LWC component
+ * Controller for Escalation Path LWC component
  * Provides CRUD operations for Elaro_Escalation_Path__c records
  *
  * @author Elaro Development Team
  * @since 2026-01
+ * @group System Monitoring
  */
 public with sharing class EscalationPathController {
 
     /**
-     * @description Gets all escalation paths ordered by level
+     * Gets all escalation paths ordered by level
      * @return List of path records with related user info
      */
     @AuraEnabled(cacheable=true)
@@ -31,7 +32,7 @@ public with sharing class EscalationPathController {
     }
 
     /**
-     * @description Creates a new escalation path
+     * Creates a new escalation path
      * @param path The path record to create
      * @return The created path ID
      */
@@ -39,44 +40,32 @@ public with sharing class EscalationPathController {
     public static Id createPath(Elaro_Escalation_Path__c path) {
         validatePath(path);
 
-        if (Schema.sObjectType.Elaro_Escalation_Path__c.isCreateable()) {
-            insert path;
-            return path.Id;
-        } else {
-            throw new AuraHandledException('Insufficient permissions to create escalation paths');
-        }
+        insert as user path;
+        return path.Id;
     }
 
     /**
-     * @description Updates an existing escalation path
+     * Updates an existing escalation path
      * @param path The path record to update
      */
     @AuraEnabled
     public static void updatePath(Elaro_Escalation_Path__c path) {
         validatePath(path);
 
-        if (Schema.sObjectType.Elaro_Escalation_Path__c.isUpdateable()) {
-            update path;
-        } else {
-            throw new AuraHandledException('Insufficient permissions to update escalation paths');
-        }
+        update as user path;
     }
 
     /**
-     * @description Deletes an escalation path
+     * Deletes an escalation path
      * @param pathId The ID of the path to delete
      */
     @AuraEnabled
     public static void deletePath(Id pathId) {
-        if (Schema.sObjectType.Elaro_Escalation_Path__c.isDeletable()) {
-            delete [SELECT Id FROM Elaro_Escalation_Path__c WHERE Id = :pathId WITH USER_MODE];
-        } else {
-            throw new AuraHandledException('Insufficient permissions to delete escalation paths');
-        }
+        delete as user [SELECT Id FROM Elaro_Escalation_Path__c WHERE Id = :pathId WITH USER_MODE];
     }
 
     /**
-     * @description Validates path data before save
+     * Validates path data before save
      * @param path The path to validate
      */
     private static void validatePath(Elaro_Escalation_Path__c path) {

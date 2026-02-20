@@ -217,7 +217,10 @@ global without sharing class ElaroScoreCallback {
      * Checks Custom Metadata Type for configured API key hash
      * @param apiKey The API key from request header
      * @return true if valid, false otherwise
-     */
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
+ */
     private static Boolean validateApiKey(String apiKey) {
         if (String.isBlank(apiKey)) {
             return false;
@@ -230,6 +233,7 @@ global without sharing class ElaroScoreCallback {
                 FROM Elaro_API_Config__mdt
                 WHERE Is_Active__c = true
                 AND DeveloperName = 'Default'
+                WITH USER_MODE
                 LIMIT 1
             ];
 
@@ -398,10 +402,11 @@ global without sharing class ElaroScoreCallback {
         try {
             // Get HMAC secret from Custom Metadata (if configured)
             List<Elaro_API_Config__mdt> configs = [
-                SELECT HMAC_Secret__c 
-                FROM Elaro_API_Config__mdt 
-                WHERE Is_Active__c = true 
+                SELECT HMAC_Secret__c
+                FROM Elaro_API_Config__mdt
+                WHERE Is_Active__c = true
                 AND DeveloperName = 'Default'
+                WITH USER_MODE
                 LIMIT 1
             ];
             

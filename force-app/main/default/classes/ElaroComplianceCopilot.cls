@@ -9,6 +9,8 @@
  *
  * @author Elaro
  * @version 1.0
+ * @since v3.1.0 (Spring '26)
+ * @group AI Governance
  */
 public with sharing class ElaroComplianceCopilot {
 
@@ -334,6 +336,7 @@ public with sharing class ElaroComplianceCopilot {
             SELECT DurableId, ApiName, Label, ProcessType, IsActive, Description
             FROM FlowDefinitionView
             WHERE IsActive = true
+            WITH USER_MODE
             LIMIT 20
         ];
 
@@ -445,6 +448,7 @@ public with sharing class ElaroComplianceCopilot {
             FROM PermissionSetAssignment
             WHERE PermissionSet.PermissionsModifyAllData = true
             OR PermissionSet.PermissionsViewAllData = true
+            WITH USER_MODE
             LIMIT 50
         ];
 
@@ -671,6 +675,7 @@ public with sharing class ElaroComplianceCopilot {
             FROM PermissionSetAssignment
             WHERE PermissionSet.PermissionsModifyAllData = true
             OR PermissionSet.PermissionsViewAllData = true
+            WITH USER_MODE
             LIMIT 20
         ];
 

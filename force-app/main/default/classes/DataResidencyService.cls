@@ -1,8 +1,9 @@
 /**
- * @description Data residency service for regional compliance
+ * Data residency service for regional compliance
  * Supports US, EU, APAC data location validation
- * @group Enterprise Features
+ * @group Compliance Framework
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class DataResidencyService {
     
@@ -27,7 +28,7 @@ public with sharing class DataResidencyService {
     };
     
     /**
-     * @description Get data residency configuration for the org
+     * Get data residency configuration for the org
      * @return ResidencyConfig with current settings
      */
     @AuraEnabled(cacheable=true)
@@ -48,7 +49,7 @@ public with sharing class DataResidencyService {
     }
     
     /**
-     * @description Validate data location for a record
+     * Validate data location for a record
      * @param recordId Record ID to validate
      * @param targetRegion Target region for the data
      * @return ValidationResult with compliance status
@@ -86,7 +87,7 @@ public with sharing class DataResidencyService {
     }
     
     /**
-     * @description Get data location summary for audit
+     * Get data location summary for audit
      * @return LocationSummary with data distribution info
      */
     @AuraEnabled(cacheable=true)
@@ -110,6 +111,7 @@ public with sharing class DataResidencyService {
             SELECT Id, Evidence_Type__c, Description__c
             FROM Elaro_Evidence_Item__c
             WHERE Description__c LIKE '%international%' OR Description__c LIKE '%cross-border%'
+            WITH USER_MODE
             LIMIT 100
         ];
         
@@ -127,7 +129,7 @@ public with sharing class DataResidencyService {
     }
     
     /**
-     * @description Check GDPR compliance for EU data
+     * Check GDPR compliance for EU data
      * @return GDPRComplianceStatus
      */
     @AuraEnabled(cacheable=true)
@@ -144,9 +146,10 @@ public with sharing class DataResidencyService {
         
         // Check for actual EU user data
         Integer euUsers = [
-            SELECT COUNT() FROM User 
+            SELECT COUNT() FROM User
             WHERE Country IN ('Germany', 'France', 'United Kingdom', 'Ireland', 'Netherlands')
             AND IsActive = true
+            WITH USER_MODE
         ];
         
         status.euDataSubjectsCount = euUsers;

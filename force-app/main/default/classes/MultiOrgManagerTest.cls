@@ -1,17 +1,20 @@
 /**
- * @description Unit tests for MultiOrgManager
- * Tests org registration, status retrieval, policy sync, and aggregate metrics
- * @group Tests
+ * Unit tests for MultiOrgManager covering org registration, status retrieval,
+ * policy sync, aggregate metrics, and sharing enforcement.
+ *
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Tests
+ * @see MultiOrgManager
  */
-@isTest
+@IsTest
 private class MultiOrgManagerTest {
-    
-    @testSetup
+
+    @TestSetup
     static void setupTestData() {
         // Create test connected orgs
         List<Elaro_Connected_Org__c> orgs = new List<Elaro_Connected_Org__c>();
-        
+
         for (Integer i = 0; i < 5; i++) {
             orgs.add(new Elaro_Connected_Org__c(
                 Name = 'Test Org ' + i,
@@ -26,8 +29,8 @@ private class MultiOrgManagerTest {
                 Alert_Count__c = 5 + i
             ));
         }
-        insert orgs;
-        
+        insert as user orgs;
+
         // Create audit package for evidence items
         Elaro_Audit_Package__c pkg = ElaroTestDataFactory.createAuditPackage('SOC2');
         ElaroTestDataFactory.createEvidenceItems(pkg.Id, 10);
@@ -52,11 +55,12 @@ private class MultiOrgManagerTest {
         Test.stopTest();
         
         Assert.areNotEqual(null, orgId, 'Should return org ID');
-        
+
         Elaro_Connected_Org__c org = [
             SELECT Id, Name, Org_Id__c, Instance_URL__c, Is_Active__c, Connection_Status__c
             FROM Elaro_Connected_Org__c
             WHERE Id = :orgId
+            WITH USER_MODE
         ];
         
         Assert.areEqual('New Test Org', org.Name, 'Org name should match');
@@ -172,11 +176,12 @@ private class MultiOrgManagerTest {
         // Deactivate all orgs
         List<Elaro_Connected_Org__c> orgs = [
             SELECT Id FROM Elaro_Connected_Org__c
+            WITH USER_MODE
         ];
         for (Elaro_Connected_Org__c org : orgs) {
             org.Is_Active__c = false;
         }
-        update orgs;
+        update as user orgs;
         
         List<String> policyIds = new List<String>{'Policy1'};
         
@@ -194,19 +199,19 @@ private class MultiOrgManagerTest {
     // removeOrg Tests
     // ═══════════════════════════════════════════════════════════════
     
-    @isTest
+    @IsTest
     static void testRemoveOrg() {
         Elaro_Connected_Org__c org = [
-            SELECT Id FROM Elaro_Connected_Org__c LIMIT 1
+            SELECT Id FROM Elaro_Connected_Org__c WITH USER_MODE LIMIT 1
         ];
-        
+
         Test.startTest();
         MultiOrgManager.removeOrg(org.Id);
         Test.stopTest();
-        
+
         // Verify org was deleted
         List<Elaro_Connected_Org__c> remainingOrgs = [
-            SELECT Id FROM Elaro_Connected_Org__c WHERE Id = :org.Id
+            SELECT Id FROM Elaro_Connected_Org__c WHERE Id = :org.Id WITH USER_MODE
         ];
         
         Assert.areEqual(0, remainingOrgs.size(), 'Org should be deleted');
@@ -288,6 +293,7 @@ private class MultiOrgManagerTest {
         List<Elaro_Connected_Org__c> createdOrgs = [
             SELECT Id FROM Elaro_Connected_Org__c
             WHERE Name LIKE 'Bulk Org%'
+            WITH USER_MODE
         ];
         
         Assert.areEqual(10, createdOrgs.size(), 'Should have 10 bulk orgs');

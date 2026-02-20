@@ -1,8 +1,9 @@
 /**
- * @description PDF and export generation service for audit packages
+ * PDF and export generation service for audit packages
  * Generates PDF reports, CSV exports, and JSON exports with integrity hashing
- * @group Export &amp; Delivery
+ * @group Integration
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class ElaroPDFExporter {
     
@@ -11,7 +12,7 @@ public with sharing class ElaroPDFExporter {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Generate PDF for audit package
+     * Generate PDF for audit package
      * @param packageId The audit package ID
      * @return ContentVersion ID of the generated PDF
      * @throws AuraHandledException if generation fails
@@ -45,24 +46,25 @@ public with sharing class ElaroPDFExporter {
                 VersionData = pdfContent,
                 Description = 'Generated audit package PDF. SHA-256: ' + documentHash
             );
-            insert cv;
-            
+            insert as user cv;
+
             // Link to the audit package record
             linkContentToRecord(cv.Id, packageId);
-            
+
             // Update package with generation timestamp
             pkg.Last_Generated__c = Datetime.now();
-            update pkg;
+            update as user pkg;
             
             return cv.Id;
             
         } catch (Exception e) {
-            throw new AuraHandledException('Error generating PDF: ' + e.getMessage());
+            ElaroLogger.error('ElaroPDFExporter.generateAuditPackagePDF', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to generate the PDF. Please verify you have the required permissions and try again.');
         }
     }
     
     /**
-     * @description Generate executive summary PDF
+     * Generate executive summary PDF
      * @param packageId The audit package ID
      * @return ContentVersion ID of the generated PDF
      */
@@ -91,19 +93,20 @@ public with sharing class ElaroPDFExporter {
                 VersionData = pdfContent,
                 Description = 'Executive summary PDF. SHA-256: ' + documentHash
             );
-            insert cv;
+            insert as user cv;
             
             linkContentToRecord(cv.Id, packageId);
             
             return cv.Id;
             
         } catch (Exception e) {
-            throw new AuraHandledException('Error generating executive summary: ' + e.getMessage());
+            ElaroLogger.error('ElaroPDFExporter.generateExecutiveSummary', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to generate the executive summary. Please verify you have the required permissions and try again.');
         }
     }
     
     /**
-     * @description Generate detailed evidence report
+     * Generate detailed evidence report
      * @param packageId The audit package ID
      * @param controlIds List of control IDs to filter (optional)
      * @return ContentVersion ID of the generated PDF
@@ -137,19 +140,20 @@ public with sharing class ElaroPDFExporter {
                 VersionData = pdfContent,
                 Description = 'Detailed evidence report PDF. SHA-256: ' + documentHash
             );
-            insert cv;
+            insert as user cv;
             
             linkContentToRecord(cv.Id, packageId);
             
             return cv.Id;
             
         } catch (Exception e) {
-            throw new AuraHandledException('Error generating evidence report: ' + e.getMessage());
+            ElaroLogger.error('ElaroPDFExporter.generateEvidenceReport', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to generate the evidence report. Please verify you have the required permissions and try again.');
         }
     }
     
     /**
-     * @description Batch generate PDFs for multiple packages
+     * Batch generate PDFs for multiple packages
      * @param packageIds List of audit package IDs
      * @return List of ContentVersion IDs
      */
@@ -169,7 +173,7 @@ public with sharing class ElaroPDFExporter {
     }
     
     /**
-     * @description Generate CSV export of audit package evidence
+     * Generate CSV export of audit package evidence
      * @param packageId The audit package ID
      * @return CSV content as string
      */
@@ -180,13 +184,14 @@ public with sharing class ElaroPDFExporter {
         try {
             // Query evidence items
             List&lt;Elaro_Evidence_Item__c&gt; evidence = [
-                SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, Description__c, 
+                SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, Description__c,
                        Status__c, CreatedDate
                 FROM Elaro_Evidence_Item__c
                 WHERE Audit_Package__c = :packageId
+                WITH USER_MODE
                 ORDER BY Evidence_Date__c DESC
             ];
-            
+
             // Build CSV content
             String csv = 'Evidence ID,Name,Type,Date,Description,Status,Created Date\n';
             
@@ -203,12 +208,13 @@ public with sharing class ElaroPDFExporter {
             return csv;
             
         } catch (Exception e) {
-            throw new AuraHandledException('Error generating CSV: ' + e.getMessage());
+            ElaroLogger.error('ElaroPDFExporter.generateCSVExport', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to generate the CSV export. Please verify you have the required permissions and try again.');
         }
     }
     
     /**
-     * @description Generate JSON export of audit package
+     * Generate JSON export of audit package
      * @param packageId The audit package ID
      * @return JSON content as string
      */
@@ -222,13 +228,14 @@ public with sharing class ElaroPDFExporter {
             
             // Query evidence items
             List&lt;Elaro_Evidence_Item__c&gt; evidence = [
-                SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, Description__c, 
+                SELECT Id, Name, Evidence_Type__c, Evidence_Date__c, Description__c,
                        Status__c, CreatedDate
                 FROM Elaro_Evidence_Item__c
                 WHERE Audit_Package__c = :packageId
+                WITH USER_MODE
                 ORDER BY Evidence_Date__c DESC
             ];
-            
+
             // Build export object
             Map&lt;String, Object&gt; exportData = new Map&lt;String, Object&gt;{
                 'exportDate' =&gt; Datetime.now(),
@@ -266,12 +273,13 @@ public with sharing class ElaroPDFExporter {
             return JSON.serializePretty(exportData);
             
         } catch (Exception e) {
-            throw new AuraHandledException('Error generating JSON: ' + e.getMessage());
+            ElaroLogger.error('ElaroPDFExporter.generateJSONExport', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to generate the JSON export. Please verify you have the required permissions and try again.');
         }
     }
     
     /**
-     * @description Save CSV export as ContentVersion
+     * Save CSV export as ContentVersion
      * @param packageId The audit package ID
      * @return ContentVersion ID
      */
@@ -286,7 +294,7 @@ public with sharing class ElaroPDFExporter {
             VersionData = Blob.valueOf(csvContent),
             Description = 'CSV export of audit evidence'
         );
-        insert cv;
+        insert as user cv;
         
         linkContentToRecord(cv.Id, packageId);
         
@@ -294,7 +302,7 @@ public with sharing class ElaroPDFExporter {
     }
     
     /**
-     * @description Save JSON export as ContentVersion
+     * Save JSON export as ContentVersion
      * @param packageId The audit package ID
      * @return ContentVersion ID
      */
@@ -309,7 +317,7 @@ public with sharing class ElaroPDFExporter {
             VersionData = Blob.valueOf(jsonContent),
             Description = 'JSON export of audit package'
         );
-        insert cv;
+        insert as user cv;
         
         linkContentToRecord(cv.Id, packageId);
         
@@ -321,7 +329,7 @@ public with sharing class ElaroPDFExporter {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Validate package ID
+     * Validate package ID
      * @param packageId The ID to validate
      */
     private static void validatePackageId(String packageId) {
@@ -331,7 +339,7 @@ public with sharing class ElaroPDFExporter {
     }
     
     /**
-     * @description Query audit package with error handling
+     * Query audit package with error handling
      * @param packageId The package ID
      * @return Elaro_Audit_Package__c record
      */
@@ -341,6 +349,7 @@ public with sharing class ElaroPDFExporter {
                    Audit_Period_Start__c, Audit_Period_End__c, Last_Generated__c
             FROM Elaro_Audit_Package__c
             WHERE Id = :packageId
+            WITH USER_MODE
             LIMIT 1
         ];
         
@@ -352,7 +361,7 @@ public with sharing class ElaroPDFExporter {
     }
     
     /**
-     * @description Generate SHA-256 hash for document integrity
+     * Generate SHA-256 hash for document integrity
      * @param content The content to hash
      * @return Hex-encoded hash string
      */
@@ -362,18 +371,19 @@ public with sharing class ElaroPDFExporter {
     }
     
     /**
-     * @description Link ContentVersion to a record
+     * Link ContentVersion to a record
      * @param contentVersionId The ContentVersion ID
      * @param recordId The record to link to
      */
     private static void linkContentToRecord(Id contentVersionId, Id recordId) {
         // Query the ContentDocumentId
         ContentVersion cv = [
-            SELECT ContentDocumentId 
-            FROM ContentVersion 
+            SELECT ContentDocumentId
+            FROM ContentVersion
             WHERE Id = :contentVersionId
+            WITH USER_MODE
         ];
-        
+
         // Create ContentDocumentLink
         ContentDocumentLink cdl = new ContentDocumentLink(
             ContentDocumentId = cv.ContentDocumentId,
@@ -381,11 +391,11 @@ public with sharing class ElaroPDFExporter {
             ShareType = 'V',
             Visibility = 'AllUsers'
         );
-        insert cdl;
+        insert as user cdl;
     }
     
     /**
-     * @description Escape a field value for CSV
+     * Escape a field value for CSV
      * @param value The value to escape
      * @return Escaped value
      */

@@ -1,7 +1,8 @@
 /**
- * @description Schedulable class for recurring audit package delivery
- * @group Export &amp; Delivery
+ * Schedulable class for recurring audit package delivery
+ * @group Integration
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 global with sharing class ElaroScheduledDelivery implements Schedulable {
     
@@ -9,7 +10,7 @@ global with sharing class ElaroScheduledDelivery implements Schedulable {
     private List&lt;String&gt; recipientEmails;
     
     /**
-     * @description Constructor for scheduled delivery
+     * Constructor for scheduled delivery
      * @param packageId The audit package ID
      * @param recipientEmails List of recipient email addresses
      */
@@ -19,7 +20,7 @@ global with sharing class ElaroScheduledDelivery implements Schedulable {
     }
     
     /**
-     * @description Execute the scheduled job
+     * Execute the scheduled job
      * @param sc SchedulableContext
      */
     global void execute(SchedulableContext sc) {
@@ -41,7 +42,7 @@ global with sharing class ElaroScheduledDelivery implements Schedulable {
     }
     
     /**
-     * @description Send error notification to admins
+     * Send error notification to admins
      * @param errorMessage The error message
      */
     private void sendErrorNotification(String errorMessage) {
@@ -66,7 +67,7 @@ global with sharing class ElaroScheduledDelivery implements Schedulable {
     }
     
     /**
-     * @description Schedule a delivery job
+     * Schedule a delivery job
      * @param packageId The audit package ID
      * @param recipientEmails List of recipient email addresses
      * @param cronExpression The cron expression
@@ -79,7 +80,7 @@ global with sharing class ElaroScheduledDelivery implements Schedulable {
     }
     
     /**
-     * @description Schedule weekly delivery (every Monday at 8 AM)
+     * Schedule weekly delivery (every Monday at 8 AM)
      * @param packageId The audit package ID
      * @param recipientEmails List of recipient email addresses
      * @return Job ID
@@ -89,7 +90,7 @@ global with sharing class ElaroScheduledDelivery implements Schedulable {
     }
     
     /**
-     * @description Schedule monthly delivery (1st of each month at 8 AM)
+     * Schedule monthly delivery (1st of each month at 8 AM)
      * @param packageId The audit package ID
      * @param recipientEmails List of recipient email addresses
      * @return Job ID
@@ -99,7 +100,7 @@ global with sharing class ElaroScheduledDelivery implements Schedulable {
     }
     
     /**
-     * @description Schedule quarterly delivery (1st of Jan, Apr, Jul, Oct at 8 AM)
+     * Schedule quarterly delivery (1st of Jan, Apr, Jul, Oct at 8 AM)
      * @param packageId The audit package ID
      * @param recipientEmails List of recipient email addresses
      * @return Job ID

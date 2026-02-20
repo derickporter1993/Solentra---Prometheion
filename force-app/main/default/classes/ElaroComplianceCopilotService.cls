@@ -1,8 +1,9 @@
 /**
- * @description AI-powered compliance analysis service using Claude API
+ * AI-powered compliance analysis service using Claude API
  * Provides event pattern analysis, audit summaries, risk predictions, and event categorization
- * @group AI Integration
+ * @group AI Governance
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class ElaroComplianceCopilotService {
     
@@ -31,7 +32,7 @@ public with sharing class ElaroComplianceCopilotService {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Analyze event patterns and provide recommendations
+     * Analyze event patterns and provide recommendations
      * @param eventIds List of evidence item IDs to analyze
      * @return ComplianceRecommendation with analysis results
      */
@@ -86,7 +87,7 @@ public with sharing class ElaroComplianceCopilotService {
     }
     
     /**
-     * @description Generate natural language audit summary
+     * Generate natural language audit summary
      * @param packageId The audit package ID
      * @return Human-readable audit summary
      */
@@ -146,12 +147,12 @@ public with sharing class ElaroComplianceCopilotService {
 
         } catch (Exception e) {
             ElaroLogger.error('Error generating summary: ' + e.getMessage(), e);
-            throw new AuraHandledException('Error generating summary: ' + e.getMessage());
+            throw new AuraHandledException('Unable to generate the audit summary. Please try again or contact your administrator.');
         }
     }
     
     /**
-     * @description Predict compliance risks based on historical patterns
+     * Predict compliance risks based on historical patterns
      * @param framework The compliance framework
      * @return List of risk predictions
      */
@@ -174,6 +175,7 @@ public with sharing class ElaroComplianceCopilotService {
                 SELECT Evidence_Type__c, Evidence_Date__c, Status__c
                 FROM Elaro_Evidence_Item__c
                 WHERE CreatedDate = LAST_N_DAYS:90
+                WITH USER_MODE
                 ORDER BY Evidence_Date__c DESC
                 LIMIT 500
             ];
@@ -199,7 +201,7 @@ public with sharing class ElaroComplianceCopilotService {
     }
     
     /**
-     * @description Auto-categorize events to framework controls
+     * Auto-categorize events to framework controls
      * @param eventIds List of evidence item IDs
      * @param framework The target compliance framework
      * @return Map of event ID to control ID
@@ -218,6 +220,7 @@ public with sharing class ElaroComplianceCopilotService {
                 SELECT Id, Evidence_Type__c, Description__c
                 FROM Elaro_Evidence_Item__c
                 WHERE Id IN :eventIds
+                WITH USER_MODE
                 LIMIT 50
             ];
             
@@ -242,7 +245,7 @@ public with sharing class ElaroComplianceCopilotService {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Call Claude API via Named Credential
+     * Call Claude API via Named Credential
      * @param userPrompt The user prompt
      * @return API response body
      */
@@ -544,7 +547,7 @@ public with sharing class ElaroComplianceCopilotService {
     // ═══════════════════════════════════════════════════════════════
     
     /**
-     * @description Compliance recommendation result
+     * Compliance recommendation result
      */
     public class ComplianceRecommendation {
         @AuraEnabled public String recommendation;
@@ -555,7 +558,7 @@ public with sharing class ElaroComplianceCopilotService {
     }
     
     /**
-     * @description Risk prediction result
+     * Risk prediction result
      */
     public class RiskPrediction {
         @AuraEnabled public String controlId;

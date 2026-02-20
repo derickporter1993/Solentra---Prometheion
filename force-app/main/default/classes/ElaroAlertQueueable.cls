@@ -1,7 +1,8 @@
 /**
- * @description Queueable class for processing alerts asynchronously
- * @group Automation & Alerting
+ * Queueable class for processing alerts asynchronously
+ * @group System Monitoring
  * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
  */
 public with sharing class ElaroAlertQueueable implements Queueable, Database.AllowsCallouts {
     

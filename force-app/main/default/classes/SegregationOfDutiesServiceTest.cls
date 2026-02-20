@@ -6,7 +6,7 @@
  * @author Elaro
  * @version 1.0
  */
-@IsTest
+@IsTest(testFor=SegregationOfDutiesService.class)
 private class SegregationOfDutiesServiceTest {
     
     @TestSetup
@@ -47,7 +47,7 @@ private class SegregationOfDutiesServiceTest {
             SegregationOfDutiesService.detectViolations(null);
             Assert.fail( 'Should have thrown IllegalArgumentException');
         } catch (IllegalArgumentException e) {
-            Assert.isTrue(true, 'Expected exception for null user ID');
+            Assert.isNotNull(e.getMessage(), 'Expected exception for null user ID should have a message');
         }
         Test.stopTest();
     }

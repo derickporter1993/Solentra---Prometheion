@@ -6,6 +6,8 @@
  *
  * @author Elaro
  * @version 1.0
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 public with sharing class SOC2AccessReviewService extends ComplianceServiceBase implements IAccessControlService {
 
@@ -56,10 +58,6 @@ public with sharing class SOC2AccessReviewService extends ComplianceServiceBase 
      * Initiate an access review cycle
      */
     public Id initiateAccessReview(String reviewType) {
-        if (!Schema.sObjectType.Access_Review__c.isCreateable()) {
-            throw new ComplianceServiceException('Insufficient permissions to create Access Review records');
-        }
-
         // Calculate due date based on review type
         Date dueDate;
         if (reviewType == 'QUARTERLY') {
@@ -79,21 +77,42 @@ public with sharing class SOC2AccessReviewService extends ComplianceServiceBase 
             LIMIT 1000
         ];
 
+        // Bulk-query all permission set assignments before the loop to avoid SOQL-in-loop
+        Set<Id> userIds = new Set<Id>();
+        for (User u : usersToReview) {
+            userIds.add(u.Id);
+        }
+
+        Map<Id, List<String>> permSetsByUser = new Map<Id, List<String>>();
+        for (PermissionSetAssignment psa : [
+            SELECT AssigneeId, PermissionSet.Name
+            FROM PermissionSetAssignment
+            WHERE AssigneeId IN :userIds
+            AND PermissionSet.IsOwnedByProfile = false
+            WITH USER_MODE
+        ]) {
+            if (!permSetsByUser.containsKey(psa.AssigneeId)) {
+                permSetsByUser.put(psa.AssigneeId, new List<String>());
+            }
+            permSetsByUser.get(psa.AssigneeId).add(psa.PermissionSet.Name);
+        }
+
         List<Access_Review__c> reviews = new List<Access_Review__c>();
         for (User u : usersToReview) {
+            List<String> userPermSets = permSetsByUser.get(u.Id) ?? new List<String>();
             Access_Review__c review = new Access_Review__c(
                 Review_Type__c = reviewType,
                 User__c = u.Id,
                 Status__c = 'PENDING',
                 Due_Date__c = dueDate,
                 Framework__c = 'SOC2',
-                Permission_Sets__c = JSON.serialize(getUserPermissionSets(u.Id))
+                Permission_Sets__c = JSON.serialize(userPermSets)
             );
             reviews.add(review);
         }
 
         if (!reviews.isEmpty()) {
-            insert reviews;
+            insert as user reviews;
             logAuditEntry('ACCESS_REVIEW_INITIATED', 'Initiated ' + reviewType + ' access review for ' + reviews.size() + ' users', reviews[0].Id);
             return reviews[0].Id;
         }
@@ -253,7 +272,7 @@ public with sharing class SOC2AccessReviewService extends ComplianceServiceBase 
                         psa.AssigneeId);
                 }
 
-                delete toRevoke;
+                delete as user toRevoke;
                 result.permissionsRevoked = toRevoke.size();
             }
 

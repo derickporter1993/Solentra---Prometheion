@@ -1,8 +1,8 @@
 /**
- * @description User factory for Elaro security testing
+ * User factory for Elaro security testing
  * Creates test users with various permission sets for security and sharing tests
  *
- * @group Testing
+ * @group Utilities
  * @author Elaro Team
  * @version 3.0
  *
@@ -24,10 +24,11 @@ public class ElaroTestUserFactory {
     private static Integer userCounter = 0;
 
     /**
-     * @description Create Elaro Admin user
+     * Create Elaro Admin user
      * User with full Elaro_Admin permission set
      * @return User with Elaro_Admin permission set assigned
-     */
+ * @since v3.1.0 (Spring '26)
+ */
     public static User createElaroAdmin() {
         User admin = createBaseUser('Admin');
         assignPermissionSet(admin.Id, 'Elaro_Admin');
@@ -35,7 +36,7 @@ public class ElaroTestUserFactory {
     }
 
     /**
-     * @description Create Elaro Auditor user
+     * Create Elaro Auditor user
      * User with Elaro_Auditor permission set (read-only)
      * @return User with Elaro_Auditor permission set assigned
      */
@@ -46,7 +47,7 @@ public class ElaroTestUserFactory {
     }
 
     /**
-     * @description Create Elaro standard user
+     * Create Elaro standard user
      * User with Elaro_User permission set
      * @return User with Elaro_User permission set assigned
      */
@@ -57,7 +58,7 @@ public class ElaroTestUserFactory {
     }
 
     /**
-     * @description Create Elaro AI User
+     * Create Elaro AI User
      * User with Elaro_AI_User permission set for AI features
      * @return User with Elaro_AI_User permission set assigned
      */
@@ -68,7 +69,7 @@ public class ElaroTestUserFactory {
     }
 
     /**
-     * @description Create standard user with NO Elaro permissions
+     * Create standard user with NO Elaro permissions
      * For testing permission denial scenarios
      * @return User with no Elaro permission sets
      */
@@ -77,7 +78,7 @@ public class ElaroTestUserFactory {
     }
 
     /**
-     * @description Create base user with Standard User profile
+     * Create base user with Standard User profile
      * @param userType Suffix for username (Admin, Auditor, etc.)
      * @return Inserted User record
      */
@@ -98,12 +99,12 @@ public class ElaroTestUserFactory {
             ProfileId = standardProfile.Id
         );
 
-        insert u;
+        insert as user u;
         return u;
     }
 
     /**
-     * @description Assign permission set to user
+     * Assign permission set to user
      * @param userId User ID to assign permission set to
      * @param permissionSetName API name of permission set
      */
@@ -115,7 +116,7 @@ public class ElaroTestUserFactory {
                 LIMIT 1
             ];
 
-            insert new PermissionSetAssignment(
+            insert as user new PermissionSetAssignment(
                 AssigneeId = userId,
                 PermissionSetId = ps.Id
             );
@@ -125,7 +126,7 @@ public class ElaroTestUserFactory {
     }
 
     /**
-     * @description Create multiple users with same permission set
+     * Create multiple users with same permission set
      * Useful for sharing tests with multiple users
      * @param count Number of users to create
      * @param permissionSetName Permission set to assign
@@ -146,7 +147,7 @@ public class ElaroTestUserFactory {
     }
 
     /**
-     * @description Create user hierarchy for sharing tests
+     * Create user hierarchy for sharing tests
      * Creates users in manager-subordinate relationship
      * @param levels Number of hierarchy levels
      * @return Map of level to user list
@@ -160,7 +161,7 @@ public class ElaroTestUserFactory {
 
             if (previousManager != null) {
                 manager.ManagerId = previousManager.Id;
-                update manager;
+                update as user manager;
             }
 
             hierarchy.put(level, new List<User>{manager});
@@ -171,7 +172,7 @@ public class ElaroTestUserFactory {
     }
 
     /**
-     * @description Create users for permission set comparison testing
+     * Create users for permission set comparison testing
      * Returns map of permission set name to user with that permission
      * @return Map of permission set name to user
      */
@@ -188,7 +189,7 @@ public class ElaroTestUserFactory {
     }
 
     /**
-     * @description Check if user has specific permission set
+     * Check if user has specific permission set
      * @param userId User ID to check
      * @param permissionSetName Permission set name to check for
      * @return True if user has the permission set
@@ -206,7 +207,7 @@ public class ElaroTestUserFactory {
     }
 
     /**
-     * @description Get all permission sets assigned to user
+     * Get all permission sets assigned to user
      * @param userId User ID
      * @return List of permission set names
      */

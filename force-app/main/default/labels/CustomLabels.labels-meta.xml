@@ -4,98 +4,98 @@
     <labels>
         <fullName>Copilot_Welcome</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Copilot Welcome Message</shortDescription>
         <value>Welcome to Elaro Copilot</value>
     </labels>
     <labels>
         <fullName>Copilot_Welcome_Subtitle</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Copilot Welcome Subtitle</shortDescription>
         <value>Your AI-powered compliance assistant. Ask me anything about your compliance posture.</value>
     </labels>
     <labels>
         <fullName>Copilot_Error_General</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Copilot General Error</shortDescription>
         <value>I encountered an error: {0}. Please try again or contact your administrator.</value>
     </labels>
     <labels>
         <fullName>Copilot_No_Recent_Changes</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>No Recent Changes Message</shortDescription>
         <value>Great news! I found no high-risk changes in the last 7 days that would impact your compliance score.</value>
     </labels>
     <labels>
         <fullName>Copilot_Score_Drop_Reason</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Score Drop Reason</shortDescription>
         <value>I found {0} high-risk change(s) that may have impacted your score:</value>
     </labels>
     <labels>
         <fullName>Copilot_No_Risky_Flows</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>No Risky Flows Message</shortDescription>
         <value>Excellent! No high-risk Flows detected that access sensitive data.</value>
     </labels>
     <labels>
         <fullName>Copilot_Risky_Flows_Found</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Risky Flows Found</shortDescription>
         <value>I found {0} Flow(s) with elevated risk scores:</value>
     </labels>
     <labels>
         <fullName>Copilot_Evidence_Summary</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Evidence Summary Title</shortDescription>
         <value>{0} Compliance Evidence Summary</value>
     </labels>
     <labels>
         <fullName>Copilot_No_Violations</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>No Violations Message</shortDescription>
         <value>No active policy violations found{0}!</value>
     </labels>
     <labels>
         <fullName>Copilot_Violations_Found</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Violations Found</shortDescription>
         <value>Found {0} active policy violation(s):</value>
     </labels>
     <labels>
         <fullName>Copilot_No_Elevated_Users</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>No Elevated Users</shortDescription>
         <value>No users found with Modify All Data or View All Data permissions.</value>
     </labels>
     <labels>
         <fullName>Copilot_Elevated_Users_Found</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Elevated Users Found</shortDescription>
         <value>{0} user(s) have elevated data access permissions:</value>
     </labels>
     <labels>
         <fullName>Copilot_Framework_Status</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Framework Status Title</shortDescription>
         <value>{0} Compliance Status</value>
     </labels>
     <labels>
         <fullName>Copilot_General_Help</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>General Help Message</shortDescription>
         <value>I can help you with compliance questions. Try asking:</value>
     </labels>
@@ -104,84 +104,84 @@
     <labels>
         <fullName>Elaro_Quick_Commands</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Quick Commands Title</shortDescription>
         <value>Quick Commands</value>
     </labels>
     <labels>
         <fullName>Elaro_Ask_Question</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Ask Question Label</shortDescription>
         <value>Ask a question</value>
     </labels>
     <labels>
         <fullName>Elaro_Input_Placeholder</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Input Placeholder</shortDescription>
         <value>Ask about compliance, violations, or generate evidence...</value>
     </labels>
     <labels>
         <fullName>Elaro_Send</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Send Button</shortDescription>
         <value>Send</value>
     </labels>
     <labels>
         <fullName>Elaro_Clear_Chat</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Clear Chat Button</shortDescription>
         <value>Clear Chat</value>
     </labels>
     <labels>
         <fullName>Elaro_Evidence</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Evidence Section Title</shortDescription>
         <value>Evidence</value>
     </labels>
     <labels>
         <fullName>Elaro_Risk_Score</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Risk Score Label</shortDescription>
         <value>Risk: {0}/10</value>
     </labels>
     <labels>
         <fullName>Elaro_Error_Title</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Error Toast Title</shortDescription>
         <value>Error</value>
     </labels>
     <labels>
         <fullName>Elaro_Info_Title</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Info Toast Title</shortDescription>
         <value>Information</value>
     </labels>
     <labels>
         <fullName>Elaro_Auto_Fix_Coming</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Auto Fix Coming Soon</shortDescription>
         <value>Auto-fix functionality will be available in the next release.</value>
     </labels>
     <labels>
         <fullName>Elaro_Export_Coming</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Export Coming Soon</shortDescription>
         <value>Export functionality will be available in the next release.</value>
     </labels>
     <labels>
         <fullName>Elaro_Processing_Error</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Processing Error Message</shortDescription>
         <value>I encountered an error processing your request. Please try again.</value>
     </labels>
@@ -190,70 +190,70 @@
     <labels>
         <fullName>Scorecard_Subject</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Weekly Scorecard Subject</shortDescription>
         <value>Weekly Compliance Scorecard</value>
     </labels>
     <labels>
         <fullName>Scorecard_Title</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Scorecard Title</shortDescription>
         <value>Elaro Weekly Compliance Report</value>
     </labels>
     <labels>
         <fullName>Scorecard_Overall_Score</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Overall Score Label</shortDescription>
         <value>Overall Score</value>
     </labels>
     <labels>
         <fullName>Scorecard_Framework_Scores</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Framework Scores Label</shortDescription>
         <value>Framework Scores</value>
     </labels>
     <labels>
         <fullName>Scorecard_Error</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Scorecard Error</shortDescription>
         <value>Error generating weekly scorecard: {0}</value>
     </labels>
     <labels>
         <fullName>Scorecard_Weekly_Title</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Weekly Scorecard Title</shortDescription>
         <value>Weekly Compliance Scorecard</value>
     </labels>
     <labels>
         <fullName>Scorecard_Score_Breakdown</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Score Breakdown Title</shortDescription>
         <value>Score Breakdown</value>
     </labels>
     <labels>
         <fullName>Scorecard_Top_Risks</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Top Risks Title</shortDescription>
         <value>Top {0} Risks Requiring Attention</value>
     </labels>
     <labels>
         <fullName>Scorecard_View_Report</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>View Report Button</shortDescription>
         <value>View Full Report</value>
     </labels>
     <labels>
         <fullName>Scorecard_Scheduled</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Scheduled Confirmation</shortDescription>
         <value>Weekly scorecard scheduled for {0}. Job name: {1}</value>
     </labels>
@@ -261,140 +261,140 @@
     <labels>
         <fullName>CC_DashboardTitle</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Command Center Dashboard Title</shortDescription>
         <value>Compliance Command Center</value>
     </labels>
     <labels>
         <fullName>CC_OverviewTitle</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Compliance Overview Section Title</shortDescription>
         <value>Compliance Overview</value>
     </labels>
     <labels>
         <fullName>CC_FrameworkSummary</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Framework Summary Section Title</shortDescription>
         <value>Framework Summary</value>
     </labels>
     <labels>
         <fullName>CC_PrioritizedActions</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Prioritized Actions Section Title</shortDescription>
         <value>Prioritized Actions</value>
     </labels>
     <labels>
         <fullName>CC_RecentGaps</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Recent Gaps Section Title</shortDescription>
         <value>Recent Compliance Gaps</value>
     </labels>
     <labels>
         <fullName>CC_ActivityFeed</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Activity Feed Section Title</shortDescription>
         <value>Recent Activity</value>
     </labels>
     <labels>
         <fullName>CC_NoGaps</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>No Gaps Empty State</shortDescription>
         <value>No open compliance gaps. Great work!</value>
     </labels>
     <labels>
         <fullName>CC_NoActions</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>No Actions Empty State</shortDescription>
         <value>No compliance actions configured.</value>
     </labels>
     <labels>
         <fullName>CC_NoActivity</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>No Activity Empty State</shortDescription>
         <value>No recent compliance activity.</value>
     </labels>
     <labels>
         <fullName>CC_Loading</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Command Center Loading</shortDescription>
         <value>Loading compliance data...</value>
     </labels>
     <labels>
         <fullName>CC_ErrorLoading</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Command Center Error Loading</shortDescription>
         <value>Unable to load compliance data. Please try again.</value>
     </labels>
     <labels>
         <fullName>CC_GoToSetup</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Go to Setup Button Label</shortDescription>
         <value>Go to Setup</value>
     </labels>
     <labels>
         <fullName>CC_ViewDetails</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>View Details Link</shortDescription>
         <value>View Details</value>
     </labels>
     <labels>
         <fullName>CC_OverallScore</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Overall Compliance Score</shortDescription>
         <value>Overall Compliance Score</value>
     </labels>
     <labels>
         <fullName>CC_OpenGaps</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Open Gaps Metric Label</shortDescription>
         <value>Open Gaps</value>
     </labels>
     <labels>
         <fullName>CC_CriticalGaps</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Critical Gaps Metric Label</shortDescription>
         <value>Critical</value>
     </labels>
     <labels>
         <fullName>CC_Remediated</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Remediated Metric Label</shortDescription>
         <value>Remediated</value>
     </labels>
     <labels>
         <fullName>CC_FilterAll</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Filter All Frameworks</shortDescription>
         <value>All Frameworks</value>
     </labels>
     <labels>
         <fullName>CC_RemediationSteps</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Remediation Steps</shortDescription>
         <value>Remediation Steps</value>
     </labels>
     <labels>
         <fullName>CC_MarkRemediated</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Mark as Remediated button</shortDescription>
         <value>Mark Remediated</value>
     </labels>
@@ -402,175 +402,203 @@
     <labels>
         <fullName>AW_WizardTitle</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Assessment Wizard Title</shortDescription>
         <value>Compliance Assessment Wizard</value>
     </labels>
     <labels>
         <fullName>AW_SelectWizard</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Select Wizard Prompt</shortDescription>
         <value>Select an assessment to begin</value>
     </labels>
     <labels>
         <fullName>AW_Loading</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Wizard Loading Message</shortDescription>
         <value>Loading assessment wizard...</value>
     </labels>
     <labels>
         <fullName>AW_ErrorLoading</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Wizard Error Loading</shortDescription>
         <value>Unable to load the assessment wizard. Please try again.</value>
     </labels>
     <labels>
         <fullName>AW_StagePrefix</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Stage Label Prefix</shortDescription>
         <value>Stage {0}</value>
     </labels>
     <labels>
         <fullName>AW_StepPrefix</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Step Label Prefix</shortDescription>
         <value>Step {0} of {1}</value>
     </labels>
     <labels>
         <fullName>AW_NextStep</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Next Step Button</shortDescription>
         <value>Next</value>
     </labels>
     <labels>
         <fullName>AW_PreviousStep</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Previous Step Button</shortDescription>
         <value>Previous</value>
     </labels>
     <labels>
         <fullName>AW_SaveProgress</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Save Progress Button</shortDescription>
         <value>Save Progress</value>
     </labels>
     <labels>
         <fullName>AW_CompleteAssessment</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Complete Assessment Button</shortDescription>
         <value>Complete Assessment</value>
     </labels>
     <labels>
         <fullName>AW_PercentComplete</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Percent Complete Label</shortDescription>
         <value>{0}% Complete</value>
     </labels>
     <labels>
         <fullName>AW_AutoScanRunning</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Auto Scan Running Message</shortDescription>
         <value>Running automated compliance scan...</value>
     </labels>
     <labels>
         <fullName>AW_AutoScanComplete</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Auto Scan Complete Message</shortDescription>
         <value>Automated scan complete. Review the results below.</value>
     </labels>
     <labels>
-        <fullName>AW_AttestationPrompt</fullName>
+        <fullName>AW_AutoScanError</fullName>
         <language>en_US</language>
         <protected>false</protected>
+        <shortDescription>Auto Scan Error Message</shortDescription>
+        <value>The automated scan encountered an error. Please retry or contact your administrator.</value>
+    </labels>
+    <labels>
+        <fullName>AW_AutoScanPassCount</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Auto Scan Pass Count</shortDescription>
+        <value>{0} Passed</value>
+    </labels>
+    <labels>
+        <fullName>AW_AutoScanFailCount</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Auto Scan Fail Count</shortDescription>
+        <value>{0} Failed</value>
+    </labels>
+    <labels>
+        <fullName>AW_AutoScanNoFindings</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Auto Scan No Findings Message</shortDescription>
+        <value>No compliance findings were generated for this control reference.</value>
+    </labels>
+    <labels>
+        <fullName>AW_AttestationPrompt</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
         <shortDescription>Manual Attestation Prompt</shortDescription>
         <value>Please review and attest to the following compliance requirement.</value>
     </labels>
     <labels>
         <fullName>AW_EvidenceUploadPrompt</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Evidence Upload Prompt</shortDescription>
         <value>Upload supporting evidence documentation for this control.</value>
     </labels>
     <labels>
         <fullName>AW_ApprovalPrompt</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Approval Step Prompt</shortDescription>
         <value>This step requires approval from an authorized reviewer.</value>
     </labels>
     <labels>
         <fullName>AW_ReviewPrompt</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Review Step Prompt</shortDescription>
         <value>Review all findings and attestations before completing the assessment.</value>
     </labels>
     <labels>
         <fullName>AW_PrefillAvailable</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Pre-fill Data Available</shortDescription>
         <value>Pre-fill data available from a prior assessment. Apply it?</value>
     </labels>
     <labels>
         <fullName>AW_ApplyPrefill</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Apply Pre-fill Button</shortDescription>
         <value>Apply Pre-fill</value>
     </labels>
     <labels>
         <fullName>AW_SkipPrefill</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Skip Pre-fill Button</shortDescription>
         <value>Start Fresh</value>
     </labels>
     <labels>
         <fullName>AW_StepCompleted</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Step Completed Message</shortDescription>
         <value>Step completed successfully.</value>
     </labels>
     <labels>
         <fullName>AW_AssessmentComplete</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Assessment Complete Message</shortDescription>
         <value>Assessment completed successfully!</value>
     </labels>
     <labels>
         <fullName>AW_ResumeSession</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>Resume Session Label</shortDescription>
         <value>Resume</value>
     </labels>
     <labels>
         <fullName>AW_InProgressSessions</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>In-Progress Sessions Title</shortDescription>
         <value>In-Progress Assessments</value>
     </labels>
     <labels>
         <fullName>AW_NoSessions</fullName>
         <language>en_US</language>
-        <protected>false</protected>
+        <protected>true</protected>
         <shortDescription>No Sessions Empty State</shortDescription>
         <value>No assessments in progress. Select a wizard to begin.</value>
     </labels>
@@ -820,6 +848,105 @@
         <shortDescription>No events message</shortDescription>
         <value>No timeline events</value>
     </labels>
+    <!-- SEC Approval Process Labels -->
+    <labels>
+        <fullName>SEC_SubmitForApproval</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Submit for approval button label</shortDescription>
+        <value>Submit for Approval</value>
+    </labels>
+    <labels>
+        <fullName>SEC_ApprovalPending</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Approval pending status message</shortDescription>
+        <value>Pending Approval</value>
+    </labels>
+    <labels>
+        <fullName>SEC_ApprovalApproved</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Approval approved status</shortDescription>
+        <value>Approved</value>
+    </labels>
+    <labels>
+        <fullName>SEC_ApprovalRejected</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Approval rejected status</shortDescription>
+        <value>Rejected</value>
+    </labels>
+    <labels>
+        <fullName>SEC_ApprovalSubmitted</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Approval submitted confirmation</shortDescription>
+        <value>Disclosure submitted for approval successfully.</value>
+    </labels>
+    <labels>
+        <fullName>SEC_ApprovalSubmitFailed</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Approval submission failure</shortDescription>
+        <value>Failed to submit for approval. Please verify all approver fields are populated.</value>
+    </labels>
+    <labels>
+        <fullName>SEC_LegalApprover</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Legal approver field label</shortDescription>
+        <value>Legal Approver</value>
+    </labels>
+    <labels>
+        <fullName>SEC_CFOApprover</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CFO approver field label</shortDescription>
+        <value>CFO Approver</value>
+    </labels>
+    <labels>
+        <fullName>SEC_CEOApprover</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>CEO approver field label</shortDescription>
+        <value>CEO Approver</value>
+    </labels>
+    <labels>
+        <fullName>SEC_BoardApprover</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Board approver field label</shortDescription>
+        <value>Board Approver</value>
+    </labels>
+    <labels>
+        <fullName>SEC_ApprovalChain</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Approval chain section heading</shortDescription>
+        <value>Approval Chain</value>
+    </labels>
+    <labels>
+        <fullName>SEC_CurrentApprover</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Current approver label</shortDescription>
+        <value>Current Approver</value>
+    </labels>
+    <labels>
+        <fullName>SEC_ApprovalHistory</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Approval history section heading</shortDescription>
+        <value>Approval History</value>
+    </labels>
+    <labels>
+        <fullName>SEC_ApproversRequired</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Approvers required validation message</shortDescription>
+        <value>All approver fields (Legal, CFO, CEO, Board) must be assigned before submitting.</value>
+    </labels>
     <!-- Trust Center Labels -->
     <labels>
         <fullName>TC_DashboardTitle</fullName>
@@ -982,6 +1109,189 @@
         <shortDescription>Not started status</shortDescription>
         <value>Not Started</value>
     </labels>
+    <!-- AI Governance Dashboard Labels -->
+    <labels>
+        <fullName>AI_DashboardTitle</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>AI Governance Dashboard title</shortDescription>
+        <value>AI Governance</value>
+    </labels>
+    <labels>
+        <fullName>AI_DiscoverSystems</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Discover AI systems button</shortDescription>
+        <value>Discover AI Systems</value>
+    </labels>
+    <labels>
+        <fullName>AI_SystemRegistry</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>AI System Registry section title</shortDescription>
+        <value>AI System Registry</value>
+    </labels>
+    <labels>
+        <fullName>AI_NoGaps</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No compliance gaps message</shortDescription>
+        <value>No compliance gaps identified</value>
+    </labels>
+    <labels>
+        <fullName>AI_AuditTrail</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>AI Audit Trail section title</shortDescription>
+        <value>AI Change Audit Trail</value>
+    </labels>
+    <labels>
+        <fullName>AI_NoAuditEntries</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No audit entries message</shortDescription>
+        <value>No AI-related changes detected in the audit trail</value>
+    </labels>
+    <labels>
+        <fullName>TC_NoFrameworks</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No frameworks available message</shortDescription>
+        <value>No compliance frameworks available. Run data aggregation to generate views.</value>
+    </labels>
+    <labels>
+        <fullName>TC_Error</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Trust Center error title</shortDescription>
+        <value>Error</value>
+    </labels>
+    <labels>
+        <fullName>TC_PublicToggle</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Toggle public visibility label</shortDescription>
+        <value>Public</value>
+    </labels>
+    <labels>
+        <fullName>TC_LinkManager</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Link manager section title</shortDescription>
+        <value>Link Manager</value>
+    </labels>
+    <labels>
+        <fullName>TC_LinkCopied</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Link copied confirmation</shortDescription>
+        <value>Link copied to clipboard</value>
+    </labels>
+    <labels>
+        <fullName>TC_DeactivateLink</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Deactivate link button</shortDescription>
+        <value>Deactivate</value>
+    </labels>
+    <labels>
+        <fullName>TC_AccessTier</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Access tier field label</shortDescription>
+        <value>Access Tier</value>
+    </labels>
+    <labels>
+        <fullName>TC_ExpirationDate</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Expiration date column label</shortDescription>
+        <value>Expiration Date</value>
+    </labels>
+    <labels>
+        <fullName>TC_AccessCount</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Access count column label</shortDescription>
+        <value>Access Count</value>
+    </labels>
+    <labels>
+        <fullName>TC_PublicViewTitle</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Public view page title</shortDescription>
+        <value>Compliance Trust Center</value>
+    </labels>
+    <labels>
+        <fullName>TC_InvalidLink</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Invalid link error message</shortDescription>
+        <value>This link is invalid or has been revoked.</value>
+    </labels>
+    <labels>
+        <fullName>TC_ExpiredLink</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Expired link error message</shortDescription>
+        <value>This link has expired. Please request a new link from your contact.</value>
+    </labels>
+    <labels>
+        <fullName>TC_CertificationStatus</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Certification status label</shortDescription>
+        <value>Certification Status</value>
+    </labels>
+    <labels>
+        <fullName>TC_LastAuditDate</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Last audit date label</shortDescription>
+        <value>Last Audit Date</value>
+    </labels>
+    <labels>
+        <fullName>TC_ComplianceScore</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Compliance score label</shortDescription>
+        <value>Compliance Score</value>
+    </labels>
+    <labels>
+        <fullName>TC_NotCertified</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Not certified status</shortDescription>
+        <value>Not Certified</value>
+    </labels>
+    <labels>
+        <fullName>TC_ScoreExcellent</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Excellent score range label</shortDescription>
+        <value>Excellent</value>
+    </labels>
+    <labels>
+        <fullName>TC_ScoreGood</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Good score range label</shortDescription>
+        <value>Good</value>
+    </labels>
+    <labels>
+        <fullName>TC_ScoreNeedsWork</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Needs work score range label</shortDescription>
+        <value>Needs Improvement</value>
+    </labels>
+    <labels>
+        <fullName>TC_ScoreCritical</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Critical score range label</shortDescription>
+        <value>Critical</value>
+    </labels>
     <labels>
         <fullName>AI_DiscoveryInProgress</fullName>
         <language>en_US</language>
@@ -1142,5 +1452,196 @@
         <protected>true</protected>
         <shortDescription>Refresh data button</shortDescription>
         <value>Refresh</value>
+    </labels>
+    <!-- Rule Engine Labels -->
+    <labels>
+        <fullName>RE_EvaluationInProgress</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Rule evaluation in progress message</shortDescription>
+        <value>Running compliance evaluation...</value>
+    </labels>
+    <labels>
+        <fullName>RE_EvaluationComplete</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Rule evaluation complete message</shortDescription>
+        <value>Compliance evaluation complete</value>
+    </labels>
+    <labels>
+        <fullName>RE_EvaluationFailed</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Rule evaluation failed message</shortDescription>
+        <value>Compliance evaluation failed. Please try again.</value>
+    </labels>
+    <labels>
+        <fullName>RE_NoActiveRules</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No active rules message</shortDescription>
+        <value>No active compliance rules configured for this framework.</value>
+    </labels>
+    <labels>
+        <fullName>RE_ComplianceScore</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Compliance score label</shortDescription>
+        <value>Compliance Score</value>
+    </labels>
+    <labels>
+        <fullName>RE_RulesPassed</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Rules passed metric label</shortDescription>
+        <value>Rules Passed</value>
+    </labels>
+    <labels>
+        <fullName>RE_RulesFailed</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Rules failed metric label</shortDescription>
+        <value>Rules Failed</value>
+    </labels>
+    <labels>
+        <fullName>RE_TotalRules</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Total rules metric label</shortDescription>
+        <value>Total Rules</value>
+    </labels>
+    <labels>
+        <fullName>RE_ExecutionHistory</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Execution history section title</shortDescription>
+        <value>Execution History</value>
+    </labels>
+    <labels>
+        <fullName>RE_NoExecutionHistory</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>No execution history message</shortDescription>
+        <value>No compliance evaluations have been run yet.</value>
+    </labels>
+    <labels>
+        <fullName>RE_FrameworkScores</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Framework scores section title</shortDescription>
+        <value>Framework Scores</value>
+    </labels>
+    <labels>
+        <fullName>RE_RunEvaluation</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Run evaluation button label</shortDescription>
+        <value>Run Evaluation</value>
+    </labels>
+    <labels>
+        <fullName>RE_SelectFramework</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Select framework prompt</shortDescription>
+        <value>Select a framework to evaluate</value>
+    </labels>
+    <labels>
+        <fullName>RE_RemediationQueued</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Remediation queued message</shortDescription>
+        <value>Remediation action has been queued for review.</value>
+    </labels>
+    <labels>
+        <fullName>RE_SeverityCritical</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Critical severity label</shortDescription>
+        <value>Critical</value>
+    </labels>
+    <labels>
+        <fullName>RE_SeverityHigh</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>High severity label</shortDescription>
+        <value>High</value>
+    </labels>
+    <labels>
+        <fullName>RE_SeverityMedium</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Medium severity label</shortDescription>
+        <value>Medium</value>
+    </labels>
+    <labels>
+        <fullName>RE_SeverityLow</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Low severity label</shortDescription>
+        <value>Low</value>
+    </labels>
+    <labels>
+        <fullName>RE_Loading</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Loading message</shortDescription>
+        <value>Loading rule engine data...</value>
+    </labels>
+    <labels>
+        <fullName>RE_ErrorGeneric</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Generic error message</shortDescription>
+        <value>An error occurred. Please try again or contact your administrator.</value>
+    </labels>
+    <!-- Async Framework Labels -->
+    <labels>
+        <fullName>AF_FrameworkDisabled</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Async framework disabled message</shortDescription>
+        <value>Async framework is currently disabled. Contact your administrator.</value>
+    </labels>
+    <labels>
+        <fullName>AF_StepFailed</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Step failure message</shortDescription>
+        <value>Step {0} failed: {1}</value>
+    </labels>
+    <labels>
+        <fullName>AF_StepComplete</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Step completion message</shortDescription>
+        <value>Step {0} completed successfully. {1} records processed.</value>
+    </labels>
+    <labels>
+        <fullName>AF_WorkflowComplete</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Workflow completion message</shortDescription>
+        <value>Workflow completed. {0} steps executed, {1} total records processed.</value>
+    </labels>
+    <labels>
+        <fullName>AF_RetryAttempt</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Retry attempt message</shortDescription>
+        <value>Retrying step {0} (attempt {1} of {2})</value>
+    </labels>
+    <labels>
+        <fullName>AF_MaxRetriesExceeded</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Max retries exceeded message</shortDescription>
+        <value>Step {0} failed after {1} retry attempts. Workflow halted.</value>
+    </labels>
+    <labels>
+        <fullName>AF_GovernorLimitWarning</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Governor limit warning message</shortDescription>
+        <value>Approaching governor limits. Processing paused and will resume.</value>
     </labels>
 </CustomLabels>

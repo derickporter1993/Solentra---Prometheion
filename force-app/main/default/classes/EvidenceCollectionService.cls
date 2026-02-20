@@ -5,6 +5,8 @@
  * 
  * @author Elaro
  * @version 1.0
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 public with sharing class EvidenceCollectionService {
     
@@ -47,7 +49,7 @@ public with sharing class EvidenceCollectionService {
             ElaroSecurityUtils.validateCRUDAccess('Compliance_Evidence__c',
                 ElaroSecurityUtils.DmlOperation.DML_INSERT);
             try {
-                insert evidenceList;
+                insert as user evidenceList;
             } catch (DmlException e) {
                 throw new AuraHandledException('Error collecting evidence: ' + getSafeDmlMessage(e));
             }

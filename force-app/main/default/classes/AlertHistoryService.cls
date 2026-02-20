@@ -1,3 +1,10 @@
+/**
+ * Manages alert history records for compliance and security event tracking.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group System Monitoring
+ */
 public with sharing class AlertHistoryService {
     private class AlertRow {
         @AuraEnabled public String metric;
@@ -15,6 +22,13 @@ public with sharing class AlertHistoryService {
         }
     }
     
+    /**
+     * Retrieves the most recent performance alert history records.
+     *
+     * @param limitSize Maximum number of alert records to return
+     * @return List of AlertRow DTOs ordered by most recent first
+     * @throws AuraHandledException if user lacks read access to Performance_Alert_History__c
+     */
     @AuraEnabled(cacheable=true)
     public static List<AlertRow> getRecentAlerts(Integer limitSize) {
         // Validate read access

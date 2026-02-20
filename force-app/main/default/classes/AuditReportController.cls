@@ -5,6 +5,8 @@
  * 
  * @author Elaro
  * @version 1.0
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 public with sharing class AuditReportController {
     
@@ -111,11 +113,12 @@ public with sharing class AuditReportController {
         cv.IsMajorVersion = true;
         
         try {
-            insert cv;
+            insert as user cv;
             cv = [SELECT ContentDocumentId FROM ContentVersion WHERE Id = :cv.Id WITH USER_MODE];
             return cv.ContentDocumentId;
         } catch (Exception e) {
-            throw new AuraHandledException('Error exporting report: ' + e.getMessage());
+            ElaroLogger.error('AuditReportController.exportReportAsPDF', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to export the report. Please verify you have the required permissions and try again.');
         }
     }
     
