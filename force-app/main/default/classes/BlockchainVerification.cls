@@ -292,7 +292,7 @@ public with sharing class BlockchainVerification {
         // Generate a mock transaction ID
         // In production, this would come from the blockchain
         return '0x' + EncodingUtil.convertToHex(
-            Crypto.generateAesKey(128)
+            Crypto.generateAesKey(256)
         ).toLowerCase();
     }
     

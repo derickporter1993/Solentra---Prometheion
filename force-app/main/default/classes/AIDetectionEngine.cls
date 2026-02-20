@@ -59,10 +59,9 @@ public inherited sharing class AIDetectionEngine {
             // Use Tooling API to query metadata components
             String query = 'SELECT DeveloperName, NamespacePrefix, Id FROM ' + getToolingObjectName(metadataType);
             HttpRequest req = new HttpRequest();
-            req.setEndpoint(URL.getOrgDomainUrl().toExternalForm()
-                + '/services/data/v66.0/tooling/query/?q=' + EncodingUtil.urlEncode(query, 'UTF-8'));
+            req.setEndpoint('callout:Salesforce_Tooling_API/services/data/v66.0/tooling/query/?q='
+                + EncodingUtil.urlEncode(query, 'UTF-8'));
             req.setMethod('GET');
-            req.setHeader('Authorization', 'Bearer ' + UserInfo.getSessionId());
             req.setHeader('Content-Type', 'application/json');
 
             Http http = new Http();

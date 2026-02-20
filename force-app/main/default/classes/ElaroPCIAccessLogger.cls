@@ -49,7 +49,7 @@ public with sharing class ElaroPCIAccessLogger {
             'accessType' => accessType,
             'userAction' => userAction,
             'ipAddress' => ipAddress,
-            'sessionId' => UserInfo.getSessionId(),
+            'loginType' => Auth.SessionManagement.getCurrentSession()?.get('LoginType'),
             'timestamp' => System.now().format('yyyy-MM-dd\'T\'HH:mm:ss\'Z\'')
         };
 
@@ -84,7 +84,7 @@ public with sharing class ElaroPCIAccessLogger {
             ipAddress = 'Unknown';
         }
 
-        String sessionId = UserInfo.getSessionId();
+        String loginType = Auth.SessionManagement.getCurrentSession()?.get('LoginType');
         String userId = UserInfo.getUserId();
         String username = UserInfo.getUserName();
         Datetime now = System.now();
@@ -97,7 +97,7 @@ public with sharing class ElaroPCIAccessLogger {
                 'accessType' => accessType,
                 'userAction' => userAction + ' (Bulk: ' + recordIds.size() + ' records)',
                 'ipAddress' => ipAddress,
-                'sessionId' => sessionId,
+                'loginType' => loginType,
                 'timestamp' => now.format('yyyy-MM-dd\'T\'HH:mm:ss\'Z\'')
             };
 

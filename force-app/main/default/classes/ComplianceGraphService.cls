@@ -322,6 +322,7 @@ public with sharing class ComplianceGraphService {
                 SELECT Label, Description__c, Risk_Category__c, Framework__c
                 FROM Compliance_Policy__mdt
                 WHERE DeveloperName = :policyName
+                WITH USER_MODE
                 LIMIT 1
             ];
 
@@ -396,7 +397,8 @@ public with sharing class ComplianceGraphService {
         Map<String, List<Compliance_Policy__mdt>> result = new Map<String, List<Compliance_Policy__mdt>>();
 
         for (Compliance_Policy__mdt policy : [SELECT DeveloperName, Label, Framework__c, Description__c, Risk_Category__c
-                                               FROM Compliance_Policy__mdt]) {
+                                               FROM Compliance_Policy__mdt
+                                               WITH USER_MODE]) {
             if (!result.containsKey(policy.Framework__c)) {
                 result.put(policy.Framework__c, new List<Compliance_Policy__mdt>());
             }
@@ -409,7 +411,8 @@ public with sharing class ComplianceGraphService {
     private static List<Compliance_Policy__mdt> getPoliciesForFramework(String framework) {
         return [SELECT DeveloperName, Label, Framework__c, Description__c, Risk_Category__c
                 FROM Compliance_Policy__mdt
-                WHERE Framework__c = :framework];
+                WHERE Framework__c = :framework
+                WITH USER_MODE];
     }
 
     private static GraphNode createFrameworkNode(String framework) {

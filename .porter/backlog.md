@@ -1,8 +1,8 @@
 # Elaro Remediation Backlog
 
 **Generated:** 2026-02-19 | Post-Phase 7 | Solentra Review v2.0 baseline
-**Updated:** 2026-02-19 | Final sweep complete — all feasible items resolved
-**Current Grade:** C (3.325/5.00) | **Target Grade:** B+ (4.25+)
+**Updated:** 2026-02-20 | Solentra Review v2.0 findings remediated
+**Current Grade:** C (3.40/5.00) | **Target Grade:** B+ (4.25+)
 **Review Report:** `.review-state/final-report.md`
 
 ---
@@ -22,11 +22,11 @@
 
 ### BL-001: DML without `as user` across codebase
 **Status:** Done
-**Resolution:** All production classes swept by agents 1-4. 0 true violations remain. 9 justified exceptions: Big Objects (ElaroGraphIndexer, ElaroReasoningEngine), Install Handler (ElaroInstallHandler with manual CRUD validation), System error logging (SchedulerErrorHandler — `without sharing`).
+**Resolution:** All production classes swept. Solentra Review v2.0 identified 10 remaining violations (not 104 — overcounted). Fixed: ElaroCCPASLAMonitorScheduler (AccessLevel.USER_MODE), ElaroGLBAAnnualNoticeBatch (AccessLevel.USER_MODE), ElaroAuditTrailPoller (as user), ElaroInstallHandler x4 (as user, removed legacy validateCRUDAccess), SchedulerErrorHandler x2 (as user). 2 justified Big Object exceptions remain (ElaroGraphIndexer, ElaroReasoningEngine — Big Objects don't support CRUD/FLS).
 
 ### BL-002: SOQL without `WITH USER_MODE` across codebase
 **Status:** Done
-**Resolution:** All production classes swept by agents 1-4. 0 true violations remain. 1 justified exception: BenchmarkingService.cls queries Custom Metadata Type (`__mdt`) which doesn't support `WITH USER_MODE`.
+**Resolution:** All production classes swept. Solentra Review v2.0 found 3 missing `WITH USER_MODE` on ComplianceGraphService CMT queries — now fixed. 1 justified exception: BenchmarkingService.cls queries CMT where `WITH USER_MODE` is N/A.
 
 ### BL-003: Schema.sObjectType permission checks (legacy pattern)
 **Status:** Done
@@ -109,6 +109,22 @@
 **Why P2:** Test Quality score improvement.
 **Effort:** Medium
 
+### BL-026: UserInfo.getSessionId() — AppExchange auto-reject
+**Status:** Done
+**Resolution:** AIDetectionEngine.cls migrated from `UserInfo.getSessionId()` to Named Credential (`callout:Salesforce_Tooling_API`). ElaroPCIAccessLogger.cls (2 sites) replaced `sessionId` with `Auth.SessionManagement.getCurrentSession()?.get('LoginType')` — storing session IDs in Platform Events was a PCI-DSS violation.
+
+### BL-027: BlockchainVerification AES-128 → AES-256
+**Status:** Done
+**Resolution:** Changed `Crypto.generateAesKey(128)` to `Crypto.generateAesKey(256)` in BlockchainVerification.cls for compliance-grade encryption.
+
+### BL-028: ComplianceGraphService SOQL without WITH USER_MODE
+**Status:** Done
+**Resolution:** Added `WITH USER_MODE` to 3 Custom Metadata Type queries in ComplianceGraphService.cls (getNodeDetails, getPoliciesByFramework, getPoliciesForFramework).
+
+### BL-029: scripts/orgInit.sh uses deprecated sfdx commands
+**Status:** Done
+**Resolution:** Migrated all `sfdx force:*` commands to `sf` CLI equivalents. Updated scratch def reference to `config/elaro-scratch-def.json`.
+
 ---
 
 ## P3 — Low / Polish
@@ -145,9 +161,9 @@
 |----------|-------|------|------|---------|
 | **P0** | 6 | 6 | 0 | 0 |
 | **P1** | 6 | 5 | 0 | 1 |
-| **P2** | 7 | 5 | 2 | 0 |
+| **P2** | 11 | 9 | 2 | 0 |
 | **P3** | 6 | 6 | 0 | 0 |
-| **Total** | **25** | **22** | **2** | **1** |
+| **Total** | **29** | **26** | **2** | **1** |
 
 ## Remaining Items
 

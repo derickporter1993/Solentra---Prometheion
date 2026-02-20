@@ -97,8 +97,7 @@ global without sharing class ElaroInstallHandler implements InstallHandler {
             );
 
             try {
-                ElaroSecurityUtils.validateCRUDAccess('Elaro_AI_Settings__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-                insert defaultSettings;
+                insert as user defaultSettings;
                 ElaroLogger.info( 'Created default AI settings: ' + defaultSettings.Id);
             } catch (DmlException e) {
                 ElaroLogger.warn( 'Could not create AI settings (may already exist): ' + e.getMessage());
@@ -140,8 +139,7 @@ global without sharing class ElaroInstallHandler implements InstallHandler {
         );
 
         try {
-            ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-            insert welcomeLog;
+            insert as user welcomeLog;
             ElaroLogger.info( 'Created welcome audit log: ' + welcomeLog.Id);
         } catch (DmlException e) {
             ElaroLogger.warn( 'Could not create welcome audit log: ' + e.getMessage());
@@ -164,8 +162,7 @@ global without sharing class ElaroInstallHandler implements InstallHandler {
             Severity__c = 'ERROR'
         );
 
-        ElaroSecurityUtils.validateCRUDAccess('Elaro_Audit_Log__c', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-        insert errorLog;
+        insert as user errorLog;
     }
 
     /**
@@ -208,8 +205,7 @@ global without sharing class ElaroInstallHandler implements InstallHandler {
                     Type = 'TextPost'
                 );
 
-                ElaroSecurityUtils.validateCRUDAccess('FeedItem', ElaroSecurityUtils.DmlOperation.DML_INSERT);
-                insert post;
+                insert as user post;
                 ElaroLogger.info( 'Posted installation notification to Chatter');
             }
 
