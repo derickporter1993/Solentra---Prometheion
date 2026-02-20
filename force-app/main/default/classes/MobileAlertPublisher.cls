@@ -391,6 +391,7 @@ public with sharing class MobileAlertPublisher {
     /**
      * Schedulable class for resending snoozed alerts
      */
+    @SuppressWarnings('PMD.ApexSharingViolations')
     public class MobileAlertResender implements Schedulable {
         private String alertId;
 

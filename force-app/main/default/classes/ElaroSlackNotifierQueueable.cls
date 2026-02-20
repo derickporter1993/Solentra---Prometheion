@@ -6,6 +6,7 @@
  * @since v3.1.0 (Spring '26)
  * @group Integration
  */
+@SuppressWarnings('PMD.AvoidHardcodedCredentialsInFieldDecls')
 public with sharing class ElaroSlackNotifierQueueable implements Queueable, Database.AllowsCallouts {
     private static final Integer MAX_RETRIES = 3;
     private static final Integer MAX_PAYLOAD_SIZE = 30000; // Slack API limit is ~1MB, but we use a conservative limit

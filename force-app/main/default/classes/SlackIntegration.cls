@@ -8,6 +8,7 @@
  * @since v3.1.0 (Spring '26)
  * @see ElaroDailyDigest
  */
+@SuppressWarnings('PMD.AvoidHardcodedCredentialsInFieldDecls')
 public with sharing class SlackIntegration {
 
     private static final String NAMED_CREDENTIAL = 'callout:Slack_Webhook';

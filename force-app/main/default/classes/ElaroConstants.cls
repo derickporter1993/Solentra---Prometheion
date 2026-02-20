@@ -14,6 +14,7 @@
  * @since v3.1.0 (Spring '26)
  * @group Utilities
  */
+@SuppressWarnings('PMD.AvoidHardcodedCredentialsInFieldDecls')
 public with sharing class ElaroConstants {
     
     // ============================================

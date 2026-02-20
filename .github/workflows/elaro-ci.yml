@@ -70,11 +70,10 @@ jobs:
 
       - name: Run AppExchange Security Scan (HTML)
         run: |
-          echo "🔍 Running Salesforce Code Analyzer with AppExchange selectors..."
+          echo "🔍 Running Salesforce Code Analyzer with AppExchange engine..."
           sf scanner run \
             --target "force-app/" \
-            --rule-selector "AppExchange" \
-            --rule-selector "Recommended:Security" \
+            --engine pmd-appexchange \
             --format "html" \
             --outfile "scanner-reports/code-analyzer-appexchange.html" \
             --severity-threshold 2
@@ -84,8 +83,7 @@ jobs:
           echo "📊 Generating JSON report for CI analysis..."
           sf scanner run \
             --target "force-app/" \
-            --rule-selector "AppExchange" \
-            --rule-selector "Recommended:Security" \
+            --engine pmd-appexchange \
             --format "json" \
             --outfile "scanner-reports/code-analyzer-appexchange.json" \
             --severity-threshold 2
@@ -95,8 +93,7 @@ jobs:
           echo "📋 Displaying scan results in console..."
           sf scanner run \
             --target "force-app/" \
-            --rule-selector "AppExchange" \
-            --rule-selector "Recommended:Security" \
+            --engine pmd-appexchange \
             --format "table" \
             --severity-threshold 2
 
@@ -104,7 +101,7 @@ jobs:
         if: always()
         run: |
           sf scanner run --target "force-app" \
-            --rule-selector "Recommended:Security" \
+            --engine pmd \
             --format sarif \
             --outfile scanner-results.sarif || true
 

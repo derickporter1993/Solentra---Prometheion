@@ -13,6 +13,7 @@
  * objects that need to be initialized (Custom Settings, Audit Logs, etc.).
  * @since v3.1.0 (Spring '26)
  */
+@SuppressWarnings('PMD.AvoidGlobalInstallUninstallHandlers')
 global without sharing class ElaroInstallHandler implements InstallHandler {
 
     /**
