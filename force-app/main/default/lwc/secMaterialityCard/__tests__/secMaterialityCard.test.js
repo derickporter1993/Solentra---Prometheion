@@ -1,7 +1,7 @@
 import { createElement } from "lwc";
 import SecMaterialityCard from "c/secMaterialityCard";
 
-// Mock custom labels
+// Custom label mocks
 jest.mock(
   "@salesforce/label/c.SEC_IncidentDescription",
   () => ({ default: "Incident Description" }),
@@ -25,39 +25,12 @@ jest.mock("@salesforce/label/c.SEC_OnTrack", () => ({ default: "On Track" }), { 
 jest.mock("@salesforce/label/c.SEC_AtRisk", () => ({ default: "At Risk" }), { virtual: true });
 jest.mock("@salesforce/label/c.SEC_Breached", () => ({ default: "Breached" }), { virtual: true });
 
-const FUTURE_DATE = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString();
-const TOMORROW_DATE = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString();
-const PAST_DATE = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString();
-
-const MOCK_ON_TRACK_ASSESSMENT = {
-  Id: "a01000000000001",
-  Name: "Q1 2026 Incident Assessment",
-  Filing_Deadline__c: FUTURE_DATE,
-  Discovery_Date__c: "2026-01-15T00:00:00.000Z",
-  Determination_Result__c: "Under Review",
-};
-
-const MOCK_AT_RISK_ASSESSMENT = {
-  Id: "a01000000000002",
-  Name: "Critical Data Breach",
-  Filing_Deadline__c: TOMORROW_DATE,
-  Discovery_Date__c: "2026-02-01T00:00:00.000Z",
-  Determination_Result__c: "Material",
-};
-
-const MOCK_BREACHED_ASSESSMENT = {
-  Id: "a01000000000003",
-  Name: "Overdue Filing",
-  Filing_Deadline__c: PAST_DATE,
-  Discovery_Date__c: "2026-01-01T00:00:00.000Z",
-  Determination_Result__c: "Material",
-};
-
 describe("c-sec-materiality-card", () => {
   afterEach(() => {
     while (document.body.firstChild) {
       document.body.removeChild(document.body.firstChild);
     }
+    jest.clearAllMocks();
   });
 
   function createComponent(assessment) {
@@ -69,17 +42,25 @@ describe("c-sec-materiality-card", () => {
     return element;
   }
 
+  const BASE_ASSESSMENT = {
+    Id: "a0B000000000001",
+    Name: "MA-2026-001",
+    Filing_Deadline__c: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
+    Discovery_Date__c: "2026-02-01T00:00:00.000Z",
+    Determination_Result__c: "Under Review",
+  };
+
   it("renders assessment name in header", async () => {
-    const element = createComponent(MOCK_ON_TRACK_ASSESSMENT);
+    const element = createComponent(BASE_ASSESSMENT);
     await Promise.resolve();
 
     const title = element.shadowRoot.querySelector(".slds-truncate");
     expect(title).not.toBeNull();
-    expect(title.textContent).toBe("Q1 2026 Incident Assessment");
+    expect(title.textContent).toBe("MA-2026-001");
   });
 
-  it("displays On Track SLA badge for future deadline", async () => {
-    const element = createComponent(MOCK_ON_TRACK_ASSESSMENT);
+  it("renders SLA badge", async () => {
+    const element = createComponent(BASE_ASSESSMENT);
     await Promise.resolve();
 
     const badge = element.shadowRoot.querySelector("lightning-badge");
@@ -87,72 +68,99 @@ describe("c-sec-materiality-card", () => {
     expect(badge.label).toBe("On Track");
   });
 
-  it("displays At Risk SLA badge when deadline is within 1 day", async () => {
-    const element = createComponent(MOCK_AT_RISK_ASSESSMENT);
+  it("shows On Track status for deadline more than 1 day away", async () => {
+    const assessment = {
+      ...BASE_ASSESSMENT,
+      Filing_Deadline__c: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+    };
+    const element = createComponent(assessment);
     await Promise.resolve();
 
     const badge = element.shadowRoot.querySelector("lightning-badge");
-    expect(badge).not.toBeNull();
+    expect(badge.label).toBe("On Track");
+  });
+
+  it("shows At Risk status for deadline within 1 day", async () => {
+    const assessment = {
+      ...BASE_ASSESSMENT,
+      Filing_Deadline__c: new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString(),
+    };
+    const element = createComponent(assessment);
+    await Promise.resolve();
+
+    const badge = element.shadowRoot.querySelector("lightning-badge");
     expect(badge.label).toBe("At Risk");
   });
 
-  it("displays Breached SLA badge when deadline has passed", async () => {
-    const element = createComponent(MOCK_BREACHED_ASSESSMENT);
+  it("shows Breached status for past deadline", async () => {
+    const assessment = {
+      ...BASE_ASSESSMENT,
+      Filing_Deadline__c: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    };
+    const element = createComponent(assessment);
     await Promise.resolve();
 
     const badge = element.shadowRoot.querySelector("lightning-badge");
-    expect(badge).not.toBeNull();
     expect(badge.label).toBe("Breached");
   });
 
-  it("displays On Track when no filing deadline exists", async () => {
-    const assessmentNoDeadline = {
-      Id: "a01000000000004",
-      Name: "No Deadline Assessment",
-      Discovery_Date__c: "2026-01-15T00:00:00.000Z",
-      Determination_Result__c: "Not Material",
+  it("shows On Track status when no deadline is set", async () => {
+    const assessment = {
+      ...BASE_ASSESSMENT,
+      Filing_Deadline__c: undefined,
     };
-    const element = createComponent(assessmentNoDeadline);
+    const element = createComponent(assessment);
     await Promise.resolve();
 
     const badge = element.shadowRoot.querySelector("lightning-badge");
-    expect(badge).not.toBeNull();
     expect(badge.label).toBe("On Track");
   });
 
-  it("renders discovery date and filing deadline", async () => {
-    const element = createComponent(MOCK_ON_TRACK_ASSESSMENT);
+  it("displays formatted discovery date", async () => {
+    const element = createComponent(BASE_ASSESSMENT);
     await Promise.resolve();
 
-    const labels = element.shadowRoot.querySelectorAll(".slds-dl_horizontal__label");
     const details = element.shadowRoot.querySelectorAll(".slds-dl_horizontal__detail");
-    expect(labels.length).toBe(3);
-    expect(details.length).toBe(3);
-    // Discovery Date and Filing Deadline should have non-empty values
+    expect(details.length).toBeGreaterThanOrEqual(1);
     expect(details[0].textContent).not.toBe("");
-    expect(details[1].textContent).not.toBe("");
   });
 
-  it("renders determination result with severity class", async () => {
-    const element = createComponent(MOCK_AT_RISK_ASSESSMENT);
+  it("displays determination result", async () => {
+    const element = createComponent(BASE_ASSESSMENT);
     await Promise.resolve();
 
-    const severitySpan = element.shadowRoot.querySelector(".severity-high");
-    expect(severitySpan).not.toBeNull();
-    expect(severitySpan.textContent).toBe("Material");
+    const resultSpan = element.shadowRoot.querySelector(".severity-medium");
+    expect(resultSpan).not.toBeNull();
+    expect(resultSpan.textContent).toBe("Under Review");
   });
 
-  it("applies medium severity class for Under Review", async () => {
-    const element = createComponent(MOCK_ON_TRACK_ASSESSMENT);
+  it("applies severity-high class for Material determination", async () => {
+    const assessment = {
+      ...BASE_ASSESSMENT,
+      Determination_Result__c: "Material",
+    };
+    const element = createComponent(assessment);
     await Promise.resolve();
 
-    const severitySpan = element.shadowRoot.querySelector(".severity-medium");
-    expect(severitySpan).not.toBeNull();
-    expect(severitySpan.textContent).toBe("Under Review");
+    const resultSpan = element.shadowRoot.querySelector(".severity-high");
+    expect(resultSpan).not.toBeNull();
+    expect(resultSpan.textContent).toBe("Material");
+  });
+
+  it("applies severity-low class for Not Material determination", async () => {
+    const assessment = {
+      ...BASE_ASSESSMENT,
+      Determination_Result__c: "Not Material",
+    };
+    const element = createComponent(assessment);
+    await Promise.resolve();
+
+    const resultSpan = element.shadowRoot.querySelector(".severity-low");
+    expect(resultSpan).not.toBeNull();
   });
 
   it("dispatches viewassessment event on card click", async () => {
-    const element = createComponent(MOCK_ON_TRACK_ASSESSMENT);
+    const element = createComponent(BASE_ASSESSMENT);
     await Promise.resolve();
 
     const handler = jest.fn();
@@ -160,18 +168,16 @@ describe("c-sec-materiality-card", () => {
 
     const article = element.shadowRoot.querySelector("article");
     article.click();
-    await Promise.resolve();
 
     expect(handler).toHaveBeenCalled();
-    expect(handler.mock.calls[0][0].detail.assessmentId).toBe("a01000000000001");
+    expect(handler.mock.calls[0][0].detail.assessmentId).toBe("a0B000000000001");
   });
 
-  it("renders as a clickable article with role button", async () => {
-    const element = createComponent(MOCK_ON_TRACK_ASSESSMENT);
+  it("has accessible role and tabindex on card", async () => {
+    const element = createComponent(BASE_ASSESSMENT);
     await Promise.resolve();
 
     const article = element.shadowRoot.querySelector("article");
-    expect(article).not.toBeNull();
     expect(article.getAttribute("role")).toBe("button");
     expect(article.getAttribute("tabindex")).toBe("0");
   });

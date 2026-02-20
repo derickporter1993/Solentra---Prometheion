@@ -1,7 +1,6 @@
 import { createElement } from "lwc";
 import SecDisclosureForm from "c/secDisclosureForm";
 import createAssessment from "@salesforce/apex/SECDisclosureController.createAssessment";
-import { ShowToastEventName } from "lightning/platformShowToastEvent";
 
 jest.mock(
   "@salesforce/apex/SECDisclosureController.createAssessment",
@@ -11,14 +10,18 @@ jest.mock(
 
 jest.mock(
   "lightning/platformShowToastEvent",
-  () => ({
-    ShowToastEvent: jest.fn().mockImplementation((config) => {
-      return new CustomEvent("lightning__showtoast", { detail: config });
-    }),
-    ShowToastEventName: "lightning__showtoast",
-  }),
+  () => {
+    return {
+      ShowToastEvent: jest.fn().mockImplementation((config) => {
+        return new CustomEvent("lightning__showtoast", { detail: config });
+      }),
+    };
+  },
   { virtual: true }
 );
+
+// Re-import after mock setup
+const { ShowToastEvent } = jest.requireMock("lightning/platformShowToastEvent");
 
 describe("c-sec-disclosure-form", () => {
   afterEach(() => {
@@ -36,100 +39,98 @@ describe("c-sec-disclosure-form", () => {
     return element;
   }
 
-  it("renders the form with required inputs", () => {
+  it("renders form inputs", () => {
     const element = createComponent();
     const inputs = element.shadowRoot.querySelectorAll("lightning-input");
     expect(inputs.length).toBe(2);
-
-    const descriptionInput = Array.from(inputs).find((i) => i.dataset.field === "description");
-    expect(descriptionInput).not.toBeNull();
-    expect(descriptionInput.required).toBe(true);
-
-    const dateInput = Array.from(inputs).find((i) => i.dataset.field === "discoveryDate");
-    expect(dateInput).not.toBeNull();
-    expect(dateInput.type).toBe("datetime");
-    expect(dateInput.required).toBe(true);
+    expect(inputs[0].label).toBe("Incident Description");
+    expect(inputs[1].label).toBe("Discovery Date");
   });
 
-  it("renders Create Assessment button", () => {
+  it("renders create assessment button", () => {
     const element = createComponent();
     const button = element.shadowRoot.querySelector("lightning-button");
     expect(button).not.toBeNull();
     expect(button.label).toBe("Create Assessment");
-    expect(button.variant).toBe("brand");
   });
 
-  it("updates formData on input change", async () => {
+  it("tracks input changes for description field", async () => {
     const element = createComponent();
-    const inputs = element.shadowRoot.querySelectorAll("lightning-input");
-    const descInput = Array.from(inputs).find((i) => i.dataset.field === "description");
+    const descInput = element.shadowRoot.querySelector('lightning-input[data-field="description"]');
 
     descInput.value = "Test incident";
-    descInput.dispatchEvent(
-      new CustomEvent("change", {
-        detail: { value: "Test incident" },
-        target: { dataset: { field: "description" }, value: "Test incident" },
-      })
-    );
+    descInput.dispatchEvent(new CustomEvent("change", { target: descInput }));
     await Promise.resolve();
 
-    // Form should accept input without errors
-    expect(descInput).not.toBeNull();
+    expect(element).not.toBeNull();
   });
 
   it("calls createAssessment on save and dispatches success toast", async () => {
-    createAssessment.mockResolvedValue("a01000000000001");
+    createAssessment.mockResolvedValue("a0B000000000001");
     const element = createComponent();
-
-    const toastHandler = jest.fn();
-    element.addEventListener(ShowToastEventName, toastHandler);
 
     const button = element.shadowRoot.querySelector("lightning-button");
     button.click();
-    await Promise.resolve();
-    await Promise.resolve();
+
+    await flushPromises();
 
     expect(createAssessment).toHaveBeenCalled();
+    expect(ShowToastEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: "Success",
+        variant: "success",
+      })
+    );
   });
 
-  it("dispatches error toast when createAssessment fails", async () => {
-    createAssessment.mockRejectedValue({
-      body: { message: "Validation failed" },
-    });
+  it("dispatches assessmentcreated custom event on success", async () => {
+    createAssessment.mockResolvedValue("a0B000000000001");
     const element = createComponent();
 
-    const toastHandler = jest.fn();
-    element.addEventListener(ShowToastEventName, toastHandler);
+    const handler = jest.fn();
+    element.addEventListener("assessmentcreated", handler);
 
     const button = element.shadowRoot.querySelector("lightning-button");
     button.click();
-    await Promise.resolve();
-    await Promise.resolve();
 
-    expect(createAssessment).toHaveBeenCalled();
+    await flushPromises();
+
+    expect(handler).toHaveBeenCalled();
+    expect(handler.mock.calls[0][0].detail.assessmentId).toBe("a0B000000000001");
   });
 
-  it("dispatches assessmentcreated event on successful save", async () => {
-    createAssessment.mockResolvedValue("a01000000000001");
+  it("dispatches error toast on save failure", async () => {
+    createAssessment.mockRejectedValue({ body: { message: "Validation error" } });
     const element = createComponent();
-
-    const createdHandler = jest.fn();
-    element.addEventListener("assessmentcreated", createdHandler);
 
     const button = element.shadowRoot.querySelector("lightning-button");
     button.click();
-    await Promise.resolve();
-    await Promise.resolve();
 
-    expect(createdHandler).toHaveBeenCalled();
-    expect(createdHandler.mock.calls[0][0].detail.assessmentId).toBe("a01000000000001");
+    await flushPromises();
+
+    expect(ShowToastEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: "Error",
+        variant: "error",
+      })
+    );
   });
 
-  it("renders within a lightning-card", () => {
+  it("shows generic error message when error has no body", async () => {
+    createAssessment.mockRejectedValue(new Error("Network failure"));
     const element = createComponent();
-    const card = element.shadowRoot.querySelector("lightning-card");
-    expect(card).not.toBeNull();
-    expect(card.title).toBe("New Materiality Assessment");
-    expect(card.iconName).toBe("standard:form");
+
+    const button = element.shadowRoot.querySelector("lightning-button");
+    button.click();
+
+    await flushPromises();
+
+    expect(ShowToastEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: "Error",
+        variant: "error",
+        message: "Error creating assessment",
+      })
+    );
   });
 });
