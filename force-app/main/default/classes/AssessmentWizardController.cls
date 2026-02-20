@@ -125,6 +125,53 @@ public with sharing class AssessmentWizardController {
     }
 
     /**
+     * Executes an automated compliance scan for an Auto_Scan wizard step by
+     * delegating to the Rule Engine (Team 1) via {@link AssessmentWizardService}.
+     * Returns a map of control reference to scan result (PASS/FAIL/NOT_APPLICABLE).
+     *
+     * @param sessionId The Compliance_Assessment_Session__c Id
+     * @param stepId The DeveloperName of the Auto_Scan step being executed
+     * @param controlReferences Comma-separated control references to scan (e.g., 'SOC2-CC6.1,SOC2-CC6.2')
+     * @return Map of control reference to scan result string
+     * @throws AuraHandledException if scan fails or session is invalid
+     */
+    @AuraEnabled
+    public static Map<String, String> runAutoScan(
+        Id sessionId, String stepId, String controlReferences
+    ) {
+        try {
+            ElaroLogger.info('AssessmentWizardController.runAutoScan',
+                new Map<String, Object>{
+                    'sessionId' => sessionId,
+                    'stepId' => stepId,
+                    'controlReferences' => controlReferences
+                });
+
+            List<String> controlList = new List<String>();
+            if (String.isNotBlank(controlReferences)) {
+                for (String ref : controlReferences.split(',')) {
+                    String trimmed = ref.trim();
+                    if (String.isNotBlank(trimmed)) {
+                        controlList.add(trimmed);
+                    }
+                }
+            }
+
+            return AssessmentWizardService.executeAutoScan(sessionId, controlList);
+        } catch (AuraHandledException ae) {
+            throw ae;
+        } catch (Exception e) {
+            ElaroLogger.error('AssessmentWizardController.runAutoScan',
+                new Map<String, Object>{
+                    'error' => e.getMessage(),
+                    'stackTrace' => e.getStackTraceString()
+                });
+            throw new AuraHandledException(
+                'Unable to complete the automated scan. Please verify your permissions and try again.');
+        }
+    }
+
+    /**
      * Retrieves pre-fill data from a prior completed assessment session
      * for cross-framework re-use.
      *

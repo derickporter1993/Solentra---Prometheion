@@ -99,7 +99,8 @@
     "SF_LOG_LEVEL": "warn",
     "SFDX_USE_PROGRESS_BAR": "false",
     "NODE_ENV": "development",
-    "SF_AUTOUPDATE_DISABLE": "false"
+    "SF_AUTOUPDATE_DISABLE": "false",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
 
   "ignorePatterns": [

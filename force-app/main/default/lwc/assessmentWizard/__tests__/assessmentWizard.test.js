@@ -82,10 +82,29 @@ jest.mock("@salesforce/label/c.AW_PercentComplete", () => ({ default: "% Complet
   virtual: true,
 });
 jest.mock("@salesforce/label/c.AW_StagePrefix", () => ({ default: "Stage" }), { virtual: true });
+// Mock runAutoScan for child wizardStep component
+jest.mock(
+  "@salesforce/apex/AssessmentWizardController.runAutoScan",
+  () => ({ default: jest.fn().mockResolvedValue({}) }),
+  { virtual: true }
+);
+
 jest.mock("@salesforce/label/c.AW_AutoScanRunning", () => ({ default: "Scanning" }), {
   virtual: true,
 });
 jest.mock("@salesforce/label/c.AW_AutoScanComplete", () => ({ default: "Scan complete" }), {
+  virtual: true,
+});
+jest.mock("@salesforce/label/c.AW_AutoScanError", () => ({ default: "Scan error" }), {
+  virtual: true,
+});
+jest.mock("@salesforce/label/c.AW_AutoScanPassCount", () => ({ default: "{0} Passed" }), {
+  virtual: true,
+});
+jest.mock("@salesforce/label/c.AW_AutoScanFailCount", () => ({ default: "{0} Failed" }), {
+  virtual: true,
+});
+jest.mock("@salesforce/label/c.AW_AutoScanNoFindings", () => ({ default: "No findings" }), {
   virtual: true,
 });
 jest.mock("@salesforce/label/c.AW_AttestationPrompt", () => ({ default: "Attest" }), {

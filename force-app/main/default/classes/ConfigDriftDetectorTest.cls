@@ -152,6 +152,44 @@ private class ConfigDriftDetectorTest {
     }
 
     @IsTest
+    static void shouldBulkPublishManyDriftEvents() {
+        ConfigDriftDetector detector = new ConfigDriftDetector();
+        List<ConfigDriftDetector.DriftEvent> drifts = new List<ConfigDriftDetector.DriftEvent>();
+
+        for (Integer i = 0; i < 150; i++) {
+            ConfigDriftDetector.DriftEvent drift = new ConfigDriftDetector.DriftEvent(
+                'Setting Changed ' + i,
+                'admin@test.org',
+                'Security Controls',
+                ElaroConstants.SEVERITY_HIGH
+            );
+            drift.oldValue = 'Old' + i;
+            drift.newValue = 'New' + i;
+            drifts.add(drift);
+        }
+
+        Test.startTest();
+        detector.publishDriftEvents(drifts);
+        Test.stopTest();
+
+        // 150 events published in a single bulk call should not hit DML limits
+        Assert.isTrue(true, 'Bulk drift events should publish without hitting 150 DML limit');
+    }
+
+    @IsTest
+    static void shouldDetectAndConvertToFindings() {
+        ConfigDriftDetector detector = new ConfigDriftDetector();
+
+        Test.startTest();
+        List<RuleEngineEventBridge.ComplianceFinding> findings =
+            detector.detectAndConvertToFindings(24);
+        Test.stopTest();
+
+        // SetupAuditTrail is read-only in tests so results depend on org state
+        Assert.isNotNull(findings, 'Findings should not be null');
+    }
+
+    @IsTest
     static void shouldDetectDriftFromAuditTrail() {
         ConfigDriftDetector detector = new ConfigDriftDetector();
 

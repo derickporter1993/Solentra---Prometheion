@@ -211,6 +211,23 @@ public inherited sharing class BreachPatternMatcher {
     }
 
     /**
+     * Analyzes security events and converts any detected breach patterns into
+     * normalized ComplianceFinding objects via {@link RuleEngineEventBridge}.
+     * This enables the Rule Engine to incorporate breach detection results
+     * into compliance scoring and gap analysis.
+     *
+     * @param events List of SecurityEvent objects to analyze
+     * @return List of ComplianceFinding objects for any detected patterns
+     * @see RuleEngineEventBridge#convertBreachAnalysesToFindings
+     */
+    public static List<RuleEngineEventBridge.ComplianceFinding> analyzeAndConvertToFindings(
+        List<EventCorrelationEngine.SecurityEvent> events
+    ) {
+        List<PatternAnalysis> analyses = analyzeEvents(events);
+        return RuleEngineEventBridge.convertBreachAnalysesToFindings(analyses);
+    }
+
+    /**
      * Checks whether a specific event sequence matches a known pattern.
      * Useful for real-time single-pattern validation without full correlation.
      *

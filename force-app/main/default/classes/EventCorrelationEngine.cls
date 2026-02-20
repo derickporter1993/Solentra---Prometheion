@@ -85,20 +85,14 @@ public inherited sharing class EventCorrelationEngine {
     }
 
     /**
-     * Loads all active correlation rules from Custom Metadata.
+     * Loads all active correlation rules from Custom Metadata. Uses Platform
+     * Cache (60-min TTL) to avoid repeated metadata queries across transactions.
      *
      * @return List of active CorrelationRule objects
      */
     public static List<CorrelationRule> loadActiveRules() {
+        List<Correlation_Rule__mdt> mdtRecords = getCachedCorrelationRules();
         List<CorrelationRule> rules = new List<CorrelationRule>();
-
-        List<Correlation_Rule__mdt> mdtRecords = [
-            SELECT DeveloperName, Rule_Name__c, Event_Sequence__c,
-                   Time_Window_Minutes__c, Severity__c, Description__c, Is_Active__c
-            FROM Correlation_Rule__mdt
-            WHERE Is_Active__c = true
-            WITH USER_MODE
-        ];
 
         for (Correlation_Rule__mdt mdt : mdtRecords) {
             rules.add(new CorrelationRule(mdt));
@@ -109,6 +103,44 @@ public inherited sharing class EventCorrelationEngine {
         });
 
         return rules;
+    }
+
+    /**
+     * Retrieves Correlation_Rule__mdt records from Platform Cache, falling
+     * back to a SOQL query on cache miss. Caches results for 60 minutes
+     * to reduce repeated metadata queries during event correlation.
+     *
+     * @return List of active Correlation_Rule__mdt records
+     */
+    @TestVisible
+    private static List<Correlation_Rule__mdt> getCachedCorrelationRules() {
+        String cacheKey = 'correlationRules';
+        try {
+            Cache.OrgPartition orgPart = Cache.Org.getPartition('local.ElaroCache');
+            List<Correlation_Rule__mdt> cachedRules = (List<Correlation_Rule__mdt>) orgPart.get(cacheKey);
+            if (cachedRules != null) {
+                return cachedRules;
+            }
+        } catch (Exception e) {
+            ElaroLogger.warn(CLASS_NAME + '.getCachedCorrelationRules: Cache read failed, querying directly: ' + e.getMessage());
+        }
+
+        List<Correlation_Rule__mdt> mdtRecords = [
+            SELECT DeveloperName, Rule_Name__c, Event_Sequence__c,
+                   Time_Window_Minutes__c, Severity__c, Description__c, Is_Active__c
+            FROM Correlation_Rule__mdt
+            WHERE Is_Active__c = true
+            WITH USER_MODE
+        ];
+
+        try {
+            Cache.OrgPartition orgPart = Cache.Org.getPartition('local.ElaroCache');
+            orgPart.put(cacheKey, mdtRecords, 3600); // 60-min TTL
+        } catch (Exception e) {
+            ElaroLogger.warn(CLASS_NAME + '.getCachedCorrelationRules: Cache write failed: ' + e.getMessage());
+        }
+
+        return mdtRecords;
     }
 
     /**
@@ -232,20 +264,25 @@ public inherited sharing class EventCorrelationEngine {
     }
 
     /**
-     * Publishes correlation results as BreachIndicator__e Platform Events.
+     * Publishes correlation results as BreachIndicator__e Platform Events in a single
+     * bulk {@link ComplianceAlertPublisher#publishBreachIndicators} call. Collects all
+     * events into a list first to avoid hitting the 150 DML limit that individual
+     * EventBus.publish calls inside a loop would cause.
      *
      * @param results List of CorrelationResult objects to publish
      */
     private static void publishCorrelationResults(List<CorrelationResult> results) {
+        List<BreachIndicator__e> events = new List<BreachIndicator__e>();
         for (CorrelationResult result : results) {
-            ComplianceAlertPublisher.publishBreachIndicator(
-                result.ruleName,
-                result.severity,
-                JSON.serialize(result.matchedEvents),
-                result.timeWindowMinutes,
-                result.userId
-            );
+            events.add(new BreachIndicator__e(
+                Pattern_Name__c = result.ruleName,
+                Severity__c = result.severity ?? ElaroConstants.SEVERITY_CRITICAL,
+                Event_Sequence__c = JSON.serialize(result.matchedEvents),
+                Time_Window_Minutes__c = result.timeWindowMinutes,
+                Affected_User_Id__c = result.userId
+            ));
         }
+        ComplianceAlertPublisher.publishBreachIndicators(events);
     }
 
     /**

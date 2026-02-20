@@ -1,0 +1,5 @@
+/* Public view layout */
+.trust-center-public {
+  min-height: 400px;
+  background: var(--lwc-colorBackgroundAlt, #ffffff);
+}

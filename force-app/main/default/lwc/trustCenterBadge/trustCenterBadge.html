@@ -1,0 +1,53 @@
+<template>
+    <article class={badgeCardClass} role="region" aria-label={frameworkName}>
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <span class={iconContainerClass}>
+                        <lightning-icon
+                            icon-name={statusIcon}
+                            size="small"
+                            alternative-text={statusLabel}>
+                        </lightning-icon>
+                    </span>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span class="slds-text-heading_small slds-truncate" title={frameworkName}>
+                            {frameworkName}
+                        </span>
+                    </h2>
+                </div>
+                <div class="slds-no-flex">
+                    <span class={statusBadgeClass}>{statusLabel}</span>
+                </div>
+            </header>
+        </div>
+        <div class="slds-card__body slds-card__body_inner">
+            <!-- Compliance Score -->
+            <div class="slds-m-bottom_small">
+                <div class="slds-grid slds-grid_align-spread slds-m-bottom_xx-small">
+                    <span class="slds-text-body_small slds-text-color_weak">{label.TC_ComplianceScore}</span>
+                    <span class={scoreTextClass}>{formattedPercentage}%</span>
+                </div>
+                <div class="slds-progress-bar slds-progress-bar_circular" aria-valuemin="0" aria-valuemax="100" aria-valuenow={compliancePercentage} aria-label={progressBarLabel} role="progressbar">
+                    <span class={progressBarClass} style={progressBarStyle}>
+                        <span class="slds-assistive-text">{formattedPercentage}%</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Certification Status -->
+            <div class="slds-grid slds-grid_align-spread slds-m-bottom_xx-small">
+                <span class="slds-text-body_small slds-text-color_weak">{label.TC_CertificationStatus}</span>
+                <span class="slds-text-body_small">{certificationDisplayValue}</span>
+            </div>
+
+            <!-- Last Audit Date -->
+            <div class="slds-grid slds-grid_align-spread">
+                <span class="slds-text-body_small slds-text-color_weak">{label.TC_LastAuditDate}</span>
+                <span class="slds-text-body_small">{formattedAuditDate}</span>
+            </div>
+        </div>
+    </article>
+</template>

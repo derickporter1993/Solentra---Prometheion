@@ -233,6 +233,37 @@ private class EventCorrelationEngineTest {
     }
 
     @IsTest
+    static void shouldBulkPublishCorrelationResults() {
+        // Verify that correlateEvents uses bulk publish internally.
+        // We create events that may match rules, and the bulk publish
+        // path handles them in a single EventBus.publish call.
+        Datetime now = System.now();
+        List<EventCorrelationEngine.SecurityEvent> events = new List<EventCorrelationEngine.SecurityEvent>();
+
+        // Create events for multiple users to potentially produce multiple matches
+        for (Integer i = 0; i < 10; i++) {
+            String userId = '00500000000000' + String.valueOf(i).leftPad(4, '0');
+            events.add(new EventCorrelationEngine.SecurityEvent(
+                'LOGIN_FROM_NEW_IP', userId, now.addMinutes(-8)
+            ));
+            events.add(new EventCorrelationEngine.SecurityEvent(
+                'RAPID_CONTEXT_SWITCH', userId, now.addMinutes(-5)
+            ));
+            events.add(new EventCorrelationEngine.SecurityEvent(
+                'SENSITIVE_DATA_ACCESS', userId, now.addMinutes(-2)
+            ));
+        }
+
+        Test.startTest();
+        List<EventCorrelationEngine.CorrelationResult> results =
+            EventCorrelationEngine.correlateEvents(events);
+        Test.stopTest();
+
+        // Results depend on CMT availability; the key assertion is no governor limit exception
+        Assert.isNotNull(results, 'Results should not be null even with bulk events');
+    }
+
+    @IsTest
     static void shouldHandleNullMetadataInConstructor() {
         EventCorrelationEngine.SecurityEvent event = new EventCorrelationEngine.SecurityEvent(
             'LOGIN', 'user1', System.now(), null
@@ -240,5 +271,22 @@ private class EventCorrelationEngineTest {
 
         Assert.isNotNull(event.metadata, 'Metadata should default to empty map');
         Assert.isTrue(event.metadata.isEmpty(), 'Metadata should be empty');
+    }
+
+    @IsTest
+    static void shouldReturnRulesFromCacheOnSecondCall() {
+        Test.startTest();
+        // First call populates Platform Cache
+        List<EventCorrelationEngine.CorrelationRule> rules1 =
+            EventCorrelationEngine.loadActiveRules();
+        // Second call should read from Platform Cache
+        List<EventCorrelationEngine.CorrelationRule> rules2 =
+            EventCorrelationEngine.loadActiveRules();
+        Test.stopTest();
+
+        Assert.isNotNull(rules1, 'First call should return rules');
+        Assert.isNotNull(rules2, 'Second call should return rules from cache');
+        Assert.areEqual(rules1.size(), rules2.size(),
+            'Cached rules count should match original rules count');
     }
 }

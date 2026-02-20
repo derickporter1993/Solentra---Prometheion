@@ -140,4 +140,100 @@ private class AssessmentWizardControllerTest {
 
         Assert.isNotNull(ss, 'SessionSummary should construct');
     }
+
+    @IsTest
+    static void shouldRunAutoScanWithValidControls() {
+        Compliance_Assessment_Session__c session = new Compliance_Assessment_Session__c(
+            Wizard_Name__c = 'SOC2_Assessment',
+            Framework__c = 'SOC2',
+            Current_Stage__c = 1,
+            Current_Step__c = 1,
+            Status__c = 'In Progress',
+            Percent_Complete__c = 0,
+            Session_State__c = '{}',
+            Assigned_To__c = UserInfo.getUserId()
+        );
+        insert as user session;
+
+        Test.startTest();
+        Map<String, String> results = AssessmentWizardController.runAutoScan(
+            session.Id, 'SOC2_Access_Control_Scan', 'SOC2-CC6.1,SOC2-CC6.2'
+        );
+        Test.stopTest();
+
+        Assert.isNotNull(results, 'Should return scan results');
+        Assert.areEqual(2, results.size(), 'Should scan 2 controls');
+        Assert.isTrue(results.containsKey('SOC2-CC6.1'), 'Should have CC6.1 result');
+        Assert.isTrue(results.containsKey('SOC2-CC6.2'), 'Should have CC6.2 result');
+    }
+
+    @IsTest
+    static void shouldRunAutoScanWithSingleControl() {
+        Compliance_Assessment_Session__c session = new Compliance_Assessment_Session__c(
+            Wizard_Name__c = 'HIPAA_Assessment',
+            Framework__c = 'HIPAA',
+            Current_Stage__c = 1,
+            Current_Step__c = 1,
+            Status__c = 'In Progress',
+            Percent_Complete__c = 0,
+            Session_State__c = '{}',
+            Assigned_To__c = UserInfo.getUserId()
+        );
+        insert as user session;
+
+        Test.startTest();
+        Map<String, String> results = AssessmentWizardController.runAutoScan(
+            session.Id, 'HIPAA_Access_Control_Scan', 'HIPAA-164.308'
+        );
+        Test.stopTest();
+
+        Assert.isNotNull(results, 'Should return scan results');
+        Assert.areEqual(1, results.size(), 'Should scan 1 control');
+        Assert.isTrue(results.containsKey('HIPAA-164.308'), 'Should have HIPAA-164.308 result');
+        String result = results.get('HIPAA-164.308');
+        Assert.isTrue(
+            result == 'PASS' || result == 'FAIL' || result == 'NOT_APPLICABLE',
+            'Result should be PASS, FAIL, or NOT_APPLICABLE, got: ' + result
+        );
+    }
+
+    @IsTest
+    static void shouldRunAutoScanWithBlankControlReferences() {
+        Compliance_Assessment_Session__c session = new Compliance_Assessment_Session__c(
+            Wizard_Name__c = 'SOC2_Assessment',
+            Framework__c = 'SOC2',
+            Current_Stage__c = 1,
+            Current_Step__c = 1,
+            Status__c = 'In Progress',
+            Percent_Complete__c = 0,
+            Session_State__c = '{}',
+            Assigned_To__c = UserInfo.getUserId()
+        );
+        insert as user session;
+
+        Test.startTest();
+        Map<String, String> results = AssessmentWizardController.runAutoScan(
+            session.Id, 'SOC2_Scan_Step', ''
+        );
+        Test.stopTest();
+
+        Assert.isNotNull(results, 'Should return results map even for blank controls');
+        Assert.isTrue(results.isEmpty(), 'Should be empty for blank control references');
+    }
+
+    @IsTest
+    static void shouldThrowOnAutoScanWithInvalidSession() {
+        Id fabricatedId = Compliance_Assessment_Session__c.SObjectType.getDescribe().getKeyPrefix() + '000000000000';
+
+        Test.startTest();
+        try {
+            AssessmentWizardController.runAutoScan(
+                fabricatedId, 'some_step', 'SOC2-CC6.1'
+            );
+            Assert.fail('Should throw exception for invalid session');
+        } catch (AuraHandledException e) {
+            Assert.isNotNull(e.getMessage(), 'Should have error message');
+        }
+        Test.stopTest();
+    }
 }
