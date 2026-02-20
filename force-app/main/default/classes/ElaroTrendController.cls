@@ -84,7 +84,8 @@ public with sharing class ElaroTrendController {
                 qwb.query, qwb.binds, AccessLevel.USER_MODE
             );
         } catch (Exception e) {
-            throw new AuraHandledException('Trend query failed: ' + e.getMessage());
+            ElaroLogger.error('ElaroTrendController.getTimeSeries', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to execute the trend query. Please verify you have the required permissions and try again.');
         }
 
         // Transform to trend data
