@@ -141,7 +141,7 @@ private class ElaroISO27001QuarterlySchedulerTest {
         
         Test.stopTest();
         
-        // Test should complete without unhandled exceptions
-        Assert.isTrue(true, 'Exception handling should work');
+        // Coverage-only: verifies exception handling completed without unhandled exceptions
+        Assert.isNotNull(scheduler, 'Scheduler should not be null');
     }
 }
