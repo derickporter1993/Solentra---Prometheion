@@ -75,11 +75,16 @@ coverage/
 sf/
 scanner-reports/
 
+# Turborepo
+.turbo/
+
+# Claude Code / AI tooling
+.claude/worktrees/
+.gsd/
+.planning/
+
 # Temporary documentation and analysis files
 FAILED_PRS_SUMMARY.md
 *_TEMP.md
 *_ANALYSIS.md
 *_SUMMARY.md
-
-# Legacy directories (consider removing)
-# Sentinel-main/
