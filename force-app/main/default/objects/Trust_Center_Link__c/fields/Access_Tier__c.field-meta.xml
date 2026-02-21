@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Field xmlns="http://soap.sforce.com/2006/04/metadata">
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Access_Tier__c</fullName>
     <label>Access Tier</label>
     <required>true</required>
@@ -26,4 +26,4 @@
         </valueSetDefinition>
     </valueSet>
     <description>Access tier determines what data is visible and whether user identification is required</description>
-</Field>
+</CustomField>

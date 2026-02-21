@@ -1,0 +1,9 @@
+A SEC cybersecurity disclosure requires your review and approval.
+
+Workflow: {!Disclosure_Workflow__c.Name}
+Form Type: {!Disclosure_Workflow__c.Form_Type__c}
+Current Status: {!Disclosure_Workflow__c.Status__c}
+
+Please log in to Salesforce to review and approve or reject this disclosure.
+
+This is an automated notification from the Elaro SEC Cybersecurity Disclosure Module.

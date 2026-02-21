@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Field xmlns="http://soap.sforce.com/2006/04/metadata">
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Framework__c</fullName>
     <label>Framework</label>
     <required>true</required>
@@ -55,4 +55,4 @@
             </value>
         </valueSetDefinition>
     </valueSet>
-</Field>
+</CustomField>

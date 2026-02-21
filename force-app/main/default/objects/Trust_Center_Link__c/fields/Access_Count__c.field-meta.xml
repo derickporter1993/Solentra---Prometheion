@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Field xmlns="http://soap.sforce.com/2006/04/metadata">
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Access_Count__c</fullName>
     <label>Access Count</label>
     <precision>18</precision>
@@ -8,4 +8,4 @@
     <defaultValue>0</defaultValue>
     <type>Number</type>
     <description>Number of times this link has been accessed. Incremented on each valid view.</description>
-</Field>
+</CustomField>

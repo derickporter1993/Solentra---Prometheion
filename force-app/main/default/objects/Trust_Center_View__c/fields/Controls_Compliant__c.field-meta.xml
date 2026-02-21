@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Field xmlns="http://soap.sforce.com/2006/04/metadata">
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Controls_Compliant__c</fullName>
     <label>Controls Compliant</label>
     <precision>18</precision>
@@ -7,4 +7,4 @@
     <required>false</required>
     <type>Number</type>
     <description>Number of compliant controls</description>
-</Field>
+</CustomField>
