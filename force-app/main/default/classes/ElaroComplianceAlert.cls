@@ -136,11 +136,12 @@ public with sharing class ElaroComplianceAlert {
             this.alertDataJson = alertDataJson;
         }
         
+        /** Routes the alert to the configured channel (Email, Slack, PagerDuty, or Bell). */
         public void execute(QueueableContext context) {
             System.attachFinalizer(new AlertNotificationQueueableFinalizer());
             try {
                 Map<String, Object> alertData = (Map<String, Object>)JSON.deserializeUntyped(alertDataJson);
-                
+
                 switch on channel.toUpperCase() {
                     when 'EMAIL' {
                         sendEmailAlert(alertData);

@@ -301,6 +301,7 @@ public with sharing class ElaroDailyDigest implements Schedulable {
             this.digest = digest;
         }
         
+        /** Builds the Slack Block Kit message from digest data and sends it via webhook. */
         public void execute(QueueableContext context) {
             System.attachFinalizer(new SlackDigestQueueableFinalizer());
             try {

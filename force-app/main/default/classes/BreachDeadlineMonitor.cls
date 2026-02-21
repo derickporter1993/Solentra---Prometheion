@@ -17,9 +17,7 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
     private static final Integer CRITICAL_DAYS_BEFORE = 7; // Critical alert 1 week before
     private static final Integer HHS_THRESHOLD = 500; // HHS immediate notification threshold
 
-    /**
-     * Schedulable execute method
-     */
+    /** Triggers breach deadline monitoring, delegating to a Queueable for async execution. */
     public void execute(SchedulableContext ctx) {
         // Run in Queueable context for better error handling and monitoring
         if (!Test.isRunningTest()) {
@@ -31,10 +29,11 @@ public with sharing class BreachDeadlineMonitor implements Schedulable {
     }
 
     /**
-     * Queueable implementation for breach deadline monitoring
-     * Provides better error handling, chaining, and monitoring than @future
+     * @description Queueable implementation for breach deadline monitoring.
+     * Provides better error handling, chaining, and monitoring than @future.
      */
     public class BreachDeadlineQueueable implements Queueable {
+        /** Runs the full breach deadline monitoring process asynchronously. */
         public void execute(QueueableContext context) {
             System.attachFinalizer(new BreachDeadlineQueueableFinalizer());
             try {

@@ -1,3 +1,10 @@
+/**
+ * Slack notification service for Elaro compliance alerts and performance monitoring.
+ * Supports plain text, rich Block Kit, bulk, and performance-specific notifications.
+ *
+ * @author Elaro Team
+ * @group Integrations
+ */
 public with sharing class SlackNotifier {
 
     /**

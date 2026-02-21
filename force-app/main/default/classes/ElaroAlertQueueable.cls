@@ -11,6 +11,7 @@ public with sharing class ElaroAlertQueueable implements Queueable, Database.All
         this.queueItem = queueItem;
     }
     
+    /** Processes the queued alert item by building alert metadata and dispatching the notification. */
     public void execute(QueueableContext context) {
         System.attachFinalizer(new ElaroAlertQueueableFinalizer());
         if (queueItem == null) {

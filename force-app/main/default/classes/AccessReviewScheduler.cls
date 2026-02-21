@@ -15,9 +15,7 @@ public with sharing class AccessReviewScheduler implements Schedulable {
     private static final Integer DEFAULT_REVIEW_CYCLE_DAYS = 90;
     private static final String JOB_NAME = 'Elaro Access Review';
 
-    /**
-     * Schedulable execute method
-     */
+    /** Triggers the access review process, delegating to a Queueable for async execution. */
     public void execute(SchedulableContext ctx) {
         // Run in Queueable context for better error handling and monitoring
         if (!Test.isRunningTest()) {
@@ -29,10 +27,11 @@ public with sharing class AccessReviewScheduler implements Schedulable {
     }
 
     /**
-     * Queueable implementation for access review processing
-     * Provides better error handling, chaining, and monitoring than @future
+     * @description Queueable implementation for access review processing.
+     * Provides better error handling, chaining, and monitoring than @future.
      */
     public class AccessReviewQueueable implements Queueable {
+        /** Runs the full access review process asynchronously. */
         public void execute(QueueableContext context) {
             System.attachFinalizer(new AccessReviewQueueableFinalizer());
             try {

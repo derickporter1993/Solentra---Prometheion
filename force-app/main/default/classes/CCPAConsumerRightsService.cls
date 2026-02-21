@@ -14,6 +14,7 @@ public with sharing class CCPAConsumerRightsService extends ComplianceServiceBas
     
     private static final String FRAMEWORK = 'CCPA';
     
+    /** {@inheritDoc} Returns 'CCPA'. */
     protected override String getFrameworkName() {
         return FRAMEWORK;
     }
