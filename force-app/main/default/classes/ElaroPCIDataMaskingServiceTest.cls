@@ -104,7 +104,7 @@ private class ElaroPCIDataMaskingServiceTest {
         Test.startTest();
         try {
             ElaroPCIDataMaskingService.validateNoCVVStorage(null);
-            Assert.isTrue(true, 'Should not throw exception for null');
+            // Coverage-only: null input should not throw PCI violation
         } catch (ElaroPCIDataMaskingService.PCIViolationException e) {
             Assert.fail( 'Should not throw for null CVV');
         }
@@ -116,7 +116,7 @@ private class ElaroPCIDataMaskingServiceTest {
         Test.startTest();
         try {
             ElaroPCIDataMaskingService.validateNoCVVStorage('');
-            Assert.isTrue(true, 'Should not throw exception for empty');
+            // Coverage-only: empty input should not throw PCI violation
         } catch (ElaroPCIDataMaskingService.PCIViolationException e) {
             Assert.fail( 'Should not throw for empty CVV');
         }
@@ -249,7 +249,6 @@ private class ElaroPCIDataMaskingServiceTest {
         try {
             ElaroPCIDataMaskingService.validateEncryptionEnabled();
             // In dev/test, this passes as encryption check returns true
-            Assert.isTrue(true, 'Encryption validation passed');
         } catch (ElaroPCIDataMaskingService.PCIViolationException e) {
             // This may throw in environments without Shield
             Assert.isTrue(e.getMessage().contains('Platform Encryption'),

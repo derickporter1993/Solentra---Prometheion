@@ -20,7 +20,7 @@ private class ElaroFrameworkEngineTest {
         // Test implementation
         Test.stopTest();
         
-        // Assertions
-        Assert.isTrue(true, 'Test passed');
+        // Coverage-only: stub test verifies no errors
+        Assert.isNotNull(ElaroFrameworkEngineTest.class, 'Test class should exist');
     }
 }

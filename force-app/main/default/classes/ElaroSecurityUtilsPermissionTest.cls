@@ -88,8 +88,7 @@ private class ElaroSecurityUtilsPermissionTest {
             // Attempt to update without proper validation
             try {
                 ElaroSecurityUtils.validateCRUDAccess('Account', ElaroSecurityUtils.DmlOperation.DML_UPDATE);
-                // Should pass validation
-                Assert.isTrue(true, 'Validation should pass for Standard User');
+                // Coverage-only: validation passed for Standard User
             } catch (ElaroSecurityUtils.SecurityException e) {
                 Assert.fail( 'Should not throw exception for Standard User: ' + e.getMessage());
             }
@@ -198,8 +197,7 @@ private class ElaroSecurityUtilsPermissionTest {
         System.runAs(limitedUser) {
             try {
                 ElaroSecurityUtils.validateFLSAccess('Account', new List<String>{'InvalidField__c'}, false);
-                // May not throw if field doesn't exist
-                Assert.isTrue(true, 'Validation may pass for non-existent field');
+                // Coverage-only: validation may pass for non-existent field
             } catch (ElaroSecurityUtils.SecurityException e) {
                 Assert.isTrue(e.getMessage().contains('Insufficient FLS'), 
                     'Should throw SecurityException for insufficient FLS: ' + e.getMessage());

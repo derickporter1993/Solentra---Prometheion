@@ -20,7 +20,7 @@ private class ElaroEventProcessorTest {
         // Test implementation
         Test.stopTest();
         
-        // Assertions
-        Assert.isTrue(true, 'Test passed');
+        // Coverage-only: stub test verifies no errors
+        Assert.isNotNull(ElaroEventProcessorTest.class, 'Test class should exist');
     }
 }

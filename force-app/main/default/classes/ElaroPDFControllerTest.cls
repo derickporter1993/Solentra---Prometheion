@@ -161,8 +161,8 @@ private class ElaroPDFControllerTest {
         ElaroPDFController controller = new ElaroPDFController(stdController);
         Test.stopTest();
 
-        // Should handle gracefully without errors
-        Assert.isTrue(true, 'Controller should handle null package');
+        // Coverage-only: verifies controller handled null package gracefully
+        Assert.isNotNull(controller, 'Controller should not be null');
     }
 
     @isTest

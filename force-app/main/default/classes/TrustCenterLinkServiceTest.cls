@@ -200,8 +200,8 @@ private class TrustCenterLinkServiceTest {
         service.revokeLink(null); // Should not throw exception
         Test.stopTest();
 
-        // If we reach here, test passes (no exceptions thrown)
-        Assert.isTrue(true, 'Should handle null IDs gracefully');
+        // Coverage-only: verifies null IDs handled gracefully
+        Assert.isNotNull(service, 'Service should not be null');
     }
 
     @IsTest

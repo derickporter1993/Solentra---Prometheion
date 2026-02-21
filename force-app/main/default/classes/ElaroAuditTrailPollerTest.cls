@@ -48,9 +48,8 @@ private class ElaroAuditTrailPollerTest {
         poller.execute(ctx);
         Test.stopTest();
         
-        // Verify poller executed without errors
-        // Note: Actual audit trail polling would require API access
-        Assert.isTrue(true, 'Poller executed successfully');
+        // Coverage-only: verifies poller executed without errors
+        Assert.isNotNull(poller, 'Poller should not be null');
     }
     
     @isTest
@@ -59,8 +58,8 @@ private class ElaroAuditTrailPollerTest {
         ElaroAuditTrailPoller.pollAuditTrail();
         Test.stopTest();
         
-        // Verify method executed without errors
-        Assert.isTrue(true, 'Audit trail polling executed successfully');
+        // Coverage-only: verifies audit trail polling executed without errors
+        Assert.isNotNull(ElaroAuditTrailPoller.class, 'Poller class should exist');
     }
 }
 

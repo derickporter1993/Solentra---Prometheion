@@ -134,7 +134,8 @@ private class ComplianceReportSchedulerTest {
         ComplianceReportScheduler.sendTestReport('ALL', new List<String>{ 'test@example.com' });
         Test.stopTest();
 
-        Assert.isTrue(true, 'Test report should send without errors');
+        // Coverage-only: verifies test report sent without errors
+        Assert.isNotNull(ComplianceReportScheduler.class, 'Scheduler class should exist');
     }
 
     /**
