@@ -9,7 +9,7 @@
  * @group Compliance Framework
  */
 @IsTest
-public inherited sharing class ComplianceTestDataFactory {
+public class ComplianceTestDataFactory {
     
     /**
      * Create test compliance gaps for a framework

@@ -7,7 +7,7 @@
  * @version 1.0
  */
 @IsTest(testFor=HIPAAPrivacyRuleService.class)
-public inherited sharing class HIPAAPrivacyRuleServiceTest {
+public class HIPAAPrivacyRuleServiceTest {
 
     @TestSetup
     static void setup() {

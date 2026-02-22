@@ -5,7 +5,7 @@
  * @since v1.0.0 (Spring '26)
  * @group Health Check
  */
-public inherited sharing class ScanFinding {
+public class ScanFinding {
 
     @AuraEnabled
     public String category { get; set; }

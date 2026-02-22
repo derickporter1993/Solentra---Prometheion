@@ -7,7 +7,7 @@
  * @version 1.0
  */
 @IsTest(testFor=HIPAAAuditControlService.class)
-public inherited sharing class HIPAAAuditControlServiceTest {
+public class HIPAAAuditControlServiceTest {
 
     @TestSetup
     static void setup() {

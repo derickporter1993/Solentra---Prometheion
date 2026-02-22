@@ -7,7 +7,7 @@
  * @version 1.0
  */
 @IsTest(testFor=HIPAABreachNotificationService.class)
-public inherited sharing class HIPAABreachNotificationServiceTest {
+public class HIPAABreachNotificationServiceTest {
 
     @TestSetup
     static void setup() {

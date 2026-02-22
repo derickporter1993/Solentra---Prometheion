@@ -193,20 +193,16 @@ private class ElaroPCIAccessLoggerTest {
 
     @IsTest
     static void testLoggingWithNullRecordId() {
-        Exception caughtEx;
         Test.startTest();
-        try {
-            ElaroPCIAccessLogger.logPaymentDataAccess(
-                null,
-                'Query',
-                'Query with null record ID'
-            );
-        } catch (Exception e) {
-            caughtEx = e;
-        }
+        ElaroPCIAccessLogger.logPaymentDataAccess(
+            null,
+            'Query',
+            'Query with null record ID'
+        );
         Test.stopTest();
 
-        Assert.isNull(caughtEx, 'Should handle null record ID gracefully without throwing');
+        // Verify null record ID is handled gracefully without exception
+        // Method should complete successfully even with null parameter
     }
 
     @IsTest

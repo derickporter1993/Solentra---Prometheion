@@ -19,7 +19,7 @@
  * }
  */
 @IsTest
-public inherited sharing class ElaroTestUserFactory {
+public class ElaroTestUserFactory {
 
     private static Integer userCounter = 0;
 

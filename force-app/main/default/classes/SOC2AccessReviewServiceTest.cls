@@ -7,7 +7,7 @@
  * @version 1.0
  */
 @IsTest(testFor=SOC2AccessReviewService.class)
-public inherited sharing class SOC2AccessReviewServiceTest {
+public class SOC2AccessReviewServiceTest {
 
     @TestSetup
     static void setup() {

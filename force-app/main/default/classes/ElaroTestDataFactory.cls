@@ -5,7 +5,7 @@
  * @author Elaro Team
  */
 @IsTest
-public inherited sharing class ElaroTestDataFactory {
+public class ElaroTestDataFactory {
     
     // ═══════════════════════════════════════════════════════════════
     // MOCK EVENT DATA
