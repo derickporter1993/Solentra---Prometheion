@@ -4,8 +4,9 @@
  * Provides centralized error logging, success logging, and configuration
  * retrieval from Custom Metadata for all Elaro schedulers.
  *
- * Security: Uses 'without sharing' to ensure error logging always works
- * regardless of user permissions. This is intentional for system-level logging.
+ * SECURITY: without sharing required because error logging must succeed
+ * regardless of the running user's record access to ensure system-level
+ * scheduler failures are always captured.
  *
  * @author Elaro
  * @version 1.0

@@ -24,8 +24,8 @@ public with sharing class ElaroSlackNotifierQueueable implements Queueable, Data
      */
     public ElaroSlackNotifierQueueable(String payload, Integer retryCount, String correlationId) {
         this.payload = payload;
-        this.retryCount = retryCount != null ? retryCount : 0;
-        this.correlationId = correlationId != null ? correlationId : generateCorrelationId();
+        this.retryCount = retryCount ?? 0;
+        this.correlationId = correlationId ?? generateCorrelationId();
     }
 
     /**

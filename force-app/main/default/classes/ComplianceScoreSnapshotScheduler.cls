@@ -127,7 +127,7 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
             if (service != null) {
                 result.score = service.getComplianceScore();
                 List<ComplianceServiceBase.Violation> violations = service.getViolations();
-                result.violationCount = violations != null ? violations.size() : 0;
+                result.violationCount = violations?.size() ?? 0;
             }
 
             // Count active gaps for this framework (exclude verified/accepted)
@@ -402,7 +402,7 @@ public with sharing class ComplianceScoreSnapshotScheduler implements Schedulabl
             trend.date = score.Evaluation_Date__c.date();
             trend.score = score.Score__c;
             trend.status = score.Status__c;
-            trend.gapCount = score.Gaps_Count__c != null ? score.Gaps_Count__c.intValue() : 0;
+            trend.gapCount = (score.Gaps_Count__c ?? 0).intValue();
             trends.add(trend);
         }
 

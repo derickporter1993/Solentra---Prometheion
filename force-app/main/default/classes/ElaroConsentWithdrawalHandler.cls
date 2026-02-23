@@ -107,7 +107,7 @@ public with sharing class ElaroConsentWithdrawalHandler {
         for (Consent__c consent : withdrawnConsents) {
             String contactEmail = contactEmailMap.get(consent.Contact__c);
             events.add(new GDPR_Erasure_Event__e(
-                Contact_Email__c = contactEmail != null ? contactEmail : '',
+                Contact_Email__c = contactEmail ?? '',
                 Deletion_Date__c = now,
                 Records_Deleted__c = String.valueOf(0),
                 Audit_Log_Id__c = 'CONSENT-WITHDRAWAL-' + String.valueOf(consent.Id)

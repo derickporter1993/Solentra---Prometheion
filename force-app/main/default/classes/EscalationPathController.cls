@@ -14,21 +14,26 @@ public with sharing class EscalationPathController {
      */
     @AuraEnabled(cacheable=true)
     public static List<Elaro_Escalation_Path__c> getPaths() {
-        List<Elaro_Escalation_Path__c> paths = [
-            SELECT Id, Name, User__c, User__r.Name, User__r.Email,
-                   Level__c, Role__c, Notification_Method__c,
-                   Escalation_Delay_Minutes__c, Active__c
-            FROM Elaro_Escalation_Path__c
-            WITH USER_MODE
-            ORDER BY Level__c ASC, Role__c ASC
-            LIMIT 100
-        ];
+        try {
+            List<Elaro_Escalation_Path__c> paths = [
+                SELECT Id, Name, User__c, User__r.Name, User__r.Email,
+                       Level__c, Role__c, Notification_Method__c,
+                       Escalation_Delay_Minutes__c, Active__c
+                FROM Elaro_Escalation_Path__c
+                WITH USER_MODE
+                ORDER BY Level__c ASC, Role__c ASC
+                LIMIT 100
+            ];
 
-        // Strip inaccessible fields for FLS security
-        return (List<Elaro_Escalation_Path__c>) ElaroSecurityUtils.stripInaccessibleFields(
-            AccessType.READABLE,
-            paths
-        );
+            // Strip inaccessible fields for FLS security
+            return (List<Elaro_Escalation_Path__c>) ElaroSecurityUtils.stripInaccessibleFields(
+                AccessType.READABLE,
+                paths
+            );
+        } catch (Exception e) {
+            ElaroLogger.error('EscalationPathController.getPaths', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to retrieve escalation paths. Please verify your permissions and try again.');
+        }
     }
 
     /**
@@ -38,10 +43,16 @@ public with sharing class EscalationPathController {
      */
     @AuraEnabled
     public static Id createPath(Elaro_Escalation_Path__c path) {
-        validatePath(path);
-
-        insert as user path;
-        return path.Id;
+        try {
+            validatePath(path);
+            insert as user path;
+            return path.Id;
+        } catch (AuraHandledException e) {
+            throw e;
+        } catch (Exception e) {
+            ElaroLogger.error('EscalationPathController.createPath', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to create the escalation path. Please verify your inputs and try again.');
+        }
     }
 
     /**
@@ -50,9 +61,15 @@ public with sharing class EscalationPathController {
      */
     @AuraEnabled
     public static void updatePath(Elaro_Escalation_Path__c path) {
-        validatePath(path);
-
-        update as user path;
+        try {
+            validatePath(path);
+            update as user path;
+        } catch (AuraHandledException e) {
+            throw e;
+        } catch (Exception e) {
+            ElaroLogger.error('EscalationPathController.updatePath', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to update the escalation path. Please verify your inputs and try again.');
+        }
     }
 
     /**
@@ -61,7 +78,12 @@ public with sharing class EscalationPathController {
      */
     @AuraEnabled
     public static void deletePath(Id pathId) {
-        delete as user [SELECT Id FROM Elaro_Escalation_Path__c WHERE Id = :pathId WITH USER_MODE];
+        try {
+            delete as user [SELECT Id FROM Elaro_Escalation_Path__c WHERE Id = :pathId WITH USER_MODE];
+        } catch (Exception e) {
+            ElaroLogger.error('EscalationPathController.deletePath', e.getMessage(), e.getStackTraceString());
+            throw new AuraHandledException('Unable to delete the escalation path. Please verify your permissions and try again.');
+        }
     }
 
     /**

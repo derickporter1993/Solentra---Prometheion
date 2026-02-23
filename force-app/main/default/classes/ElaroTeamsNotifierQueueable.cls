@@ -24,8 +24,8 @@ public with sharing class ElaroTeamsNotifierQueueable implements Queueable, Data
      */
     public ElaroTeamsNotifierQueueable(String payload, Integer retryCount, String correlationId) {
         this.payload = payload;
-        this.retryCount = retryCount != null ? retryCount : 0;
-        this.correlationId = correlationId != null ? correlationId : generateCorrelationId();
+        this.retryCount = retryCount ?? 0;
+        this.correlationId = correlationId ?? generateCorrelationId();
     }
 
     /**

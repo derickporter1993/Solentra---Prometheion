@@ -1,9 +1,7 @@
 /**
- * ElaroScoreCallback
- * 
  * REST endpoint that receives score results from AWS Lambda and updates
  * Compliance_Score__c records. Also publishes Platform Events for real-time UI updates.
- * 
+ *
  * Security Features:
  * - API key authentication via Custom Metadata
  * - Replay protection (timestamp + nonce validation)
@@ -11,9 +9,14 @@
  * - Rate limiting via Platform Cache
  * - Correlation IDs for audit logging
  * - Sanitized error responses (no stack traces)
- * 
- * External API callback runs in system context for Compliance_Score__c updates.
+ *
+ * SECURITY: without sharing required because this external API callback must
+ * upsert Compliance_Score__c records regardless of the calling context.
  * CRUD/FLS is enforced via Security.stripInaccessible and AccessLevel.USER_MODE.
+ *
+ * @author Elaro Team
+ * @since v3.1.0 (Spring '26)
+ * @group Compliance Framework
  */
 @RestResource(urlMapping='/elaro/score/callback')
 global without sharing class ElaroScoreCallback {
@@ -312,7 +315,7 @@ global without sharing class ElaroScoreCallback {
             return forwardedFor.split(',')[0].trim();
         }
         // Fallback to remote address
-        return req.remoteAddress != null ? req.remoteAddress : 'unknown';
+        return req.remoteAddress ?? 'unknown';
     }
     
     /**

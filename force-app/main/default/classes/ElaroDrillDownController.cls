@@ -69,7 +69,7 @@ public with sharing class ElaroDrillDownController {
         // Set pagination defaults
         Integer pageSize = ctx.pageSize != null ?
             Math.min(ctx.pageSize, MAX_PAGE_SIZE) : DEFAULT_PAGE_SIZE;
-        Integer offset = ctx.offset != null ? ctx.offset : 0;
+        Integer offset = ctx.offset ?? 0;
 
         // Build and execute query
         QueryWithBinds qwb = buildSecureQuery(ctx, pageSize, offset);

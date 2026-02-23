@@ -119,7 +119,7 @@ public with sharing class ComplianceReportGenerator {
         };
 
         for (Compliance_Gap__c gap : gaps) {
-            String severity = gap.Severity__c != null ? gap.Severity__c : 'Medium';
+            String severity = gap.Severity__c ?? 'Medium';
             if (counts.containsKey(severity)) {
                 counts.put(severity, counts.get(severity) + 1);
             }
@@ -135,7 +135,7 @@ public with sharing class ComplianceReportGenerator {
         Map<String, Integer> counts = new Map<String, Integer>();
 
         for (Compliance_Gap__c gap : gaps) {
-            String fw = gap.Framework__c != null ? gap.Framework__c : 'Unknown';
+            String fw = gap.Framework__c ?? 'Unknown';
             if (!counts.containsKey(fw)) {
                 counts.put(fw, 0);
             }
@@ -166,7 +166,7 @@ public with sharing class ComplianceReportGenerator {
                 TrendPoint point = new TrendPoint();
                 point.reportDate = score.CreatedDate.date();
                 // Convert risk score to compliance score (inverse)
-                point.score = score.Risk_Score__c != null ? (100 - score.Risk_Score__c) : 0;
+                point.score = 100 - (score.Risk_Score__c ?? 100);
                 point.period = score.CreatedDate.format('MMM d');
                 trend.add(point);
             }

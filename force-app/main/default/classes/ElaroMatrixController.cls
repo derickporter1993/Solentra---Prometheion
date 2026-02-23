@@ -436,7 +436,7 @@ public with sharing class ElaroMatrixController {
             dataPoints.add(new MatrixDataPoint(
                 String.valueOf(ar.get('rowDim')),
                 String.valueOf(ar.get('colDim')),
-                ar.get('metricValue') != null ? (Decimal)ar.get('metricValue') : 0
+                (Decimal)(ar.get('metricValue') ?? 0)
             ));
         }
         return buildMatrixResult(dataPoints);
@@ -452,7 +452,7 @@ public with sharing class ElaroMatrixController {
             dataPoints.add(new MatrixDataPoint(
                 String.valueOf(s.get('Row_Dimension__c')),
                 String.valueOf(s.get('Column_Dimension__c')),
-                value != null ? value : 0
+                value ?? 0
             ));
         }
         return buildMatrixResult(dataPoints);
@@ -469,8 +469,8 @@ public with sharing class ElaroMatrixController {
         Decimal maxValue = null;
 
         for (MatrixDataPoint dp : dataPoints) {
-            String rowKey = dp.rowKey != null ? dp.rowKey : '(blank)';
-            String colKey = dp.colKey != null ? dp.colKey : '(blank)';
+            String rowKey = dp.rowKey ?? '(blank)';
+            String colKey = dp.colKey ?? '(blank)';
 
             if (!matrix.containsKey(rowKey)) {
                 matrix.put(rowKey, new Map<String, Decimal>());

@@ -299,8 +299,8 @@ public with sharing class ComplianceReportScheduler implements Schedulable {
                 html += '<tr>';
                 html += '<td>' + String.valueOf(gap.Name).abbreviate(50) + '</td>';
                 html += '<td class="' + severityClass + '">' + gap.Severity__c + '</td>';
-                html += '<td>' + (gap.Framework__c != null ? gap.Framework__c : 'N/A') + '</td>';
-                html += '<td>' + (gap.Status__c != null ? gap.Status__c : 'Open') + '</td>';
+                html += '<td>' + (gap.Framework__c ?? 'N/A') + '</td>';
+                html += '<td>' + (gap.Status__c ?? 'Open') + '</td>';
                 html += '</tr>';
             }
 
@@ -340,9 +340,9 @@ public with sharing class ComplianceReportScheduler implements Schedulable {
 
         for (Compliance_Gap__c gap : reportData.gaps) {
             csv += '"' + String.valueOf(gap.Name).replace('"', '""') + '",';
-            csv += '"' + (gap.Severity__c != null ? gap.Severity__c : '') + '",';
-            csv += '"' + (gap.Framework__c != null ? gap.Framework__c : '') + '",';
-            csv += '"' + (gap.Status__c != null ? gap.Status__c : '') + '",';
+            csv += '"' + (gap.Severity__c ?? '') + '",';
+            csv += '"' + (gap.Framework__c ?? '') + '",';
+            csv += '"' + (gap.Status__c ?? '') + '",';
             csv += '"' + (gap.Description__c != null ? gap.Description__c.replace('"', '""').abbreviate(200) : '') + '",';
             csv += '"' + (gap.CreatedDate != null ? gap.CreatedDate.format('yyyy-MM-dd') : '') + '"\n';
         }

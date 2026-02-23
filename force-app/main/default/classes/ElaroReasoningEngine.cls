@@ -1,20 +1,14 @@
 /**
- * Elaro Reasoning Engine
- * 
- * This class uses `without sharing` because:
- * 1. Big Object queries require system-level access to read Elaro_Compliance_Graph__b records
- * 2. Cross-org compliance analysis may need to access data across different sharing contexts
- * 3. AI adjudication logging must be accessible regardless of user permissions for audit purposes
- * 4. The reasoning engine operates on compliance metadata that should be accessible to all authorized users
- * 
- * Security is maintained through:
- * - Input validation on all public methods
- * - HTML escaping to prevent XSS in explanations
- * - Deterministic hashing for audit trail integrity
- * - Correlation IDs for traceability
- * 
- * @author Elaro
- * @version 3.0
+ * Elaro Reasoning Engine for compliance graph analysis and AI adjudication.
+ *
+ * SECURITY: without sharing required because Big Object queries
+ * (Elaro_Compliance_Graph__b) require system-level access, and AI
+ * adjudication logging must succeed regardless of user permissions
+ * for audit purposes. Security is maintained through input validation,
+ * HTML escaping to prevent XSS, deterministic hashing for audit trail
+ * integrity, and correlation IDs for traceability.
+ *
+ * @author Elaro Team
  * @since v3.1.0 (Spring '26)
  * @group Compliance Framework
  */
@@ -56,7 +50,7 @@ public without sharing class ElaroReasoningEngine {
 
         // Simplified reasoning without Custom Metadata Type dependency
         // In production, if Compliance_Policy__mdt is required, create it or use alternative approach
-        Decimal riskScore = node.Risk_Score__c != null ? node.Risk_Score__c : 0.0;
+        Decimal riskScore = node.Risk_Score__c ?? 0.0;
         Boolean isViolation = riskScore >= 8.0;
         Decimal confidence = riskScore >= 8.0 ? 0.9 : riskScore >= 5.0 ? 0.7 : 0.5;
 
@@ -111,7 +105,7 @@ public without sharing class ElaroReasoningEngine {
         String safeFramework = escapeHtml(String.isNotBlank(framework) ? framework : 'UNKNOWN');
 
         // Safe numeric formatting
-        Decimal safeRiskScore = riskScore != null ? riskScore : 0.0;
+        Decimal safeRiskScore = riskScore ?? 0.0;
         String severity = safeRiskScore >= 8.0 ? 'HIGH RISK' : safeRiskScore >= 5.0 ? 'MEDIUM RISK' : 'LOW RISK';
         String remediation = safeRiskScore >= 8.0 ? 'Immediate review required' : safeRiskScore >= 5.0 ? 'Review recommended' : 'Monitor';
 

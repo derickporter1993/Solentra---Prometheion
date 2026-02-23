@@ -1,10 +1,12 @@
 /**
- * ElaroAuditTrailPoller
- * 
  * Scheduled job that polls Setup Audit Trail every 5 minutes and publishes
  * changes to AWS via Platform Events for processing.
- * 
- * Runs in system context to poll audit trail regardless of user permissions.
+ *
+ * SECURITY: without sharing required because this scheduled job must read
+ * SetupAuditTrail records and publish Platform Events regardless of the
+ * running user's record access. The audit trail data is org-wide metadata,
+ * not user-scoped records.
+ *
  * @author Elaro Team
  * @since v3.1.0 (Spring '26)
  * @group Compliance Framework
