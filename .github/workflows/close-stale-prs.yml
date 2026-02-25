@@ -4,8 +4,6 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths:
-      - '.github/workflows/close-stale-prs.yml'
 
 permissions:
   pull-requests: write
